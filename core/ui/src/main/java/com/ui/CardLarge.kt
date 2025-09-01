@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -35,11 +36,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
-import kotlin.math.atan
-import kotlin.math.PI
 
 private const val CARD_HEIGHT = 180
 private const val CARD_WIDTH = 308
+private const val DIAGONAL_ANGLE_DEGREES = 45f
 
 @Composable
 public fun CardLarge(
@@ -81,47 +81,65 @@ public fun CardLarge(
             )
         }
 
-        val diagonalLineAngle = calculateDiagonalLineAngle()
-
-        DiagonalLine(strokeWidth = 46.dp)
-
+        DiagonalLine()
+        RectangleTriangle(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp)
+        )
+        RectangleTriangle(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp)
+        )
         Text(
             text = "Recente",
             color = TokenColors.White,
             style = TokenDefaultTypography.titleLarge,
             modifier = Modifier
-                .rotate(diagonalLineAngle)
                 .align(Alignment.TopStart)
-                .padding(top = 32.dp, start = 4.dp)
-
+                .padding(top = 36.dp, start = 6.dp)
+                .rotate(-DIAGONAL_ANGLE_DEGREES)
         )
+
     }
 }
 
-/**
- * Helper function to calculate the diagonal line angle
- */
-private fun calculateDiagonalLineAngle(): Float {
-    val cardWidth = CARD_WIDTH
-    val cardHeight = CARD_HEIGHT
+@Composable
+fun RectangleTriangle(
+    modifier: Modifier = Modifier,
+) {
+    Canvas(
+        modifier = modifier.size(16.dp)
+    ) {
+        val verticalOffset = size.width
 
-    val slope = (0F - cardHeight * 0.4F) / (cardWidth / 3 - 0F)
-    val angleRadians = atan(slope)
-    return (angleRadians * 180 / PI).toFloat()
+        val path = Path().apply {
+            moveTo(0f, size.height)
+            lineTo(size.width, size.height)
+            lineTo(size.width, size.height - verticalOffset)
+            close()
+        }
+
+        drawPath(
+            path = path,
+            color = TokenColors.TapeBackground
+        )
+    }
 }
 
 @Composable
 private fun DiagonalLine(
     modifier: Modifier = Modifier,
-    strokeWidth: Dp = 46.dp
+    strokeWidth: Dp = 40.dp
 ) {
     Canvas(
         modifier = modifier.size(CARD_WIDTH.dp, CARD_HEIGHT.dp)
     ) {
-        val slope = (0F - size.height * 0.4F) / (size.width/3 - 0F)
+        val slope = -1f
 
-        val leftIntersection = size.height * 0.4F - slope * 0F
-        val rightIntersection = size.height * 0.4F + slope * (size.width - 0F)
+        val leftIntersection = size.height * 0.5F
+        val rightIntersection = leftIntersection + slope * size.width
 
         drawLine(
             color = TokenColors.Primary,

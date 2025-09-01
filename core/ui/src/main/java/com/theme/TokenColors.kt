@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 object TokenColors {
     val Primary = Color(0xFFFF5C00)
     val White = Color(0xFFFFFFFF)
+    val TapeBackground = Color(0xFF7B330A)
     val Title = Color(0xFF000000)
     val Subtitle = Color(0x80000000)
     val Background = Color(0xFFFFFFFF)
