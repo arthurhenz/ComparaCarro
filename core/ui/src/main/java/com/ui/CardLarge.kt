@@ -1,3 +1,9 @@
+/**
+ * Created by Arthur Henrique Henz on 08/31/2025
+ * Copyright (c) 2025. All rights reserved.
+ * Last modified 08/31/2025
+ */
+
 package com.ui
 
 import androidx.compose.foundation.Canvas
@@ -80,7 +86,7 @@ public fun CardLarge(
         DiagonalLine(strokeWidth = 46.dp)
 
         Text(
-            text = "Recent",
+            text = "Recente",
             color = TokenColors.White,
             style = TokenDefaultTypography.titleLarge,
             modifier = Modifier
@@ -127,7 +133,7 @@ private fun DiagonalLine(
     }
 }
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun LargeCardPreview() {
     CardLarge(

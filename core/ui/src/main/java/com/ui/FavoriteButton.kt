@@ -1,4 +1,11 @@
+/**
+ * Created by Arthur Henrique Henz on 08/31/2025
+ * Copyright (c) 2025. All rights reserved.
+ * Last modified 08/31/2025
+ */
+
 package com.ui
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +23,7 @@ import com.theme.TokenColors
 import com.theme.TokenIconSize
 
 @Composable
-fun FavoriteButton(
+public fun FavoriteButton(
     selected: Boolean,
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -46,7 +53,7 @@ fun FavoriteButton(
     }
 }
 
-@Preview(showBackground = false, name = "Heart Button - Unselected")
+@Preview(name = "Heart Button - Unselected")
 @Composable
 fun HeartToggleButtonUnselectedPreview() {
     FavoriteButton(
@@ -55,7 +62,7 @@ fun HeartToggleButtonUnselectedPreview() {
     )
 }
 
-@Preview(showBackground = false, name = "Heart Button - Selected")
+@Preview(name = "Heart Button - Selected")
 @Composable
 fun HeartToggleButtonSelectedPreview() {
     FavoriteButton(

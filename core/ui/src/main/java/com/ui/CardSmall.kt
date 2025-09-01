@@ -1,8 +1,15 @@
+/**
+ * Created by Arthur Henrique Henz on 08/31/2025
+ * Copyright (c) 2025. All rights reserved.
+ * Last modified 08/31/2025
+ */
+
 package com.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,11 +47,13 @@ public fun CardSmall(
     ) {
     Column(
         modifier = modifier
+            .background(color = TokenColors.White)
             .height(CARD_HEIGHT.dp)
             .width(CARD_WIDTH.dp)
+            .padding(top = 6.dp)
             .clearAndSetSemantics { this.contentDescription = contentDescription },
     ) {
-        Box(modifier = Modifier.padding(bottom = 10.dp)) {
+        Box(modifier = Modifier.padding(bottom = 6.dp)) {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,7 +92,7 @@ public fun CardSmall(
 }
 
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun SmallCardPreview() {
     CardSmall(
