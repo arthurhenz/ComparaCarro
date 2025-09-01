@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.SemanticsProperties.Shape
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,10 +39,8 @@ import androidx.compose.ui.unit.dp
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
-typealias LargeCardType = @Composable (modifier: Modifier) -> Unit
-
 private const val CARD_HEIGHT = 180
-private const val CARD_WIDTH = 308
+private const val CARD_WIDTH = 280
 private const val DIAGONAL_ANGLE_DEGREES = 45f
 
 @Composable
@@ -100,7 +100,7 @@ fun LargeCard(
             style = TokenDefaultTypography.titleLarge,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(top = 36.dp, start = 6.dp)
+                .padding(top = 34.dp, start = 6.dp)
                 .rotate(-DIAGONAL_ANGLE_DEGREES)
         )
     }
@@ -133,7 +133,9 @@ private fun DiagonalLine(
     strokeWidth: Dp = 40.dp
 ) {
     Canvas(
-        modifier = modifier.size(CARD_WIDTH.dp, CARD_HEIGHT.dp)
+        modifier = modifier
+            .fillMaxSize()
+            .clip(ShapeDefaults.Small)
     ) {
         val slope = -1f
 

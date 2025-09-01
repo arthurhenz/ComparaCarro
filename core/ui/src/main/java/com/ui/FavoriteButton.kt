@@ -44,13 +44,13 @@ fun FavoriteButton(
                     imageVector = Icons.Filled.Favorite,
                     contentDescription = null,
                     tint = TokenColors.HeartSelected,
-                    modifier = Modifier.size(TokenIconSize.Small)
+                    modifier = Modifier.size(TokenIconSize.Medium)
                 )
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Favorite,
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(TokenIconSize.Medium),
                     tint = TokenColors.HeartUnselected
                 )
             }

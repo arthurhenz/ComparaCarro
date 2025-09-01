@@ -34,9 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
-typealias CardType = @Composable (modifier: Modifier) -> Unit
-
-private const val CARD_HEIGHT = 250
+private const val CARD_HEIGHT = 230
 private const val CARD_WIDTH = 175
 
 @Composable
@@ -71,7 +69,7 @@ fun SmallCard(
                 onToggle = onToggleButton,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(34.dp)
+                    .size(36.dp)
             )
         }
 
