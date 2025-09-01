@@ -4,7 +4,6 @@
  * Last modified 08/31/2025
  */
 
-
 package com.ui
 
 import androidx.compose.foundation.layout.height
@@ -23,16 +22,14 @@ import com.theme.TokenColors.Primary
 import com.theme.TokenDefaultTypography
 
 @Composable
-public fun PrimaryButton(
+fun PrimaryButton(
     text: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Primary
-        ),
+        colors = ButtonDefaults.buttonColors(containerColor = Primary),
         modifier = modifier
             .width(360.dp)
             .height(64.dp),

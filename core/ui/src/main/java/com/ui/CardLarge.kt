@@ -53,7 +53,7 @@ public fun CardLarge(
             .height(CARD_HEIGHT.dp)
             .width(CARD_WIDTH.dp)
             .clearAndSetSemantics { this.contentDescription = contentDescription },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
@@ -66,7 +66,7 @@ public fun CardLarge(
                     .fillMaxSize(),
                 painter = background,
                 contentDescription = title,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             )
             Text(
                 text = title,
@@ -101,14 +101,11 @@ public fun CardLarge(
                 .padding(top = 36.dp, start = 6.dp)
                 .rotate(-DIAGONAL_ANGLE_DEGREES)
         )
-
     }
 }
 
 @Composable
-fun RectangleTriangle(
-    modifier: Modifier = Modifier,
-) {
+fun RectangleTriangle(modifier: Modifier = Modifier) {
     Canvas(
         modifier = modifier.size(16.dp)
     ) {
@@ -156,6 +153,6 @@ private fun DiagonalLine(
 fun LargeCardPreview() {
     CardLarge(
         background = painterResource(id = R.drawable.ic_launcher_background),
-        title = "Subaru Impreza Twin Turbo Forged",
+        title = "Subaru Impreza Twin Turbo Forged"
     )
 }

@@ -35,23 +35,22 @@ private const val CARD_HEIGHT = 250
 private const val CARD_WIDTH = 175
 
 @Composable
-public fun CardSmall(
+fun CardSmall(
     modifier: Modifier = Modifier,
     background: Painter,
     contentDescription: String = "",
     selected: Boolean,
     onToggleButton: (Boolean) -> Unit,
     title: String,
-    price: String,
-
-    ) {
+    price: String
+) {
     Column(
         modifier = modifier
             .background(color = TokenColors.White)
             .height(CARD_HEIGHT.dp)
             .width(CARD_WIDTH.dp)
             .padding(top = 6.dp)
-            .clearAndSetSemantics { this.contentDescription = contentDescription },
+            .clearAndSetSemantics { this.contentDescription = contentDescription }
     ) {
         Box(modifier = Modifier.padding(bottom = 6.dp)) {
             Image(
@@ -60,7 +59,7 @@ public fun CardSmall(
                     .clip(RoundedCornerShape(10.dp)),
                 painter = background,
                 contentDescription = title,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             )
             FavoriteButton(
                 selected = selected,
@@ -76,7 +75,7 @@ public fun CardSmall(
             color = TokenColors.Title,
             style = TokenDefaultTypography.titleSmall,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
         )
 
         Text(
@@ -91,8 +90,7 @@ public fun CardSmall(
     }
 }
 
-
-@Preview()
+@Preview
 @Composable
 fun SmallCardPreview() {
     CardSmall(
