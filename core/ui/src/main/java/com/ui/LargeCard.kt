@@ -37,12 +37,14 @@ import androidx.compose.ui.unit.dp
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
+typealias LargeCardType = @Composable (modifier: Modifier) -> Unit
+
 private const val CARD_HEIGHT = 180
 private const val CARD_WIDTH = 308
 private const val DIAGONAL_ANGLE_DEGREES = 45f
 
 @Composable
-fun CardLarge(
+fun LargeCard(
     modifier: Modifier = Modifier,
     background: Painter,
     contentDescription: String = "",
@@ -104,6 +106,19 @@ fun CardLarge(
     }
 }
 
+fun largeCardOf(
+    background: Painter,
+    contentDescription: String = "",
+    title: String
+): LargeCardType = { modifier ->
+    LargeCard(
+        modifier = modifier,
+        background = background,
+        contentDescription = contentDescription,
+        title = title
+    )
+}
+
 @Composable
 fun RectangleTriangle(modifier: Modifier = Modifier) {
     Canvas(
@@ -151,7 +166,7 @@ private fun DiagonalLine(
 @Preview()
 @Composable
 fun LargeCardPreview() {
-    CardLarge(
+    LargeCard(
         background = painterResource(id = R.drawable.ic_launcher_background),
         title = "Subaru Impreza Twin Turbo Forged"
     )

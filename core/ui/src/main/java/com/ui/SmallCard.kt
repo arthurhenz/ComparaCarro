@@ -34,11 +34,13 @@ import androidx.compose.ui.unit.dp
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
+typealias CardType = @Composable (modifier: Modifier) -> Unit
+
 private const val CARD_HEIGHT = 250
 private const val CARD_WIDTH = 175
 
 @Composable
-fun CardSmall(
+fun SmallCard(
     modifier: Modifier = Modifier,
     background: Painter,
     contentDescription: String = "",
@@ -93,11 +95,30 @@ fun CardSmall(
     }
 }
 
+fun smallCardOf(
+    background: Painter,
+    contentDescription: String = "",
+    selected: Boolean,
+    onToggleButton: (Boolean) -> Unit,
+    title: String,
+    price: String
+): CardType = { modifier ->
+    SmallCard(
+        modifier = modifier,
+        background = background,
+        contentDescription = contentDescription,
+        selected = selected,
+        onToggleButton = onToggleButton,
+        title = title,
+        price = price
+    )
+}
+
 @Preview
 @Composable
 fun SmallCardPreview() {
     Row {
-        CardSmall(
+        SmallCard(
             background = painterResource(id = R.drawable.ic_launcher_background),
             selected = true,
             onToggleButton = { true },
@@ -107,7 +128,7 @@ fun SmallCardPreview() {
 
         Spacer(modifier = Modifier.width( 8.dp))
 
-        CardSmall(
+        SmallCard(
             background = painterResource(id = R.drawable.ic_launcher_background),
             selected = false,
             onToggleButton = { true },
