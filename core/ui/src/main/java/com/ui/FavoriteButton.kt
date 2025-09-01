@@ -30,33 +30,32 @@ fun FavoriteButton(
     modifier: Modifier = Modifier
 ) {
     Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(28.dp)
-            .background(TokenColors.HeartButtonBackground, shape = CircleShape)
-            .clickable { onToggle(!selected) }
+        modifier = modifier.clickable { onToggle(!selected) },
+        contentAlignment = Alignment.Center
     ) {
-        if (selected) {
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = null,
-                tint = TokenColors.HeartSelected,
-                modifier = Modifier.size(TokenIconSize.Small)
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Outlined.Favorite,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = TokenColors.HeartUnselected
-            )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(28.dp)
+                .background(TokenColors.HeartButtonBackground, shape = CircleShape)
+        ) {
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = null,
+                    tint = TokenColors.HeartSelected,
+                    modifier = Modifier.size(TokenIconSize.Small)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Outlined.Favorite,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = TokenColors.HeartUnselected
+                )
             }
+        }
     }
-}
-
-@Composable
-fun Box(contentAlignment: Alignment, modifier: Modifier, content: @Composable () -> Unit) {
-    TODO("Not yet implemented")
 }
 
 @Preview(name = "Heart Button - Unselected")

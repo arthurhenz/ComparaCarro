@@ -11,9 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -66,7 +69,7 @@ fun CardSmall(
                 onToggle = onToggleButton,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(6.dp)
+                    .size(34.dp)
             )
         }
 
@@ -93,11 +96,23 @@ fun CardSmall(
 @Preview
 @Composable
 fun SmallCardPreview() {
-    CardSmall(
-        background = painterResource(id = R.drawable.ic_launcher_background),
-        selected = true,
-        onToggleButton = { true },
-        title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
-        price = "R$30.000,00"
-    )
+    Row {
+        CardSmall(
+            background = painterResource(id = R.drawable.ic_launcher_background),
+            selected = true,
+            onToggleButton = { true },
+            title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
+            price = "R$30.000,00"
+        )
+
+        Spacer(modifier = Modifier.width( 8.dp))
+
+        CardSmall(
+            background = painterResource(id = R.drawable.ic_launcher_background),
+            selected = false,
+            onToggleButton = { true },
+            title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
+            price = "R$30.000,00"
+        )
+    }
 }

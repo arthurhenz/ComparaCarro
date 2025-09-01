@@ -42,7 +42,7 @@ private const val CARD_WIDTH = 308
 private const val DIAGONAL_ANGLE_DEGREES = 45f
 
 @Composable
-public fun CardLarge(
+fun CardLarge(
     modifier: Modifier = Modifier,
     background: Painter,
     contentDescription: String = "",
