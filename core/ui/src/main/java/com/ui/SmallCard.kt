@@ -95,25 +95,6 @@ fun SmallCard(
     }
 }
 
-fun smallCardOf(
-    background: Painter,
-    contentDescription: String = "",
-    selected: Boolean,
-    onToggleButton: (Boolean) -> Unit,
-    title: String,
-    price: String
-): CardType = { modifier ->
-    SmallCard(
-        modifier = modifier,
-        background = background,
-        contentDescription = contentDescription,
-        selected = selected,
-        onToggleButton = onToggleButton,
-        title = title,
-        price = price
-    )
-}
-
 @Preview
 @Composable
 fun SmallCardPreview() {

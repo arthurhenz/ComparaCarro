@@ -106,19 +106,6 @@ fun LargeCard(
     }
 }
 
-fun largeCardOf(
-    background: Painter,
-    contentDescription: String = "",
-    title: String
-): LargeCardType = { modifier ->
-    LargeCard(
-        modifier = modifier,
-        background = background,
-        contentDescription = contentDescription,
-        title = title
-    )
-}
-
 @Composable
 fun RectangleTriangle(modifier: Modifier = Modifier) {
     Canvas(
