@@ -13,48 +13,69 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.data.model.LargeCardData
+import com.data.model.SmallCardData
+import com.theme.ComparaCarrosTheme
+import com.theme.TokenColors
+import com.ui.Header
 import com.ui.LargeCard
 import com.ui.LargeCardCarousel
 import com.ui.PrimaryButton
 import com.ui.SmallCard
-import com.theme.ComparaCarrosTheme
-import com.theme.TokenColors
-import com.ui.Header
-
-data class LargeCardData(
-    val title: String,
-    val backgroundRes: Int = com.ui.R.drawable.ic_launcher_background
-)
-
-data class SmallCardData(
-    val title: String,
-    val price: String,
-    val selected: Boolean = false,
-    val backgroundRes: Int = com.ui.R.drawable.ic_launcher_background
-)
-
-val largeCards = listOf(
-    LargeCardData("Novidades do mês"),
-    LargeCardData("Ofertas imperdíveis")
-)
-
-val smallCards = listOf(
-    SmallCardData("Volkswagen Saveiro 2017", "R$ 55.900", selected = true),
-    SmallCardData("Audi A4 Quattro Sedan 2019", "R$ 142.000", selected = false),
-    SmallCardData("Honda Civic Si LX LXS 2020", "R$ 115.500", selected = false),
-    SmallCardData("Toyota Corolla Xei Guerra Corolla Siria 2021", "R$ 128.000", selected = true)
-)
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeViewModel = viewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    
+    when (val currentState = state) {
+        is HomeScreenState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is HomeScreenState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = currentState.error ?: "Unknown error",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+        is HomeScreenState.Success -> {
+            HomeContent(
+                largeCards = currentState.largeCards,
+                smallCards = currentState.smallCards
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeContent(
+    largeCards: List<LargeCardData>,
+    smallCards: List<SmallCardData>
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Header(
             modifier = Modifier
@@ -138,6 +159,43 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenPreview() {
     ComparaCarrosTheme {
-        HomeScreen()
+        HomeContent(
+            largeCards = listOf(
+                LargeCardData(
+                    id = "preview_large_1",
+                    title = "Novidades do mês"
+                ),
+                LargeCardData(
+                    id = "preview_large_2",
+                    title = "Ofertas imperdíveis"
+                )
+            ),
+            smallCards = listOf(
+                SmallCardData(
+                    id = "preview_small_1",
+                    title = "Volkswagen Saveiro 2017",
+                    price = "R$ 55.900",
+                    selected = true
+                ),
+                SmallCardData(
+                    id = "preview_small_2",
+                    title = "Audi A4 Quattro Sedan 2019",
+                    price = "R$ 142.000",
+                    selected = false
+                ),
+                SmallCardData(
+                    id = "preview_small_3",
+                    title = "Honda Civic Si LX LXS 2020",
+                    price = "R$ 115.500",
+                    selected = false
+                ),
+                SmallCardData(
+                    id = "preview_small_4",
+                    title = "Toyota Corolla Xei Guerra Corolla Siria 2021",
+                    price = "R$ 128.000",
+                    selected = true
+                )
+            )
+        )
     }
 }

@@ -1,5 +1,5 @@
-//package com.home
-//
-//sealed class HomeScreenEvent {
-//    object ReloadCoupons : HomeScreenEvent()
-//}
+package com.home
+
+sealed class HomeScreenEvent {
+    data object ReloadCards : HomeScreenEvent()
+}
