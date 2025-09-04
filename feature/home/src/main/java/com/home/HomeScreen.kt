@@ -1,5 +1,6 @@
 package com.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,8 @@ import com.ui.SmallCard
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
+    onCardClick: (String) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     
@@ -65,7 +67,8 @@ fun HomeScreen(
         is HomeScreenState.Success -> {
             HomeContent(
                 largeCards = currentState.largeCards,
-                smallCards = currentState.smallCards
+                smallCards = currentState.smallCards,
+                onCardClick = onCardClick
             )
         }
     }
@@ -74,7 +77,8 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     largeCards: List<LargeCardData>,
-    smallCards: List<SmallCardData>
+    smallCards: List<SmallCardData>,
+    onCardClick: (String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Header(
@@ -95,6 +99,7 @@ private fun HomeContent(
                 largeCards.forEach { cardData ->
                     item {
                         LargeCard(
+                            modifier = Modifier.clickable { onCardClick(cardData.id) },
                             background = painterResource(id = cardData.backgroundRes),
                             title = cardData.title
                         )
@@ -137,7 +142,9 @@ private fun HomeContent(
                 ) {
                     rowCards.forEach { cardData ->
                         SmallCard(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { onCardClick(cardData.id) },
                             background = painterResource(id = cardData.backgroundRes),
                             selected = cardData.selected,
                             onToggleButton = {},
@@ -195,7 +202,8 @@ fun HomeScreenPreview() {
                     price = "R$ 128.000",
                     selected = true
                 )
-            )
+            ),
+            onCardClick = {}
         )
     }
 }
