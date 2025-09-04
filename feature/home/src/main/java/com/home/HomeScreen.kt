@@ -1,12 +1,18 @@
 package com.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
@@ -21,6 +27,7 @@ import com.ui.PrimaryButton
 import com.ui.SmallCard
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
+import com.ui.Header
 
 data class LargeCardData(
     val title: String,
@@ -34,25 +41,36 @@ data class SmallCardData(
     val backgroundRes: Int = com.ui.R.drawable.ic_launcher_background
 )
 
+val largeCards = listOf(
+    LargeCardData("Novidades do mês"),
+    LargeCardData("Ofertas imperdíveis")
+)
+
+val smallCards = listOf(
+    SmallCardData("Volkswagen Saveiro 2017", "R$ 55.900", selected = true),
+    SmallCardData("Audi A4 Quattro Sedan 2019", "R$ 142.000", selected = false),
+    SmallCardData("Honda Civic Si LX LXS 2020", "R$ 115.500", selected = false),
+    SmallCardData("Toyota Corolla Xei Guerra Corolla Siria 2021", "R$ 128.000", selected = true)
+)
+
 @Composable
 fun HomeScreen() {
-    val largeCards = listOf(
-        LargeCardData("Novidades do mês"),
-        LargeCardData("Ofertas imperdíveis")
-    )
-    
-    val smallCards = listOf(
-        SmallCardData("Volkswagen Saveiro 2017", "R$ 55.900", selected = true),
-        SmallCardData("Audi A4 Sedan 2019", "R$ 142.000", selected = false),
-        SmallCardData("Honda Civic 2020", "R$ 115.500", selected = false),
-        SmallCardData("Toyota Corolla 2021", "R$ 128.000", selected = true)
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        Header(
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.statusBars),
+            onMenuClick = {}
+        )
 
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
-            LargeCardCarousel(modifier = Modifier.padding(bottom = 32.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(top = 56.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LargeCardCarousel(modifier = Modifier.padding(bottom = 24.dp)) {
                 largeCards.forEach { cardData ->
                     item {
                         LargeCard(
@@ -62,20 +80,16 @@ fun HomeScreen() {
                     }
                 }
             }
-        }
-        
-        item {
+
             PrimaryButton(
                 text = "Comparar",
                 onClick = {},
             )
-        }
 
-        item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 32.dp, horizontal = 24.dp),
+                    .padding(vertical = 24.dp, horizontal = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -89,11 +103,8 @@ fun HomeScreen() {
                     color = TokenColors.Subtitle
                 )
             }
-        }
 
-        // Small cards in rows of 2
-        smallCards.chunked(2).forEachIndexed { index, rowCards ->
-            item {
+            smallCards.chunked(2).forEachIndexed { index, rowCards ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -113,7 +124,7 @@ fun HomeScreen() {
                             price = cardData.price
                         )
                     }
-                    // Fill remaining space if odd number of cards
+
                     if (rowCards.size == 1) {
                         Spacer(modifier = Modifier.weight(1f))
                     }

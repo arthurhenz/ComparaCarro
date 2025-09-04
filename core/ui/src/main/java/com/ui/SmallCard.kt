@@ -69,7 +69,6 @@ fun SmallCard(
                 onToggle = onToggleButton,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(36.dp)
             )
         }
 
