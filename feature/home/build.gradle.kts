@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -64,4 +65,11 @@ dependencies {
     implementation(libs.koin.android)
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
+    implementation(platform(libs.koin.bom))
+    implementation (libs.koin.android)
+    implementation (libs.koin.compose.viewmodel)
+//    implementation(libs.koin.annotations)
+//    ksp(libs.koin.ksp.compiler)
+
+
 }

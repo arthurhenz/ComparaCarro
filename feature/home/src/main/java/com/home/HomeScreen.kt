@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -42,7 +43,7 @@ fun HomeScreen(
     onCardClick: (String) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
-    
+
     when (val currentState = state) {
         is HomeScreenState.Loading -> {
             Box(
@@ -52,6 +53,7 @@ fun HomeScreen(
                 CircularProgressIndicator()
             }
         }
+
         is HomeScreenState.Error -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -64,6 +66,7 @@ fun HomeScreen(
                 )
             }
         }
+
         is HomeScreenState.Success -> {
             HomeContent(
                 largeCards = currentState.largeCards,
@@ -90,7 +93,7 @@ private fun HomeContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(top = 56.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally

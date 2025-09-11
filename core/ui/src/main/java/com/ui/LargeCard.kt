@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +31,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.SemanticsProperties.Shape
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,59 +51,66 @@ fun LargeCard(
     contentDescription: String = "",
     title: String
 ) {
-    Box(
+    Card(
         modifier = modifier
             .height(CARD_HEIGHT.dp)
             .width(CARD_WIDTH.dp)
             .clearAndSetSemantics { this.contentDescription = contentDescription },
-        contentAlignment = Alignment.Center
+        shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(containerColor = TokenColors.Transparent)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, top = 16.dp)
-                .clip(RoundedCornerShape(10.dp))
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Image(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize(),
-                painter = background,
-                contentDescription = title,
-                contentScale = ContentScale.Crop
+                    .fillMaxSize()
+                    .padding(start = 16.dp, top = 16.dp)
+                    .clip(RoundedCornerShape(10.dp))
+            ) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    painter = background,
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop
+                )
+                Text(
+                    text = title,
+                    color = TokenColors.White,
+                    style = TokenDefaultTypography.titleSmall,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .padding(start = 12.dp, end = 12.dp, bottom = 4.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            DiagonalLine()
+
+            RectangleTriangle(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp)
+            )
+            RectangleTriangle(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp)
             )
             Text(
-                text = title,
+                text = "Recente",
                 color = TokenColors.White,
-                style = TokenDefaultTypography.titleSmall,
+                style = TokenDefaultTypography.titleLarge,
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp, bottom = 4.dp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                    .align(Alignment.TopStart)
+                    .padding(top = 34.dp, start = 6.dp)
+                    .rotate(-DIAGONAL_ANGLE_DEGREES)
             )
         }
-
-        DiagonalLine()
-        RectangleTriangle(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp)
-        )
-        RectangleTriangle(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp)
-        )
-        Text(
-            text = "Recente",
-            color = TokenColors.White,
-            style = TokenDefaultTypography.titleLarge,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 34.dp, start = 6.dp)
-                .rotate(-DIAGONAL_ANGLE_DEGREES)
-        )
     }
 }
 

@@ -1,8 +1,11 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -62,11 +65,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(kotlin("test"))
-    implementation(libs.koin.android)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.navigation.compose)
     implementation(project(":feature:home"))
+    implementation(project(":feature:detail"))
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
-
+    implementation(platform(libs.koin.bom))
+    implementation (libs.koin.android)
+    implementation (libs.koin.compose.viewmodel)
+//    implementation(libs.koin.annotations)
+//    ksp(libs.koin.ksp.compiler)
 }
