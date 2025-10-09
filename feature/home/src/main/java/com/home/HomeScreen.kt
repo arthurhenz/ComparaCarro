@@ -10,25 +10,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
@@ -38,6 +48,7 @@ import com.ui.LargeCard
 import com.ui.LargeCardCarousel
 import com.ui.PrimaryButton
 import com.ui.SmallCard
+import com.ui.SmallCardList
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -48,6 +59,20 @@ fun HomeScreen(
     val state by viewModel.state.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isSearchFocused by viewModel.isSearchFocused.collectAsState()
+    val sortType by viewModel.sortType.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshRecentlyViewed()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     when (val currentState = state) {
         is HomeScreenState.Loading -> {
@@ -74,143 +99,29 @@ fun HomeScreen(
 
         is HomeScreenState.Success -> {
             HomeContent(
-                largeCards = currentState.largeCards,
                 smallCards = currentState.smallCards,
+                recentlyViewedCards = currentState.recentlyViewedCards,
                 searchQuery = searchQuery,
                 onSearchQueryChange = viewModel::updateSearchQuery,
                 onSearchFocusChanged = viewModel::updateSearchFocus,
                 isSearchFocused = isSearchFocused,
-                onCardClick = onCardClick
+                sortType = sortType,
+                onSortTypeChange = viewModel::updateSortType,
+                onCardClick = { cardId ->
+                    viewModel.onCardClick(cardId)
+                    onCardClick(cardId)
+                }
             )
         }
     }
 }
 
-@Composable
-private fun HomeContent(
-    largeCards: List<LargeCardData>,
-    smallCards: List<SmallCardData>,
-    searchQuery: String = "",
-    onSearchQueryChange: (String) -> Unit = {},
-    onSearchFocusChanged: (Boolean) -> Unit = {},
-    isSearchFocused: Boolean = false,
-    onCardClick: (String) -> Unit
-) {
-    val focusManager = LocalFocusManager.current
-    val interactionSource = remember { MutableInteractionSource() }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-    ) {
-        Header(
-            onMenuClick = {},
-            searchQuery = searchQuery,
-            onSearchQueryChange = onSearchQueryChange,
-            onSearchFocusChanged = onSearchFocusChanged,
-            isSearchFocused = isSearchFocused
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .clickable(
-                    indication = null,
-                    interactionSource = interactionSource
-                ) {
-                    if (isSearchFocused) {
-                        focusManager.clearFocus()
-                    }
-                },
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (searchQuery.isEmpty()) {
-                LargeCardCarousel(modifier = Modifier.padding(bottom = 24.dp)) {
-                    largeCards.forEach { cardData ->
-                        item {
-                            LargeCard(
-                                modifier = Modifier.clickable { onCardClick(cardData.id) },
-                                background = painterResource(id = cardData.backgroundRes),
-                                title = cardData.title
-                            )
-                        }
-                    }
-                }
-
-                PrimaryButton(
-                    text = "Comparar",
-                    onClick = {},
-                )
-            }
-            
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp, horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Mais populares",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                Text(
-                    text = "Ver todos",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TokenColors.Subtitle
-                )
-            }
-
-            smallCards.chunked(2).forEachIndexed { index, rowCards ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 24.dp,
-                            vertical = if (index == 0) 0.dp else 12.dp
-                        ),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    rowCards.forEach { cardData ->
-                        SmallCard(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable { onCardClick(cardData.id) },
-                            image = painterResource(id = cardData.backgroundRes),
-                            selected = cardData.selected,
-                            onToggleButton = {},
-                            title = cardData.title,
-                            price = cardData.price
-                        )
-                    }
-
-                    if (rowCards.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     ComparaCarrosTheme {
         HomeContent(
-            largeCards = listOf(
-                LargeCardData(
-                    id = "preview_large_1",
-                    title = "Novidades do mês"
-                ),
-                LargeCardData(
-                    id = "preview_large_2",
-                    title = "Ofertas imperdíveis"
-                )
-            ),
             smallCards = listOf(
                 SmallCardData(
                     id = "preview_small_1",
@@ -237,10 +148,22 @@ fun HomeScreenPreview() {
                     selected = true
                 )
             ),
+            recentlyViewedCards = listOf(
+                LargeCardData(
+                    id = "preview_recent_1",
+                    title = "Honda Civic 2020"
+                ),
+                LargeCardData(
+                    id = "preview_recent_2",
+                    title = "Toyota Corolla 2021"
+                )
+            ),
             searchQuery = "",
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
             isSearchFocused = false,
+            sortType = SortType.MOST_POPULAR,
+            onSortTypeChange = {},
             onCardClick = {}
         )
     }

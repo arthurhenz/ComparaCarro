@@ -1,5 +1,6 @@
 package com.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.data.usecase.GetSmallCardsUseCase
@@ -13,7 +14,6 @@ import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
 class DetailViewModel(
-    private val getSmallCardsUseCase: GetSmallCardsUseCase,
     private val getCarByIdUseCase: GetCarByIdUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
@@ -28,9 +28,9 @@ class DetailViewModel(
 
     private fun loadCardDetails() = viewModelScope.launch {
         try {
-            android.util.Log.d("DetailViewModel", "Received cardId='" + cardId + "'")
+            Log.d("DetailViewModel", "Received cardId='$cardId'")
             val id = cardId.toIntOrNull()
-                ?: throw IllegalArgumentException("Invalid id: " + cardId)
+                ?: throw IllegalArgumentException("Invalid id: $cardId")
             val car = getCarByIdUseCase(id)
             _state.value = DetailScreenState.Success(car = car)
         } catch (e: Exception) {

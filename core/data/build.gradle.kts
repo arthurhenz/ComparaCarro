@@ -47,4 +47,5 @@ dependencies {
     implementation (libs.koin.compose.viewmodel)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
+    implementation(libs.androidx.datastore.preferences)
 }

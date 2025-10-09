@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 fun SmallCardList(
     modifier: Modifier = Modifier,
     horizontalItemSpacingDp: Int = 16,
-    verticalItemSpacingDp: Int = 24,
+    verticalItemSpacingDp: Int = 12,
     content: LazyGridScope.() -> Unit
 ) {
     LazyVerticalGrid(
