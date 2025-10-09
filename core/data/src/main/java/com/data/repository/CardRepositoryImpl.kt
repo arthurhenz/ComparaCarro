@@ -2,6 +2,11 @@ package com.data.repository
 
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
+import org.koin.core.annotation.Single
+
+@Single
+
+//injecao de dependencia network via parametro da classe
 
 class CardRepositoryImpl : CardRepository {
     

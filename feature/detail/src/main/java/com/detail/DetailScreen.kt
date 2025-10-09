@@ -43,7 +43,7 @@ fun DetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(text = "Detalhes")
                 },
                 navigationIcon = {
@@ -86,7 +86,7 @@ fun DetailScreen(
             }
 
             is DetailScreenState.Success -> {
-                DetailContent(
+                CardDetailContent(
                     modifier = Modifier.padding(paddingValues),
                     cardId = currentState.cardId
                 )
@@ -96,7 +96,7 @@ fun DetailScreen(
 }
 
 @Composable
-private fun DetailContent(
+private fun CardDetailContent(
     modifier: Modifier = Modifier,
     cardId: String
 ) {
@@ -115,7 +115,7 @@ private fun DetailContent(
                 style = TokenDefaultTypography.titleLarge,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            
+
             Text(
                 text = cardId,
                 style = TokenDefaultTypography.headlineLarge,
@@ -129,7 +129,7 @@ private fun DetailContent(
 @Composable
 fun DetailScreenPreview() {
     ComparaCarrosTheme {
-        DetailContent(
+        CardDetailContent(
             cardId = "preview_card_123"
         )
     }

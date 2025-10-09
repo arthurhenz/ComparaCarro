@@ -9,7 +9,6 @@ package com.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,14 +47,22 @@ fun SmallCard(
     title: String,
     price: String
 ) {
-    Column(
+    Card(
         modifier = modifier
-            .background(color = TokenColors.White)
             .height(CARD_HEIGHT.dp)
             .width(CARD_WIDTH.dp)
-            .padding(top = 6.dp)
-            .clearAndSetSemantics { this.contentDescription = contentDescription }
+            .clearAndSetSemantics { this.contentDescription = contentDescription },
+        colors = CardDefaults.cardColors(
+            containerColor = TokenColors.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(0.dp)
     ) {
+        Column(
+            modifier = Modifier.padding(top = 6.dp)
+        ) {
         Box(modifier = Modifier.padding(bottom = 6.dp)) {
             Image(
                 modifier = Modifier
@@ -88,6 +97,7 @@ fun SmallCard(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
+        }
     }
 }
 

@@ -2,7 +2,10 @@ package com.data.usecase
 
 import com.data.model.SmallCardData
 import com.data.repository.CardRepository
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
+@Single
 class GetSmallCardsUseCase(
     private val cardRepository: CardRepository
 ) {
@@ -10,3 +13,8 @@ class GetSmallCardsUseCase(
         return cardRepository.getSmallCards()
     }
 }
+
+//getNewerCars
+
+
+//Pensa nos dados esquece UI

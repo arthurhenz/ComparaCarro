@@ -36,10 +36,11 @@ import com.ui.LargeCard
 import com.ui.LargeCardCarousel
 import com.ui.PrimaryButton
 import com.ui.SmallCard
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     onCardClick: (String) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()

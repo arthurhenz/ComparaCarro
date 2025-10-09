@@ -7,13 +7,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.inject
 
+@KoinViewModel
 class DetailViewModel(
+    private val getSmallCardsUseCase: GetSmallCardsUseCase,
     private val cardId: String
-) : ViewModel(), KoinComponent {
-    private val getSmallCardsUseCase: GetSmallCardsUseCase by inject()
+) : ViewModel() {
+
 
     private val _state = MutableStateFlow<DetailScreenState>(DetailScreenState.Loading)
     val state: StateFlow<DetailScreenState> = _state.asStateFlow()

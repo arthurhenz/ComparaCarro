@@ -8,12 +8,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.android.annotation.KoinViewModel
 
-class HomeViewModel : ViewModel(), KoinComponent {
-    private val getLargeCardsUseCase: GetLargeCardsUseCase by inject()
-    private val getSmallCardsUseCase: GetSmallCardsUseCase by inject()
+@KoinViewModel
+class HomeViewModel (
+    private val getLargeCardsUseCase: GetLargeCardsUseCase,
+    private val getSmallCardsUseCase: GetSmallCardsUseCase
+): ViewModel() {
 
     private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
