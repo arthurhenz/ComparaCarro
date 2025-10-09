@@ -2,53 +2,87 @@ package com.data.repository
 
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
+import com.data.model.CarDetailData
+import comparacarro.network.api.CarsApi
+import comparacarro.network.result.NetworkResult
 import org.koin.core.annotation.Single
 
 @Single
+class CardRepositoryImpl(
+    private val carsApi: CarsApi
+) : CardRepository {
 
-//injecao de dependencia network via parametro da classe
-
-class CardRepositoryImpl : CardRepository {
-    
     override suspend fun getLargeCards(): List<LargeCardData> {
-        return listOf(
-            LargeCardData(
-                id = "large_card_1",
-                title = "Novidades do mês"
-            ),
-            LargeCardData(
-                id = "large_card_2",
-                title = "Ofertas imperdíveis"
-            )
-        )
+        // For demo, reuse the same network list and map a couple as banners
+        return when (val result = carsApi.getCars()) {
+            is NetworkResult.Success -> result.data.take(2).map { car ->
+                LargeCardData(
+                    id = car.id.toString(),
+                    title = car.title
+                )
+            }
+            is NetworkResult.Error -> {
+                android.util.Log.e(
+                    "CardRepositoryImpl",
+                    "getLargeCards error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
+                )
+                emptyList()
+            }
+        }
     }
-    
+
+    override suspend fun getCarById(id: Int): CarDetailData {
+        return when (val result = carsApi.getCarById(id)) {
+            is NetworkResult.Success -> {
+                val car = result.data
+                CarDetailData(
+                    id = car.id.toString(),
+                    title = car.title,
+                    price = formatPrice(car.fipe),
+                    category = car.category.name,
+                    views = car.views,
+                    optionals = car.opcionais.map { it.name }
+                )
+            }
+            is NetworkResult.Error -> {
+                android.util.Log.e(
+                    "CardRepositoryImpl",
+                    "getCarById error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
+                )
+                throw IllegalStateException(result.message ?: "Unknown error")
+            }
+        }
+    }
+
     override suspend fun getSmallCards(): List<SmallCardData> {
-        return listOf(
-            SmallCardData(
-                id = "small_card_1",
-                title = "Volkswagen Saveiro 2017",
-                price = "R$ 55.900",
-                selected = true
-            ),
-            SmallCardData(
-                id = "small_card_2",
-                title = "Audi A4 Quattro Sedan 2019",
-                price = "R$ 142.000",
-                selected = false
-            ),
-            SmallCardData(
-                id = "small_card_3",
-                title = "Honda Civic Si LX LXS 2020",
-                price = "R$ 115.500",
-                selected = false
-            ),
-            SmallCardData(
-                id = "small_card_4",
-                title = "Toyota Corolla Xei Guerra Corolla Siria 2021",
-                price = "R$ 128.000",
-                selected = true
-            )
-        )
+        return when (val result = carsApi.getCars()) {
+            is NetworkResult.Success -> {
+                android.util.Log.d(
+                    "CardRepositoryImpl",
+                    "getSmallCards cars=" + result.data.size
+                )
+                result.data.map { car ->
+                SmallCardData(
+                    id = car.id.toString(),
+                    title = car.title,
+                    price = formatPrice(car.fipe),
+                    selected = false
+                )
+                }
+            }
+            is NetworkResult.Error -> {
+                android.util.Log.e(
+                    "CardRepositoryImpl",
+                    "getSmallCards error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
+                )
+                emptyList()
+            }
+        }
+    }
+
+    private fun formatPrice(fipe: Float): String {
+        // Simple BRL formatting placeholder without locale deps
+        val value = String.format("%.2f", fipe)
+        return "R$ $value"
     }
 }

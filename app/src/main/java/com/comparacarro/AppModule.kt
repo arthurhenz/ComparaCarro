@@ -3,6 +3,7 @@ package com.comparacarro
 import com.data.di.DataModule
 import com.detail.DetailModule
 import com.home.HomeModule
+import comparacarro.network.di.NetworkModule
 import org.koin.core.annotation.KoinApplication
 import org.koin.core.annotation.Module
 
@@ -10,7 +11,8 @@ import org.koin.core.annotation.Module
     includes = [
         DataModule::class,
         HomeModule::class,
-        DetailModule::class
+        DetailModule::class,
+        NetworkModule::class
     ]
 )
 class AppModule

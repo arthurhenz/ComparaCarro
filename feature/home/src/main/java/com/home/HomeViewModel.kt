@@ -25,13 +25,19 @@ class HomeViewModel (
 
     private fun loadCards() = viewModelScope.launch {
         try {
+            android.util.Log.d("HomeViewModel", "Loading cards...")
             val largeCards = getLargeCardsUseCase()
             val smallCards = getSmallCardsUseCase()
+            android.util.Log.d(
+                "HomeViewModel",
+                "Loaded large=" + largeCards.size + " small=" + smallCards.size
+            )
             _state.value = HomeScreenState.Success(
                 largeCards = largeCards,
                 smallCards = smallCards
             )
         } catch (e: Exception) {
+            android.util.Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)
             _state.value = HomeScreenState.Error(e.message ?: "Failed to load cards")
         }
     }
@@ -39,8 +45,16 @@ class HomeViewModel (
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
             HomeScreenEvent.ReloadCards -> {
+                android.util.Log.d("HomeViewModel", "Reload event received")
                 loadCards()
             }
         }
+    }
+
+    // Public method to allow explicit refresh from UI or other layers
+    fun refresh() {
+        android.util.Log.d("HomeViewModel", "Manual refresh triggered")
+        _state.value = HomeScreenState.Loading
+        loadCards()
     }
 }

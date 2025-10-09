@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.data.model.CarDetailData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
@@ -88,7 +89,7 @@ fun DetailScreen(
             is DetailScreenState.Success -> {
                 CardDetailContent(
                     modifier = Modifier.padding(paddingValues),
-                    cardId = currentState.cardId
+                    car = currentState.car
                 )
             }
         }
@@ -98,7 +99,7 @@ fun DetailScreen(
 @Composable
 private fun CardDetailContent(
     modifier: Modifier = Modifier,
-    cardId: String
+    car: CarDetailData
 ) {
     Box(
         modifier = modifier
@@ -110,17 +111,14 @@ private fun CardDetailContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Card ID:",
-                style = TokenDefaultTypography.titleLarge,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Text(
-                text = cardId,
-                style = TokenDefaultTypography.headlineLarge,
-                color = TokenColors.HeartSelected
-            )
+            Text(text = car.title, style = TokenDefaultTypography.headlineLarge)
+            Text(text = car.price, style = TokenDefaultTypography.titleLarge, color = TokenColors.HeartSelected)
+            Text(text = "Categoria: " + car.category, style = TokenDefaultTypography.bodyLarge)
+            Text(text = "Visualizações: " + car.views, style = TokenDefaultTypography.bodyLarge)
+            if (car.optionals.isNotEmpty()) {
+                Text(text = "Opcionais:", style = TokenDefaultTypography.titleMedium, modifier = Modifier.padding(top = 16.dp))
+                Text(text = car.optionals.joinToString(), style = TokenDefaultTypography.bodyMedium)
+            }
         }
     }
 }
@@ -130,7 +128,14 @@ private fun CardDetailContent(
 fun DetailScreenPreview() {
     ComparaCarrosTheme {
         CardDetailContent(
-            cardId = "preview_card_123"
+            car = CarDetailData(
+                id = "1",
+                title = "Honda Civic",
+                price = "R$ 45.000,00",
+                category = "SEDAN",
+                views = 10,
+                optionals = listOf("BANCO_COURO", "TETO_SOLAR")
+            )
         )
     }
 }
