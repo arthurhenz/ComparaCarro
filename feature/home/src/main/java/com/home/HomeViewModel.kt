@@ -2,6 +2,7 @@ package com.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.data.model.SmallCardData
 import com.data.usecase.GetLargeCardsUseCase
 import com.data.usecase.GetSmallCardsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +20,38 @@ class HomeViewModel (
     private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _isSearchFocused = MutableStateFlow(false)
+    val isSearchFocused: StateFlow<Boolean> = _isSearchFocused.asStateFlow()
+
     init {
         loadCards()
+    }
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+        filterCards()
+    }
+
+    fun updateSearchFocus(isFocused: Boolean) {
+        _isSearchFocused.value = isFocused
+    }
+
+    private fun filterCards() {
+        val currentState = _state.value
+        if (currentState is HomeScreenState.Success) {
+            val query = _searchQuery.value.trim()
+            val filteredSmallCards = if (query.isEmpty()) {
+                currentState.allSmallCards
+            } else {
+                currentState.allSmallCards.filter { card ->
+                    card.title.contains(query, ignoreCase = true)
+                }
+            }
+            _state.value = currentState.copy(smallCards = filteredSmallCards)
+        }
     }
 
     private fun loadCards() = viewModelScope.launch {
@@ -34,7 +65,8 @@ class HomeViewModel (
             )
             _state.value = HomeScreenState.Success(
                 largeCards = largeCards,
-                smallCards = smallCards
+                smallCards = smallCards,
+                allSmallCards = smallCards
             )
         } catch (e: Exception) {
             android.util.Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)

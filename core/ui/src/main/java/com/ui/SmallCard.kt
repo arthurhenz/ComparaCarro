@@ -40,7 +40,7 @@ private const val CARD_WIDTH = 175
 @Composable
 fun SmallCard(
     modifier: Modifier = Modifier,
-    background: Painter,
+    image: Painter,
     contentDescription: String = "",
     selected: Boolean,
     onToggleButton: (Boolean) -> Unit,
@@ -68,7 +68,7 @@ fun SmallCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp)),
-                painter = background,
+                painter = image,
                 contentDescription = title,
                 contentScale = ContentScale.Crop
             )
@@ -106,7 +106,7 @@ fun SmallCard(
 fun SmallCardPreview() {
     Row {
         SmallCard(
-            background = painterResource(id = R.drawable.ic_launcher_background),
+            image = painterResource(id = R.drawable.ic_launcher_background),
             selected = true,
             onToggleButton = { true },
             title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
@@ -116,7 +116,7 @@ fun SmallCardPreview() {
         Spacer(modifier = Modifier.width( 8.dp))
 
         SmallCard(
-            background = painterResource(id = R.drawable.ic_launcher_background),
+            image = painterResource(id = R.drawable.ic_launcher_background),
             selected = false,
             onToggleButton = { true },
             title = "Saveiro Pega no Breu Audi A4 Sedan 2019",

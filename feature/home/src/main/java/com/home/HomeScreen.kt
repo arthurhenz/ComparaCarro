@@ -1,6 +1,7 @@
 package com.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,12 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
@@ -44,6 +46,8 @@ fun HomeScreen(
     onCardClick: (String) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val isSearchFocused by viewModel.isSearchFocused.collectAsState()
 
     when (val currentState = state) {
         is HomeScreenState.Loading -> {
@@ -72,6 +76,10 @@ fun HomeScreen(
             HomeContent(
                 largeCards = currentState.largeCards,
                 smallCards = currentState.smallCards,
+                searchQuery = searchQuery,
+                onSearchQueryChange = viewModel::updateSearchQuery,
+                onSearchFocusChanged = viewModel::updateSearchFocus,
+                isSearchFocused = isSearchFocused,
                 onCardClick = onCardClick
             )
         }
@@ -82,40 +90,62 @@ fun HomeScreen(
 private fun HomeContent(
     largeCards: List<LargeCardData>,
     smallCards: List<SmallCardData>,
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {},
+    onSearchFocusChanged: (Boolean) -> Unit = {},
+    isSearchFocused: Boolean = false,
     onCardClick: (String) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .windowInsetsPadding(WindowInsets.navigationBars)
+    ) {
         Header(
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.statusBars),
-            onMenuClick = {}
+            onMenuClick = {},
+            searchQuery = searchQuery,
+            onSearchQueryChange = onSearchQueryChange,
+            onSearchFocusChanged = onSearchFocusChanged,
+            isSearchFocused = isSearchFocused
         )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(top = 56.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    if (isSearchFocused) {
+                        focusManager.clearFocus()
+                    }
+                },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LargeCardCarousel(modifier = Modifier.padding(bottom = 24.dp)) {
-                largeCards.forEach { cardData ->
-                    item {
-                        LargeCard(
-                            modifier = Modifier.clickable { onCardClick(cardData.id) },
-                            background = painterResource(id = cardData.backgroundRes),
-                            title = cardData.title
-                        )
+            if (searchQuery.isEmpty()) {
+                LargeCardCarousel(modifier = Modifier.padding(bottom = 24.dp)) {
+                    largeCards.forEach { cardData ->
+                        item {
+                            LargeCard(
+                                modifier = Modifier.clickable { onCardClick(cardData.id) },
+                                background = painterResource(id = cardData.backgroundRes),
+                                title = cardData.title
+                            )
+                        }
                     }
                 }
+
+                PrimaryButton(
+                    text = "Comparar",
+                    onClick = {},
+                )
             }
-
-            PrimaryButton(
-                text = "Comparar",
-                onClick = {},
-            )
-
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +179,7 @@ private fun HomeContent(
                             modifier = Modifier
                                 .weight(1f)
                                 .clickable { onCardClick(cardData.id) },
-                            background = painterResource(id = cardData.backgroundRes),
+                            image = painterResource(id = cardData.backgroundRes),
                             selected = cardData.selected,
                             onToggleButton = {},
                             title = cardData.title,
@@ -207,6 +237,10 @@ fun HomeScreenPreview() {
                     selected = true
                 )
             ),
+            searchQuery = "",
+            onSearchQueryChange = {},
+            onSearchFocusChanged = {},
+            isSearchFocused = false,
             onCardClick = {}
         )
     }

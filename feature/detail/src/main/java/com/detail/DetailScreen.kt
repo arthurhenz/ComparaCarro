@@ -1,15 +1,21 @@
 package com.detail
 
+import android.R.attr.contentDescription
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,12 +28,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.data.R
 import com.data.model.CarDetailData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
+import com.ui.CarDetailOptionalsList
+import com.ui.OptionalItem
+import com.ui.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -44,14 +57,20 @@ fun DetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(text = "Detalhes")
-                },
+                title = {},
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /* No function */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = "Compartilhar"
                         )
                     }
                 },
@@ -102,24 +121,45 @@ private fun CardDetailContent(
     car: CarDetailData
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp)
         ) {
-            Text(text = car.title, style = TokenDefaultTypography.headlineLarge)
-            Text(text = car.price, style = TokenDefaultTypography.titleLarge, color = TokenColors.HeartSelected)
-            Text(text = "Categoria: " + car.category, style = TokenDefaultTypography.bodyLarge)
-            Text(text = "Visualizações: " + car.views, style = TokenDefaultTypography.bodyLarge)
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 360.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "",
+                contentScale = ContentScale.Crop
+            )
+
+            Text(text = car.title, style = TokenDefaultTypography.headlineMedium, modifier = Modifier.padding(top = 24.dp))
+            Text(text = car.price, style = TokenDefaultTypography.titleMedium, color = TokenColors.Subtitle, modifier = Modifier.padding(top = 2.dp))
             if (car.optionals.isNotEmpty()) {
-                Text(text = "Opcionais:", style = TokenDefaultTypography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-                Text(text = car.optionals.joinToString(), style = TokenDefaultTypography.bodyMedium)
+                CarDetailOptionalsList(
+                    optionals = car.optionals.map { optional ->
+                        OptionalItem(
+                            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+                            title = optional
+                        )
+                    },
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
             }
         }
+
+        PrimaryButton(
+            text = "Comparar",
+            onClick = {},
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+        )
     }
 }
 

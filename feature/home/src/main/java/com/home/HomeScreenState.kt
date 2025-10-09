@@ -8,6 +8,7 @@ sealed class HomeScreenState {
     data class Error(val error: String?) : HomeScreenState()
     data class Success(
         val largeCards: List<LargeCardData>,
-        val smallCards: List<SmallCardData>
+        val smallCards: List<SmallCardData>,
+        val allSmallCards: List<SmallCardData>
     ) : HomeScreenState()
 }

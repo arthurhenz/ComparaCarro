@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":feature:detail"))
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
+    implementation(project(":network"))
     implementation(platform(libs.koin.bom))
     implementation (libs.koin.android)
     implementation (libs.koin.compose.viewmodel)
