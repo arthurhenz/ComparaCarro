@@ -1,4 +1,5 @@
-package com.detail
+package com.comparison
+
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -12,43 +13,42 @@ import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
-class DetailViewModel(
+class ComparisonViewModel(
     private val getCarByIdUseCase: GetCarByIdUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
 
-
-    private val _state = MutableStateFlow<DetailScreenState>(DetailScreenState.Loading)
-    val state: StateFlow<DetailScreenState> = _state.asStateFlow()
+    private val _state = MutableStateFlow<ComparisonScreenState>(ComparisonScreenState.Loading)
+    val state: StateFlow<ComparisonScreenState> = _state.asStateFlow()
 
     init {
-        loadCardDetails()
+        loadCardComparisons()
     }
 
-    private fun loadCardDetails() = viewModelScope.launch {
+    private fun loadCardComparisons() = viewModelScope.launch {
         try {
-            Log.d("DetailViewModel", "Received cardId='$cardId'")
+            Log.d("ComparisonViewModel", "Received cardId='$cardId'")
             val id = cardId.toIntOrNull()
                 ?: throw IllegalArgumentException("Invalid id: $cardId")
             val car = getCarByIdUseCase(id)
-            _state.value = DetailScreenState.Success(car = car)
+            _state.value = ComparisonScreenState.Success(car = car)
         } catch (e: Exception) {
-            _state.value = DetailScreenState.Error(e.message ?: "Failed to load card details")
+            _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
         }
     }
 
-    fun onEvent(event: DetailScreenEvent) {
+    fun onEvent(event: ComparisonScreenEvent) {
         when (event) {
-            DetailScreenEvent.ReloadCard -> {
-                loadCardDetails()
+            ComparisonScreenEvent.ReloadCard -> {
+                loadCardComparisons()
             }
-            is DetailScreenEvent.ToggleFavorite -> {
+            is ComparisonScreenEvent.ToggleFavorite -> {
                 // Handle favorite toggle logic here
                 // This would typically call a use case to update favorite status
             }
-            is DetailScreenEvent.LoadRelatedCards -> {
+            is ComparisonScreenEvent.LoadRelatedCards -> {
                 // Handle loading related cards
-                loadCardDetails()
+                loadCardComparisons()
             }
         }
     }

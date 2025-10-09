@@ -89,7 +89,11 @@ fun HomeContent(
             ) {
                 if (searchQuery.isEmpty()) {
                     if (recentlyViewedCards.isNotEmpty()) {
-                        LargeCardCarousel(modifier = Modifier.padding(bottom = 24.dp)) {
+                        LargeCardCarousel(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 24.dp)
+                        ) {
                             recentlyViewedCards.forEach { cardData ->
                                 item {
                                     LargeCard(

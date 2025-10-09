@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -17,8 +18,8 @@ fun LargeCardCarousel(
 ) {
     LazyRow(
         modifier = modifier,
-        contentPadding = PaddingValues(itemSpacingDp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(start = itemSpacingDp, end = itemSpacingDp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
     ) {
         content()
     }

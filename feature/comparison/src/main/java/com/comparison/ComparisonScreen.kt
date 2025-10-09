@@ -1,4 +1,4 @@
-package com.detail
+package com.comparison
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -44,11 +44,11 @@ import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(
+fun ComparisonScreen(
     cardId: String,
     onBackClick: () -> Unit = {},
     onRelatedCardClick: (String) -> Unit = {},
-    viewModel: DetailViewModel = koinViewModel { parametersOf(cardId) }
+    viewModel: ComparisonViewModel = koinViewModel { parametersOf(cardId) }
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -77,7 +77,7 @@ fun DetailScreen(
         }
     ) { paddingValues ->
         when (val currentState = state) {
-            is DetailScreenState.Loading -> {
+            is ComparisonScreenState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -88,7 +88,7 @@ fun DetailScreen(
                 }
             }
 
-            is DetailScreenState.Error -> {
+            is ComparisonScreenState.Error -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -103,7 +103,7 @@ fun DetailScreen(
                 }
             }
 
-            is DetailScreenState.Success -> {
+            is ComparisonScreenState.Success -> {
                 CardDetailContent(
                     modifier = Modifier.padding(paddingValues),
                     car = currentState.car
