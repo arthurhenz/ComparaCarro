@@ -2,7 +2,6 @@ package com.data.usecase
 
 import com.data.model.SmallCardData
 import com.data.repository.CardRepository
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Single
 
 @Single

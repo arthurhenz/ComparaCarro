@@ -66,10 +66,8 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(platform(libs.koin.bom))
-    implementation (libs.koin.android)
-    implementation (libs.koin.compose.viewmodel)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
-
-
 }

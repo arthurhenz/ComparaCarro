@@ -4,16 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,20 +23,20 @@ import com.theme.TokenDefaultTypography
 fun CarDetailOptional(
     modifier: Modifier = Modifier,
     icon: Painter,
-    title: String,
+    title: String
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Image(
-            modifier = Modifier
-                .size(20.dp),
+            modifier =
+                Modifier
+                    .size(20.dp),
             painter = icon,
             contentDescription = title,
-            contentScale = ContentScale.Crop,
-
-            )
+            contentScale = ContentScale.Crop
+        )
 
         Text(
             text = title,
@@ -88,23 +85,24 @@ fun CarDetailOptionalPreview() {
 @Composable
 fun CarDetailOptionalsListPreview() {
     CarDetailOptionalsList(
-        optionals = listOf(
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-                title = "Banco de Couro"
-            ),
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_camera),
-                title = "Câmera de Ré"
-            ),
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_compass),
-                title = "GPS"
-            ),
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_gallery),
-                title = "Teto Solar"
+        optionals =
+            listOf(
+                OptionalItem(
+                    icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+                    title = "Banco de Couro"
+                ),
+                OptionalItem(
+                    icon = painterResource(id = android.R.drawable.ic_menu_camera),
+                    title = "Câmera de Ré"
+                ),
+                OptionalItem(
+                    icon = painterResource(id = android.R.drawable.ic_menu_compass),
+                    title = "GPS"
+                ),
+                OptionalItem(
+                    icon = painterResource(id = android.R.drawable.ic_menu_gallery),
+                    title = "Teto Solar"
+                )
             )
-        )
     )
 }

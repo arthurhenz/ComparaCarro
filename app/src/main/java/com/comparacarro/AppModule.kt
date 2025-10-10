@@ -1,10 +1,10 @@
 package com.comparacarro
 
 import com.comparison.ComparisonModule
-import com.selectCompare.SelectComparisonModule
 import com.data.di.DataModule
 import com.detail.DetailModule
 import com.home.HomeModule
+import com.selectCompare.SelectComparisonModule
 import comparacarro.network.di.NetworkModule
 import org.koin.core.annotation.KoinApplication
 import org.koin.core.annotation.Module

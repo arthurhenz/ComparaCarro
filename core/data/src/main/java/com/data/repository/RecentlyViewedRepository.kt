@@ -24,14 +24,14 @@ class RecentlyViewedRepository(
         context.dataStore.edit { preferences ->
             val currentList = preferences[RECENTLY_VIEWED_KEY]?.split(",")?.filter { it.isNotEmpty() } ?: emptyList()
             val newList = mutableListOf(carId)
-            
+
             // Add existing items, excluding the current carId to avoid duplicates
             currentList.filter { it != carId }.forEach { existingId ->
                 if (newList.size < MAX_RECENT_ITEMS) {
                     newList.add(existingId)
                 }
             }
-            
+
             preferences[RECENTLY_VIEWED_KEY] = newList.joinToString(",")
         }
     }
@@ -45,6 +45,4 @@ class RecentlyViewedRepository(
     suspend fun getRecentlyViewedCarIdsSync(): List<String> {
         return getRecentlyViewedCarIds().first()
     }
-
 }
-

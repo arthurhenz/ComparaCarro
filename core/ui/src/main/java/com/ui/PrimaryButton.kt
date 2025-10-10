@@ -32,15 +32,17 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Primary,
-            disabledContainerColor = TokenColors.Subtitle.copy(alpha = 0.3f),
-            disabledContentColor = TokenColors.White
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(54.dp)
-            .padding(horizontal = 24.dp),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = Primary,
+                disabledContainerColor = TokenColors.Subtitle.copy(alpha = 0.3f),
+                disabledContentColor = TokenColors.White
+            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(54.dp)
+                .padding(horizontal = 24.dp),
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(

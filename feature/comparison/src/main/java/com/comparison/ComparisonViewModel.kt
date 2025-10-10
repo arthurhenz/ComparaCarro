@@ -16,7 +16,6 @@ class ComparisonViewModel(
     private val getCarByIdUseCase: GetCarByIdUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
-
     private val _state = MutableStateFlow<ComparisonScreenState>(ComparisonScreenState.Loading)
     val state: StateFlow<ComparisonScreenState> = _state.asStateFlow()
 
@@ -24,17 +23,19 @@ class ComparisonViewModel(
         loadCardComparisons()
     }
 
-    private fun loadCardComparisons() = viewModelScope.launch {
-        try {
-            Log.d("ComparisonViewModel", "Received cardId='$cardId'")
-            val id = cardId.toIntOrNull()
-                ?: throw IllegalArgumentException("Invalid id: $cardId")
-            val car = getCarByIdUseCase(id)
-            _state.value = ComparisonScreenState.Success(car = car)
-        } catch (e: Exception) {
-            _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
+    private fun loadCardComparisons() =
+        viewModelScope.launch {
+            try {
+                Log.d("ComparisonViewModel", "Received cardId='$cardId'")
+                val id =
+                    cardId.toIntOrNull()
+                        ?: throw IllegalArgumentException("Invalid id: $cardId")
+                val car = getCarByIdUseCase(id)
+                _state.value = ComparisonScreenState.Success(car = car)
+            } catch (e: Exception) {
+                _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
+            }
         }
-    }
 
     fun onEvent(event: ComparisonScreenEvent) {
         when (event) {

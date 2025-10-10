@@ -11,4 +11,3 @@ class SaveRecentlyViewedCarUseCase(
         recentlyViewedRepository.addRecentlyViewedCarId(carId)
     }
 }
-

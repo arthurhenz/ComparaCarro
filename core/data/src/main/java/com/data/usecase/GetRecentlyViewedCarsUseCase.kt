@@ -12,7 +12,7 @@ class GetRecentlyViewedCarsUseCase(
 ) {
     suspend operator fun invoke(): List<LargeCardData> {
         val recentlyViewedIds = recentlyViewedRepository.getRecentlyViewedCarIdsSync()
-        
+
         return recentlyViewedIds.mapNotNull { carId ->
             try {
                 val carDetail = cardRepository.getCarById(carId.toInt())
@@ -27,4 +27,3 @@ class GetRecentlyViewedCarsUseCase(
         }
     }
 }
-

@@ -6,10 +6,9 @@
 
 package com.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.ui.Alignment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
@@ -49,57 +49,64 @@ fun SmallCard(
     fipe: String
 ) {
     Card(
-        modifier = modifier
-            .height(CARD_HEIGHT.dp)
-            .width(CARD_WIDTH.dp)
-            .clearAndSetSemantics { this.contentDescription = contentDescription },
-        colors = CardDefaults.cardColors(
-            containerColor = TokenColors.White
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp
-        ),
+        modifier =
+            modifier
+                .height(CARD_HEIGHT.dp)
+                .width(CARD_WIDTH.dp)
+                .clearAndSetSemantics { this.contentDescription = contentDescription },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = TokenColors.White
+            ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            ),
         shape = RoundedCornerShape(0.dp)
     ) {
         Column(
             modifier = Modifier.padding(top = 6.dp)
         ) {
-        Box(modifier = Modifier.padding(bottom = 6.dp)) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
-                painter = image,
-                contentDescription = title,
-                contentScale = ContentScale.Crop
-            )
-            if (showFavoriteToggle) {
-                FavoriteButton(
-                    selected = selected,
-                    onToggle = onToggleButton,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
+            Box(modifier = Modifier.padding(bottom = 6.dp)) {
+                Image(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp)),
+                    painter = image,
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop
                 )
+                if (showFavoriteToggle) {
+                    FavoriteButton(
+                        selected = selected,
+                        onToggle = onToggleButton,
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopEnd)
+                    )
+                }
             }
-        }
 
-        Text(
-            text = title,
-            color = TokenColors.Title,
-            style = TokenDefaultTypography.titleSmall,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+            Text(
+                text = title,
+                color = TokenColors.Title,
+                style = TokenDefaultTypography.titleSmall,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+            )
 
-        Text(
-            text = fipe,
-            color = TokenColors.Subtitle,
-            style = TokenDefaultTypography.labelMedium,
-            modifier = Modifier
-                .fillMaxWidth(),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+            Text(
+                text = fipe,
+                color = TokenColors.Subtitle,
+                style = TokenDefaultTypography.labelMedium,
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -116,7 +123,7 @@ fun SmallCardPreview() {
             fipe = "R$30.000,00"
         )
 
-        Spacer(modifier = Modifier.width( 8.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),

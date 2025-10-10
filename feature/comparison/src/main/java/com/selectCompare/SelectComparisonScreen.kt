@@ -1,6 +1,5 @@
 package com.selectCompare
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,9 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -36,13 +33,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.data.R
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
@@ -90,9 +84,10 @@ fun SelectComparisonScreen(
         when (val currentState = state) {
             is SelectComparisonScreenState.Loading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -101,9 +96,10 @@ fun SelectComparisonScreen(
 
             is SelectComparisonScreenState.Error -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -142,9 +138,10 @@ private fun SelectComparisonContent(
     val isCompareEnabled = selectedIds.size == 2
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
     ) {
         // Reuse only the search field from Header: create an inline text field copy
         com.ui.Header(
@@ -161,16 +158,18 @@ private fun SelectComparisonContent(
         val totalHeight = (cardHeight * numberOfRows) + (verticalSpacing * (numberOfRows - 1))
 
         SmallCardList(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .height(totalHeight)
+            modifier =
+                Modifier
+                    .padding(horizontal = 24.dp)
+                    .height(totalHeight)
         ) {
             items(state.smallCards) { cardData ->
                 val borderColor = if (cardData.selected) TokenColors.Primary else Color.Transparent
                 Box(
-                    modifier = Modifier
-                        .border(width = 2.dp, color = borderColor, shape = RoundedCornerShape(8.dp))
-                        .clickable { onToggleSelect(cardData.id) }
+                    modifier =
+                        Modifier
+                            .border(width = 2.dp, color = borderColor, shape = RoundedCornerShape(8.dp))
+                            .clickable { onToggleSelect(cardData.id) }
                 ) {
                     SmallCard(
                         image = painterResource(id = cardData.backgroundRes),
@@ -220,19 +219,21 @@ private fun SelectComparisonContent(
 @Composable
 fun DetailScreenPreview() {
     ComparaCarrosTheme {
-        val previewCards = listOf(
-            SmallCardData(id = "1", title = "Honda Civic", fipe = "R$ 45.000,00", selected = true),
-            SmallCardData(id = "2", title = "Toyota Corolla", fipe = "R$ 50.000,00", selected = true),
-            SmallCardData(id = "3", title = "Fiat Argo", fipe = "R$ 35.000,00"),
-        )
+        val previewCards =
+            listOf(
+                SmallCardData(id = "1", title = "Honda Civic", fipe = "R$ 45.000,00", selected = true),
+                SmallCardData(id = "2", title = "Toyota Corolla", fipe = "R$ 50.000,00", selected = true),
+                SmallCardData(id = "3", title = "Fiat Argo", fipe = "R$ 35.000,00")
+            )
         SelectComparisonContent(
-            state = SelectComparisonScreenState.Success(
-                firstSelectedId = "1",
-                smallCards = previewCards,
-                allSmallCards = previewCards,
-                searchQuery = "",
-                isSearchFocused = false
-            ),
+            state =
+                SelectComparisonScreenState.Success(
+                    firstSelectedId = "1",
+                    smallCards = previewCards,
+                    allSmallCards = previewCards,
+                    searchQuery = "",
+                    isSearchFocused = false
+                ),
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
             onToggleSelect = {},

@@ -33,11 +33,12 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.refreshRecentlyViewed()
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    viewModel.refreshRecentlyViewed()
+                }
             }
-        }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
@@ -87,48 +88,49 @@ fun HomeScreen(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     ComparaCarrosTheme {
         HomeContent(
-            smallCards = listOf(
-                SmallCardData(
-                    id = "preview_small_1",
-                    title = "Volkswagen Saveiro 2017",
-                    fipe = "R$ 55.900",
-                    selected = true
+            smallCards =
+                listOf(
+                    SmallCardData(
+                        id = "preview_small_1",
+                        title = "Volkswagen Saveiro 2017",
+                        fipe = "R$ 55.900",
+                        selected = true
+                    ),
+                    SmallCardData(
+                        id = "preview_small_2",
+                        title = "Audi A4 Quattro Sedan 2019",
+                        fipe = "R$ 142.000",
+                        selected = false
+                    ),
+                    SmallCardData(
+                        id = "preview_small_3",
+                        title = "Honda Civic Si LX LXS 2020",
+                        fipe = "R$ 115.500",
+                        selected = false
+                    ),
+                    SmallCardData(
+                        id = "preview_small_4",
+                        title = "Toyota Corolla Xei Guerra Corolla Siria 2021",
+                        fipe = "R$ 128.000",
+                        selected = true
+                    )
                 ),
-                SmallCardData(
-                    id = "preview_small_2",
-                    title = "Audi A4 Quattro Sedan 2019",
-                    fipe = "R$ 142.000",
-                    selected = false
+            recentlyViewedCards =
+                listOf(
+                    LargeCardData(
+                        id = "preview_recent_1",
+                        title = "Honda Civic 2020"
+                    ),
+                    LargeCardData(
+                        id = "preview_recent_2",
+                        title = "Toyota Corolla 2021"
+                    )
                 ),
-                SmallCardData(
-                    id = "preview_small_3",
-                    title = "Honda Civic Si LX LXS 2020",
-                    fipe = "R$ 115.500",
-                    selected = false
-                ),
-                SmallCardData(
-                    id = "preview_small_4",
-                    title = "Toyota Corolla Xei Guerra Corolla Siria 2021",
-                    fipe = "R$ 128.000",
-                    selected = true
-                )
-            ),
-            recentlyViewedCards = listOf(
-                LargeCardData(
-                    id = "preview_recent_1",
-                    title = "Honda Civic 2020"
-                ),
-                LargeCardData(
-                    id = "preview_recent_2",
-                    title = "Toyota Corolla 2021"
-                )
-            ),
             searchQuery = "",
             onSearchQueryChange = {},
             onSearchFocusChanged = {},

@@ -52,13 +52,12 @@ fun LargeCard(
     title: String
 ) {
     Card(
-        modifier = modifier
-            .height(CARD_HEIGHT.dp)
-            .width(CARD_WIDTH.dp)
-
-            // drawWithContent
-
-            .clearAndSetSemantics { this.contentDescription = contentDescription },
+        modifier =
+            modifier
+                .height(CARD_HEIGHT.dp)
+                .width(CARD_WIDTH.dp)
+                // drawWithContent
+                .clearAndSetSemantics { this.contentDescription = contentDescription },
         shape = RoundedCornerShape(0.dp),
         colors = CardDefaults.cardColors(containerColor = TokenColors.Transparent)
     ) {
@@ -67,14 +66,16 @@ fun LargeCard(
             contentAlignment = Alignment.Center
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, top = 16.dp)
-                    .clip(RoundedCornerShape(10.dp))
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, top = 16.dp)
+                        .clip(RoundedCornerShape(10.dp))
             ) {
                 Image(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                     painter = background,
                     contentDescription = title,
                     contentScale = ContentScale.Crop
@@ -83,10 +84,11 @@ fun LargeCard(
                     text = title,
                     color = TokenColors.White,
                     style = TokenDefaultTypography.titleSmall,
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .fillMaxWidth()
-                        .padding(start = 12.dp, end = 12.dp, bottom = 4.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .padding(start = 12.dp, end = 12.dp, bottom = 4.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -95,23 +97,26 @@ fun LargeCard(
             DiagonalLine()
 
             RectangleTriangle(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp)
             )
             RectangleTriangle(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp)
             )
             Text(
                 text = "Recente",
                 color = TokenColors.White,
                 style = TokenDefaultTypography.titleLarge,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = 34.dp, start = 6.dp)
-                    .rotate(-DIAGONAL_ANGLE_DEGREES)
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 34.dp, start = 6.dp)
+                        .rotate(-DIAGONAL_ANGLE_DEGREES)
             )
         }
     }
@@ -124,12 +129,13 @@ fun RectangleTriangle(modifier: Modifier = Modifier) {
     ) {
         val verticalOffset = size.width
 
-        val path = Path().apply {
-            moveTo(0f, size.height)
-            lineTo(size.width, size.height)
-            lineTo(size.width, size.height - verticalOffset)
-            close()
-        }
+        val path =
+            Path().apply {
+                moveTo(0f, size.height)
+                lineTo(size.width, size.height)
+                lineTo(size.width, size.height - verticalOffset)
+                close()
+            }
 
         drawPath(
             path = path,
@@ -144,9 +150,10 @@ private fun DiagonalLine(
     strokeWidth: Dp = 40.dp
 ) {
     Canvas(
-        modifier = modifier
-            .fillMaxSize()
-            .clip(ShapeDefaults.Small)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .clip(ShapeDefaults.Small)
     ) {
         val slope = -1f
 

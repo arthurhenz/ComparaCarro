@@ -24,9 +24,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(
-    startDestination: String = Screen.Home.route
-) {
+fun App(startDestination: String = Screen.Home.route) {
     ComparaCarrosTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),

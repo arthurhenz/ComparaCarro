@@ -2,12 +2,9 @@ package com.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,20 +49,22 @@ fun Header(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier =
+            modifier
+                .fillMaxWidth()
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(
-                    indication = null,
-                    interactionSource = interactionSource
-                ) {
-                    if (isSearchFocused) {
-                        focusManager.clearFocus()
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        indication = null,
+                        interactionSource = interactionSource
+                    ) {
+                        if (isSearchFocused) {
+                            focusManager.clearFocus()
+                        }
                     }
-                }
         ) {
             IconButton(
                 onClick = {
@@ -98,13 +97,14 @@ fun Header(
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                .focusRequester(focusRequester)
-                .onFocusChanged { focusState ->
-                    onSearchFocusChanged(focusState.isFocused)
-                },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        onSearchFocusChanged(focusState.isFocused)
+                    },
             placeholder = {
                 Text(
                     text = "Buscar por modelo...",
@@ -136,12 +136,13 @@ fun Header(
                 }
             },
             shape = RoundedCornerShape(8.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = TokenColors.White,
-                unfocusedContainerColor = TokenColors.White,
-                focusedIndicatorColor = TokenColors.Primary,
-                unfocusedIndicatorColor = TokenColors.Subtitle.copy(alpha = 0.3f)
-            ),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = TokenColors.White,
+                    unfocusedContainerColor = TokenColors.White,
+                    focusedIndicatorColor = TokenColors.Primary,
+                    unfocusedIndicatorColor = TokenColors.Subtitle.copy(alpha = 0.3f)
+                ),
             singleLine = true
         )
     }

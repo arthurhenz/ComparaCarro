@@ -6,7 +6,6 @@
 
 package com.ui
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.theme.TokenColors
 import com.theme.TokenIconSize
@@ -33,21 +33,23 @@ fun FavoriteButton(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier
-            .size(40.dp)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = { onToggle(!selected) }
-            )
-            .clip(CircleShape),
+        modifier =
+            modifier
+                .size(40.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { onToggle(!selected) }
+                )
+                .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(28.dp)
-                .background(TokenColors.HeartButtonBackground, shape = CircleShape)
+            modifier =
+                Modifier
+                    .size(28.dp)
+                    .background(TokenColors.HeartButtonBackground, shape = CircleShape)
         ) {
             if (selected) {
                 Icon(

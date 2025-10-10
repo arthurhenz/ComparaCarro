@@ -24,5 +24,3 @@ fun LargeCardCarousel(
         content()
     }
 }
-
-

@@ -1,6 +1,5 @@
 package com.selectCompare
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.data.usecase.GetSmallCardsUseCase
@@ -16,7 +15,6 @@ class SelectComparisonViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
-
     private val _state = MutableStateFlow<SelectComparisonScreenState>(SelectComparisonScreenState.Loading)
     val state: StateFlow<SelectComparisonScreenState> = _state.asStateFlow()
 
@@ -24,24 +22,27 @@ class SelectComparisonViewModel(
         loadCards()
     }
 
-    private fun loadCards() = viewModelScope.launch {
-        try {
-            val allSmallCards = getSmallCardsUseCase()
-            val initialSelected = cardId.takeIf { it.isNotBlank() }
-            val marked = allSmallCards.map { card ->
-                if (card.id == initialSelected) card.copy(selected = true) else card
+    private fun loadCards() =
+        viewModelScope.launch {
+            try {
+                val allSmallCards = getSmallCardsUseCase()
+                val initialSelected = cardId.takeIf { it.isNotBlank() }
+                val marked =
+                    allSmallCards.map { card ->
+                        if (card.id == initialSelected) card.copy(selected = true) else card
+                    }
+                _state.value =
+                    SelectComparisonScreenState.Success(
+                        firstSelectedId = initialSelected,
+                        smallCards = marked,
+                        allSmallCards = marked,
+                        searchQuery = "",
+                        isSearchFocused = false
+                    )
+            } catch (e: Exception) {
+                _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
             }
-            _state.value = SelectComparisonScreenState.Success(
-                firstSelectedId = initialSelected,
-                smallCards = marked,
-                allSmallCards = marked,
-                searchQuery = "",
-                isSearchFocused = false
-            )
-        } catch (e: Exception) {
-            _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
         }
-    }
 
     fun onEvent(event: SelectComparisonScreenEvent) {
         when (event) {
@@ -62,13 +63,19 @@ class SelectComparisonViewModel(
     fun updateSearchQuery(query: String) {
         val current = _state.value
         if (current is SelectComparisonScreenState.Success) {
-            val filtered = if (query.isBlank()) current.allSmallCards else current.allSmallCards.filter {
-                it.title.contains(query.trim(), ignoreCase = true)
-            }
-            _state.value = current.copy(
-                smallCards = filtered,
-                searchQuery = query
-            )
+            val filtered =
+                if (query.isBlank()) {
+                    current.allSmallCards
+                } else {
+                    current.allSmallCards.filter {
+                        it.title.contains(query.trim(), ignoreCase = true)
+                    }
+                }
+            _state.value =
+                current.copy(
+                    smallCards = filtered,
+                    searchQuery = query
+                )
         }
     }
 
@@ -94,10 +101,11 @@ class SelectComparisonViewModel(
             val updatedAll = current.allSmallCards.map { it.copy(selected = currentSelectedIds.contains(it.id)) }
             val updatedFiltered = current.smallCards.map { it.copy(selected = currentSelectedIds.contains(it.id)) }
 
-            _state.value = current.copy(
-                allSmallCards = updatedAll,
-                smallCards = updatedFiltered
-            )
+            _state.value =
+                current.copy(
+                    allSmallCards = updatedAll,
+                    smallCards = updatedFiltered
+                )
         }
     }
 }

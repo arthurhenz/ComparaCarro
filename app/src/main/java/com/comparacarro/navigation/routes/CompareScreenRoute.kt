@@ -5,9 +5,7 @@ import androidx.navigation.compose.composable
 import com.comparacarro.navigation.Screen
 import com.comparison.ComparisonScreen
 
-fun NavGraphBuilder.compareScreenRoute(
-    goBack: () -> Unit
-) {
+fun NavGraphBuilder.compareScreenRoute(goBack: () -> Unit) {
     composable(
         route = Screen.Compare.route,
         arguments = Screen.Compare.arguments

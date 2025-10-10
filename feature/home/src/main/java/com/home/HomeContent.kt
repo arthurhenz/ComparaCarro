@@ -60,10 +60,11 @@ fun HomeContent(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.navigationBars)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
         Header(
             onMenuClick = {},
@@ -75,25 +76,27 @@ fun HomeContent(
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .clickable(
-                        indication = null,
-                        interactionSource = interactionSource
-                    ) {
-                        if (isSearchFocused) {
-                            focusManager.clearFocus()
-                        }
-                    },
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .clickable(
+                            indication = null,
+                            interactionSource = interactionSource
+                        ) {
+                            if (isSearchFocused) {
+                                focusManager.clearFocus()
+                            }
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (searchQuery.isEmpty()) {
                     if (recentlyViewedCards.isNotEmpty()) {
                         LargeCardCarousel(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 24.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 24.dp)
                         ) {
                             recentlyViewedCards.forEach { cardData ->
                                 item {
@@ -109,26 +112,29 @@ fun HomeContent(
                         PrimaryButton(
                             text = "Comparar",
                             onClick = onCompareClick,
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 8.dp)
                         )
                     }
 
                     var dropdownExpanded by remember { mutableStateOf(false) }
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 24.dp, horizontal = 24.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp, horizontal = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = when (sortType) {
-                                SortType.MOST_POPULAR -> "Mais populares"
-                                SortType.ALPHABETIC -> "Alfabética"
-                            },
-                            style = MaterialTheme.typography.titleLarge,
+                            text =
+                                when (sortType) {
+                                    SortType.MOST_POPULAR -> "Mais populares"
+                                    SortType.ALPHABETIC -> "Alfabética"
+                                },
+                            style = MaterialTheme.typography.titleLarge
                         )
                         Box {
                             Text(
@@ -167,9 +173,10 @@ fun HomeContent(
                 val totalHeight = (cardHeight * numberOfRows) + (verticalSpacing * (numberOfRows - 1))
 
                 SmallCardList(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .height(totalHeight)
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 24.dp)
+                            .height(totalHeight)
                 ) {
                     items(smallCards) { cardData ->
                         SmallCard(

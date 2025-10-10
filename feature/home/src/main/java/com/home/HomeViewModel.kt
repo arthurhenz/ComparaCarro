@@ -3,8 +3,8 @@ package com.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.data.model.SmallCardData
-import com.data.usecase.GetSmallCardsUseCase
 import com.data.usecase.GetRecentlyViewedCarsUseCase
+import com.data.usecase.GetSmallCardsUseCase
 import com.data.usecase.SaveRecentlyViewedCarUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,12 +18,11 @@ enum class SortType {
 }
 
 @KoinViewModel
-class HomeViewModel (
+class HomeViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
     private val getRecentlyViewedCarsUseCase: GetRecentlyViewedCarsUseCase,
     private val saveRecentlyViewedCarUseCase: SaveRecentlyViewedCarUseCase
-): ViewModel() {
-
+) : ViewModel() {
     private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
 
@@ -58,13 +57,14 @@ class HomeViewModel (
         val currentState = _state.value
         if (currentState is HomeScreenState.Success) {
             val query = _searchQuery.value.trim()
-            val filteredSmallCards = if (query.isEmpty()) {
-                currentState.allSmallCards
-            } else {
-                currentState.allSmallCards.filter { card ->
-                    card.title.contains(query, ignoreCase = true)
+            val filteredSmallCards =
+                if (query.isEmpty()) {
+                    currentState.allSmallCards
+                } else {
+                    currentState.allSmallCards.filter { card ->
+                        card.title.contains(query, ignoreCase = true)
+                    }
                 }
-            }
             val sortedCards = applySorting(filteredSmallCards)
             _state.value = currentState.copy(smallCards = sortedCards)
         }
@@ -77,47 +77,51 @@ class HomeViewModel (
         }
     }
 
-    private fun loadCards() = viewModelScope.launch {
-        try {
-            android.util.Log.d("HomeViewModel", "Loading cards...")
-            val smallCards = getSmallCardsUseCase()
-            val recentlyViewedCards = getRecentlyViewedCarsUseCase()
-            android.util.Log.d(
-                "HomeViewModel",
-                "Loaded small=" + smallCards.size + " recent=" + recentlyViewedCards.size
-            )
-            _state.value = HomeScreenState.Success(
-                smallCards = smallCards,
-                allSmallCards = smallCards,
-                recentlyViewedCards = recentlyViewedCards
-            )
-        } catch (e: Exception) {
-            android.util.Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)
-            _state.value = HomeScreenState.Error(e.message ?: "Failed to load cards")
-        }
-    }
-
-    fun refreshRecentlyViewed() = viewModelScope.launch {
-        val currentState = _state.value
-        if (currentState is HomeScreenState.Success) {
+    private fun loadCards() =
+        viewModelScope.launch {
             try {
+                android.util.Log.d("HomeViewModel", "Loading cards...")
+                val smallCards = getSmallCardsUseCase()
                 val recentlyViewedCards = getRecentlyViewedCarsUseCase()
-                android.util.Log.d("HomeViewModel", "Refreshed recently viewed: " + recentlyViewedCards.size)
-                _state.value = currentState.copy(recentlyViewedCards = recentlyViewedCards)
+                android.util.Log.d(
+                    "HomeViewModel",
+                    "Loaded small=" + smallCards.size + " recent=" + recentlyViewedCards.size
+                )
+                _state.value =
+                    HomeScreenState.Success(
+                        smallCards = smallCards,
+                        allSmallCards = smallCards,
+                        recentlyViewedCards = recentlyViewedCards
+                    )
             } catch (e: Exception) {
-                android.util.Log.e("HomeViewModel", "Failed to refresh recently viewed: " + (e.message ?: "unknown"), e)
+                android.util.Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)
+                _state.value = HomeScreenState.Error(e.message ?: "Failed to load cards")
             }
         }
-    }
 
-    fun onCardClick(cardId: String) = viewModelScope.launch {
-        try {
-            saveRecentlyViewedCarUseCase(cardId)
-            android.util.Log.d("HomeViewModel", "Saved recently viewed car: $cardId")
-        } catch (e: Exception) {
-            android.util.Log.e("HomeViewModel", "Failed to save recently viewed car: ${e.message}")
+    fun refreshRecentlyViewed() =
+        viewModelScope.launch {
+            val currentState = _state.value
+            if (currentState is HomeScreenState.Success) {
+                try {
+                    val recentlyViewedCards = getRecentlyViewedCarsUseCase()
+                    android.util.Log.d("HomeViewModel", "Refreshed recently viewed: " + recentlyViewedCards.size)
+                    _state.value = currentState.copy(recentlyViewedCards = recentlyViewedCards)
+                } catch (e: Exception) {
+                    android.util.Log.e("HomeViewModel", "Failed to refresh recently viewed: " + (e.message ?: "unknown"), e)
+                }
+            }
         }
-    }
+
+    fun onCardClick(cardId: String) =
+        viewModelScope.launch {
+            try {
+                saveRecentlyViewedCarUseCase(cardId)
+                android.util.Log.d("HomeViewModel", "Saved recently viewed car: $cardId")
+            } catch (e: Exception) {
+                android.util.Log.e("HomeViewModel", "Failed to save recently viewed car: ${e.message}")
+            }
+        }
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {

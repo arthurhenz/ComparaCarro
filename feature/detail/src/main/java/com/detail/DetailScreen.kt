@@ -79,9 +79,10 @@ fun DetailScreen(
         when (val currentState = state) {
             is DetailScreenState.Loading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -90,9 +91,10 @@ fun DetailScreen(
 
             is DetailScreenState.Error -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -124,15 +126,17 @@ private fun CardDetailContent(
         modifier = modifier.fillMaxSize()
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
         ) {
             Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 360.dp)
-                    .clip(RoundedCornerShape(10.dp)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 360.dp)
+                        .clip(RoundedCornerShape(10.dp)),
                 painter = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = "",
                 contentScale = ContentScale.Crop
@@ -142,12 +146,13 @@ private fun CardDetailContent(
             Text(text = car.price, style = TokenDefaultTypography.titleMedium, color = TokenColors.Subtitle, modifier = Modifier.padding(top = 2.dp))
             if (car.optionals.isNotEmpty()) {
                 CarDetailOptionalsList(
-                    optionals = car.optionals.map { optional ->
-                        OptionalItem(
-                            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-                            title = optional
-                        )
-                    },
+                    optionals =
+                        car.optionals.map { optional ->
+                            OptionalItem(
+                                icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+                                title = optional
+                            )
+                        },
                     modifier = Modifier.padding(vertical = 12.dp)
                 )
             }
@@ -156,9 +161,10 @@ private fun CardDetailContent(
         PrimaryButton(
             text = "Comparar",
             onClick = { onCompareClick(car.id) },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp)
         )
     }
 }
@@ -168,14 +174,15 @@ private fun CardDetailContent(
 fun DetailScreenPreview() {
     ComparaCarrosTheme {
         CardDetailContent(
-            car = CarDetailData(
-                id = "1",
-                title = "Honda Civic",
-                price = "R$ 45.000,00",
-                category = "SEDAN",
-                views = 10,
-                optionals = listOf("BANCO_COURO", "TETO_SOLAR"),
-            ),
+            car =
+                CarDetailData(
+                    id = "1",
+                    title = "Honda Civic",
+                    price = "R$ 45.000,00",
+                    category = "SEDAN",
+                    views = 10,
+                    optionals = listOf("BANCO_COURO", "TETO_SOLAR")
+                ),
             modifier = Modifier,
             onCompareClick = {}
         )

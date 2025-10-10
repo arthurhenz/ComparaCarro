@@ -1,8 +1,8 @@
 package com.data.repository
 
+import com.data.model.CarDetailData
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
-import com.data.model.CarDetailData
 import comparacarro.network.api.CarsApi
 import comparacarro.network.result.NetworkResult
 import org.koin.core.annotation.Single
@@ -11,15 +11,15 @@ import org.koin.core.annotation.Single
 class CardRepositoryImpl(
     private val carsApi: CarsApi
 ) : CardRepository {
-
     override suspend fun getLargeCards(): List<LargeCardData> {
         return when (val result = carsApi.getCars()) {
-            is NetworkResult.Success -> result.data.take(2).map { car ->
-                LargeCardData(
-                    id = car.id.toString(),
-                    title = car.title
-                )
-            }
+            is NetworkResult.Success ->
+                result.data.take(2).map { car ->
+                    LargeCardData(
+                        id = car.id.toString(),
+                        title = car.title
+                    )
+                }
             is NetworkResult.Error -> {
                 android.util.Log.e(
                     "CardRepositoryImpl",
@@ -61,12 +61,12 @@ class CardRepositoryImpl(
                     "getSmallCards cars=" + result.data.size
                 )
                 result.data.map { car ->
-                SmallCardData(
-                    id = car.id.toString(),
-                    title = car.title,
-                    fipe = formatPrice(car.fipe),
-                    selected = false
-                )
+                    SmallCardData(
+                        id = car.id.toString(),
+                        title = car.title,
+                        fipe = formatPrice(car.fipe),
+                        selected = false
+                    )
                 }
             }
             is NetworkResult.Error -> {
