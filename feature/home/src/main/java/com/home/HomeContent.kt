@@ -53,7 +53,8 @@ fun HomeContent(
     isSearchFocused: Boolean = false,
     sortType: SortType = SortType.MOST_POPULAR,
     onSortTypeChange: (SortType) -> Unit = {},
-    onCardClick: (String) -> Unit
+    onCardClick: (String) -> Unit,
+    onCompareClick: () -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -107,7 +108,7 @@ fun HomeContent(
 
                         PrimaryButton(
                             text = "Comparar",
-                            onClick = {},
+                            onClick = onCompareClick,
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
                         )
@@ -189,7 +190,7 @@ fun HomeContent(
                 if (searchQuery.isEmpty() && recentlyViewedCards.isEmpty()) {
                     PrimaryButton(
                         text = "Comparar",
-                        onClick = {},
+                        onClick = onCompareClick,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
                 }

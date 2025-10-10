@@ -1,4 +1,5 @@
-package com.comparison
+package com.selectCompare
+
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -12,13 +13,13 @@ import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
-class ComparisonViewModel(
+class SelectComparisonViewModel(
     private val getCarByIdUseCase: GetCarByIdUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<ComparisonScreenState>(ComparisonScreenState.Loading)
-    val state: StateFlow<ComparisonScreenState> = _state.asStateFlow()
+    private val _state = MutableStateFlow<SelectComparisonScreenState>(SelectComparisonScreenState.Loading)
+    val state: StateFlow<SelectComparisonScreenState> = _state.asStateFlow()
 
     init {
         loadCardComparisons()
@@ -30,22 +31,22 @@ class ComparisonViewModel(
             val id = cardId.toIntOrNull()
                 ?: throw IllegalArgumentException("Invalid id: $cardId")
             val car = getCarByIdUseCase(id)
-            _state.value = ComparisonScreenState.Success(car = car)
+            _state.value = SelectComparisonScreenState.Success(car = car)
         } catch (e: Exception) {
-            _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
+            _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
         }
     }
 
-    fun onEvent(event: ComparisonScreenEvent) {
+    fun onEvent(event: SelectComparisonScreenEvent) {
         when (event) {
-            ComparisonScreenEvent.ReloadCard -> {
+            SelectComparisonScreenEvent.ReloadCard -> {
                 loadCardComparisons()
             }
-            is ComparisonScreenEvent.ToggleFavorite -> {
+            is SelectComparisonScreenEvent.ToggleFavorite -> {
                 // Handle favorite toggle logic here
                 // This would typically call a use case to update favorite status
             }
-            is ComparisonScreenEvent.LoadRelatedCards -> {
+            is SelectComparisonScreenEvent.LoadRelatedCards -> {
                 // Handle loading related cards
                 loadCardComparisons()
             }

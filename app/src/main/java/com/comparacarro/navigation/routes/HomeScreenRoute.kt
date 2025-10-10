@@ -7,22 +7,26 @@ import com.comparacarro.navigation.Screen
 import com.home.HomeScreen
 
 fun NavGraphBuilder.homeScreenRoute(
-    onCardClick: (String) -> Unit
+    onCardClick: (String) -> Unit,
+    onCompareFromHome: () -> Unit
 ) {
     composable(
         route = Screen.Home.route
     ) {
         HomeScreenRoute(
-            onCardClick = onCardClick
+            onCardClick = onCardClick,
+            onCompareFromHome = onCompareFromHome
         )
     }
 }
 
 @Composable
 private fun HomeScreenRoute(
-    onCardClick: (String) -> Unit
+    onCardClick: (String) -> Unit,
+    onCompareFromHome: () -> Unit
 ) {
     HomeScreen(
-        onCardClick = onCardClick
+        onCardClick = onCardClick,
+        onCompareFromHome = onCompareFromHome
     )
 }

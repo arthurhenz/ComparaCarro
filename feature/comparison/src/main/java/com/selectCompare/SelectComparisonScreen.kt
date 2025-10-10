@@ -1,4 +1,4 @@
-package com.comparison
+package com.selectCompare
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -44,11 +44,11 @@ import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComparisonScreen(
-    firstId: String,
-    secondId: String,
+fun SelectComparisonScreen(
+    firstId: String?,
     onBackClick: () -> Unit = {},
-    viewModel: ComparisonViewModel = koinViewModel { parametersOf(firstId) }
+    onCompareClick: (String) -> Unit = {},
+    viewModel: SelectComparisonViewModel = koinViewModel { parametersOf(firstId ?: "") }
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -77,7 +77,7 @@ fun ComparisonScreen(
         }
     ) { paddingValues ->
         when (val currentState = state) {
-            is ComparisonScreenState.Loading -> {
+            is SelectComparisonScreenState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -88,7 +88,7 @@ fun ComparisonScreen(
                 }
             }
 
-            is ComparisonScreenState.Error -> {
+            is SelectComparisonScreenState.Error -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -103,10 +103,11 @@ fun ComparisonScreen(
                 }
             }
 
-            is ComparisonScreenState.Success -> {
-                CardDetailContent(
+            is SelectComparisonScreenState.Success -> {
+                SelectComparisonContent(
                     modifier = Modifier.padding(paddingValues),
-                    car = currentState.car
+                    car = currentState.car,
+                    onCompareClick = onCompareClick
                 )
             }
         }
@@ -114,66 +115,30 @@ fun ComparisonScreen(
 }
 
 @Composable
-private fun CardDetailContent(
+private fun SelectComparisonContent(
     modifier: Modifier = Modifier,
-    car: CarDetailData
+    car: CarDetailData,
+    onCompareClick: (String) -> Unit
 ) {
     Box(
         modifier = modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 360.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "",
-                contentScale = ContentScale.Crop
-            )
-
-            Text(text = car.title, style = TokenDefaultTypography.headlineMedium, modifier = Modifier.padding(top = 24.dp))
-            Text(text = car.price, style = TokenDefaultTypography.titleMedium, color = TokenColors.Subtitle, modifier = Modifier.padding(top = 2.dp))
-            if (car.optionals.isNotEmpty()) {
-                CarDetailOptionalsList(
-                    optionals = car.optionals.map { optional ->
-                        OptionalItem(
-                            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-                            title = optional
-                        )
-                    },
-                    modifier = Modifier.padding(vertical = 12.dp)
-                )
-            }
-        }
-
-        PrimaryButton(
-            text = "Comparar",
-            onClick = {},
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-        )
-    }
+    ) {}
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
     ComparaCarrosTheme {
-        CardDetailContent(
+        SelectComparisonContent(
             car = CarDetailData(
                 id = "1",
                 title = "Honda Civic",
                 price = "R$ 45.000,00",
                 category = "SEDAN",
                 views = 10,
-                optionals = listOf("BANCO_COURO", "TETO_SOLAR")
-            )
+                optionals = listOf("BANCO_COURO", "TETO_SOLAR"),
+            ),
+            onCompareClick = {}
         )
     }
 }

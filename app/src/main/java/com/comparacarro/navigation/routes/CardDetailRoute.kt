@@ -6,7 +6,8 @@ import com.comparacarro.navigation.Screen
 import com.detail.DetailScreen
 
 fun NavGraphBuilder.cardDetailRoute(
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    onCompareFromDetail: (String) -> Unit
 ) {
     composable(
         route = Screen.CardDetail.route,
@@ -16,8 +17,7 @@ fun NavGraphBuilder.cardDetailRoute(
         DetailScreen(
             cardId = cardId,
             onBackClick = goBack,
-            onRelatedCardClick = { relatedCardId ->
-            }
+            onCompareClick = { firstId -> onCompareFromDetail(firstId) }
         )
     }
 }

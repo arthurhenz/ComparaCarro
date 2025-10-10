@@ -54,7 +54,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onCardClick: (String) -> Unit = {}
+    onCardClick: (String) -> Unit = {},
+    onCompareFromHome: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -110,7 +111,8 @@ fun HomeScreen(
                 onCardClick = { cardId ->
                     viewModel.onCardClick(cardId)
                     onCardClick(cardId)
-                }
+                },
+                onCompareClick = { onCompareFromHome() }
             )
         }
     }

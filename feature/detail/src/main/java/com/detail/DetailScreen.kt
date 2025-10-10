@@ -47,7 +47,7 @@ import org.koin.core.parameter.parametersOf
 fun DetailScreen(
     cardId: String,
     onBackClick: () -> Unit = {},
-    onRelatedCardClick: (String) -> Unit = {},
+    onCompareClick: (String) -> Unit = {},
     viewModel: DetailViewModel = koinViewModel { parametersOf(cardId) }
 ) {
     val state by viewModel.state.collectAsState()
@@ -106,7 +106,8 @@ fun DetailScreen(
             is DetailScreenState.Success -> {
                 CardDetailContent(
                     modifier = Modifier.padding(paddingValues),
-                    car = currentState.car
+                    car = currentState.car,
+                    onCompareClick = onCompareClick
                 )
             }
         }
@@ -116,7 +117,8 @@ fun DetailScreen(
 @Composable
 private fun CardDetailContent(
     modifier: Modifier = Modifier,
-    car: CarDetailData
+    car: CarDetailData,
+    onCompareClick: (String) -> Unit
 ) {
     Box(
         modifier = modifier.fillMaxSize()
@@ -153,7 +155,7 @@ private fun CardDetailContent(
 
         PrimaryButton(
             text = "Comparar",
-            onClick = {},
+            onClick = { onCompareClick(car.id) },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
@@ -172,8 +174,10 @@ fun DetailScreenPreview() {
                 price = "R$ 45.000,00",
                 category = "SEDAN",
                 views = 10,
-                optionals = listOf("BANCO_COURO", "TETO_SOLAR")
-            )
+                optionals = listOf("BANCO_COURO", "TETO_SOLAR"),
+            ),
+            modifier = Modifier,
+            onCompareClick = {}
         )
     }
 }
