@@ -13,8 +13,3 @@ class GetSmallCardsUseCase(
         return cardRepository.getSmallCards()
     }
 }
-
-//getNewerCars
-
-
-//Pensa nos dados esquece UI

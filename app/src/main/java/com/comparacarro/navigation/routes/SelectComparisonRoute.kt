@@ -2,7 +2,6 @@ package com.comparacarro.navigation.routes
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.comparacarro.navigation.Screen
 import com.selectCompare.SelectComparisonScreen
 
@@ -18,9 +17,9 @@ fun NavGraphBuilder.selectComparisonRoute(
         SelectComparisonScreen(
             firstId = maybeFirstId,
             onBackClick = goBack,
-            onCompareClick = { selectedSecondId ->
+            onCompareClick = { second ->
                 val first = maybeFirstId ?: return@SelectComparisonScreen
-                onCompareSelected(first, selectedSecondId)
+                onCompareSelected(first, second)
             }
         )
     }

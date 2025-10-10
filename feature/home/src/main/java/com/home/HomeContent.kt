@@ -178,7 +178,7 @@ fun HomeContent(
                             selected = cardData.selected,
                             onToggleButton = {},
                             title = cardData.title,
-                            price = cardData.price
+                            fipe = cardData.fipe
                         )
                     }
                 }

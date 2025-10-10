@@ -26,11 +26,17 @@ import com.theme.TokenDefaultTypography
 fun PrimaryButton(
     text: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Primary),
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Primary,
+            disabledContainerColor = TokenColors.Subtitle.copy(alpha = 0.3f),
+            disabledContentColor = TokenColors.White
+        ),
         modifier = modifier
             .fillMaxWidth()
             .height(54.dp)

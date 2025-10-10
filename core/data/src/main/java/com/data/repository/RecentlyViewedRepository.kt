@@ -46,10 +46,5 @@ class RecentlyViewedRepository(
         return getRecentlyViewedCarIds().first()
     }
 
-    suspend fun clearRecentlyViewed() {
-        context.dataStore.edit { preferences ->
-            preferences.remove(RECENTLY_VIEWED_KEY)
-        }
-    }
 }
 

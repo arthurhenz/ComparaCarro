@@ -13,7 +13,6 @@ class CardRepositoryImpl(
 ) : CardRepository {
 
     override suspend fun getLargeCards(): List<LargeCardData> {
-        // For demo, reuse the same network list and map a couple as banners
         return when (val result = carsApi.getCars()) {
             is NetworkResult.Success -> result.data.take(2).map { car ->
                 LargeCardData(
@@ -65,7 +64,7 @@ class CardRepositoryImpl(
                 SmallCardData(
                     id = car.id.toString(),
                     title = car.title,
-                    price = formatPrice(car.fipe),
+                    fipe = formatPrice(car.fipe),
                     selected = false
                 )
                 }

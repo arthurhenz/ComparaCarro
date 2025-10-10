@@ -44,8 +44,9 @@ fun SmallCard(
     contentDescription: String = "",
     selected: Boolean,
     onToggleButton: (Boolean) -> Unit,
+    showFavoriteToggle: Boolean = true,
     title: String,
-    price: String
+    fipe: String
 ) {
     Card(
         modifier = modifier
@@ -72,12 +73,14 @@ fun SmallCard(
                 contentDescription = title,
                 contentScale = ContentScale.Crop
             )
-            FavoriteButton(
-                selected = selected,
-                onToggle = onToggleButton,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-            )
+            if (showFavoriteToggle) {
+                FavoriteButton(
+                    selected = selected,
+                    onToggle = onToggleButton,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                )
+            }
         }
 
         Text(
@@ -89,7 +92,7 @@ fun SmallCard(
         )
 
         Text(
-            text = price,
+            text = fipe,
             color = TokenColors.Subtitle,
             style = TokenDefaultTypography.labelMedium,
             modifier = Modifier
@@ -110,7 +113,7 @@ fun SmallCardPreview() {
             selected = true,
             onToggleButton = { true },
             title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
-            price = "R$30.000,00"
+            fipe = "R$30.000,00"
         )
 
         Spacer(modifier = Modifier.width( 8.dp))
@@ -120,7 +123,7 @@ fun SmallCardPreview() {
             selected = false,
             onToggleButton = { true },
             title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
-            price = "R$30.000,00"
+            fipe = "R$30.000,00"
         )
     }
 }
