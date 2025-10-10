@@ -36,7 +36,6 @@ import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
-
 @Composable
 fun ToggleSelectButton(
     selected: Boolean,
@@ -50,16 +49,17 @@ fun ToggleSelectButton(
     )
 
     Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(
-                color = if (selected) TokenColors.Primary else TokenColors.Subtitle.copy(alpha = 0.2f)
-            )
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) { onClick() }
-            .padding(6.dp),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(
+                    color = if (selected) TokenColors.Primary else TokenColors.Subtitle.copy(alpha = 0.2f)
+                )
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { onClick() }
+                .padding(6.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -72,14 +72,16 @@ fun ToggleSelectButton(
 
         AnimatedVisibility(
             visible = selected,
-            enter = expandHorizontally(
-                animationSpec = tween(durationMillis = 300),
-                expandFrom = Alignment.Start
-            ) + fadeIn(animationSpec = tween(durationMillis = 300)),
-            exit = shrinkHorizontally(
-                animationSpec = tween(durationMillis = 300),
-                shrinkTowards = Alignment.Start
-            ) + fadeOut(animationSpec = tween(durationMillis = 300))
+            enter =
+                expandHorizontally(
+                    animationSpec = tween(durationMillis = 300),
+                    expandFrom = Alignment.Start
+                ) + fadeIn(animationSpec = tween(durationMillis = 300)),
+            exit =
+                shrinkHorizontally(
+                    animationSpec = tween(durationMillis = 300),
+                    shrinkTowards = Alignment.Start
+                ) + fadeOut(animationSpec = tween(durationMillis = 300))
         ) {
             Row {
                 Spacer(modifier = Modifier.width(8.dp))
@@ -92,7 +94,6 @@ fun ToggleSelectButton(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

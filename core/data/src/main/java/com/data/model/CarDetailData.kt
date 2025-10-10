@@ -8,4 +8,3 @@ data class CarDetailData(
     val views: Int,
     val optionals: List<String>
 )
-

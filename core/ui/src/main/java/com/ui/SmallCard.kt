@@ -118,7 +118,6 @@ fun SmallCard(
                 .height(CARD_HEIGHT.dp)
                 .width(CARD_WIDTH.dp)
                 .clearAndSetSemantics { this.contentDescription = contentDescription },
-
         colors =
             CardDefaults.cardColors(
                 containerColor = TokenColors.White
@@ -143,14 +142,14 @@ fun SmallCard(
                     contentDescription = title,
                     contentScale = ContentScale.Crop
                 )
-                    ToggleSelectButton(
-                        selected = selected,
-                        onClick = { onSelect(!selected) },
-                        modifier =
-                            Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(start = 4.dp, bottom = 4.dp)
-                    )
+                ToggleSelectButton(
+                    selected = selected,
+                    onClick = { onSelect(!selected) },
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(start = 4.dp, bottom = 4.dp)
+                )
             }
 
             Text(

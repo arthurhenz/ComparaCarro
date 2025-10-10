@@ -3,16 +3,11 @@ package com.selectCompare
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
@@ -28,17 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
-import com.ui.Header
-import com.ui.PrimaryButton
-import com.ui.SmallCard
-import com.ui.SmallCardList
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -61,24 +51,26 @@ fun SelectComparisonScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
-                        modifier = Modifier
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) { onBackClick() }
-                            .padding(12.dp)
+                        modifier =
+                            Modifier
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { onBackClick() }
+                                .padding(12.dp)
                     )
                 },
                 actions = {
                     Icon(
                         imageVector = Icons.Filled.Share,
                         contentDescription = "Compartilhar",
-                        modifier = Modifier
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) { /* No function */ }
-                            .padding(12.dp)
+                        modifier =
+                            Modifier
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { /* No function */ }
+                                .padding(12.dp)
                     )
                 },
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
@@ -118,7 +110,7 @@ fun SelectComparisonScreen(
                 SelectComparisonContent(
                     modifier = Modifier.padding(paddingValues),
                     state = currentState,
-                    onCardClick = {it -> onCardClick(it)},
+                    onCardClick = { it -> onCardClick(it) },
                     onSearchQueryChange = viewModel::updateSearchQuery,
                     onSearchFocusChanged = viewModel::updateSearchFocus,
                     onToggleSelect = viewModel::toggleSelection,

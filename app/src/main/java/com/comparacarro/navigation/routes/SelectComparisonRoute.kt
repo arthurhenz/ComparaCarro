@@ -8,8 +8,8 @@ import com.selectCompare.SelectComparisonScreen
 fun NavGraphBuilder.selectComparisonRoute(
     goBack: () -> Unit,
     onCompareSelected: (firstId: String, secondId: String) -> Unit,
-    onCardClick: (String) -> Unit,
-    ) {
+    onCardClick: (String) -> Unit
+) {
     composable(
         route = Screen.SelectComparison.route,
         arguments = Screen.SelectComparison.arguments
