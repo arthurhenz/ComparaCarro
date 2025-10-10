@@ -1,10 +1,13 @@
 package com.selectCompare
 
+import android.R.attr.navigationIcon
+import android.R.attr.text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -23,8 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
@@ -38,7 +44,7 @@ fun SelectComparisonScreen(
     firstId: String?,
     onBackClick: () -> Unit = {},
     onCardClick: (String) -> Unit,
-    onCompareClick: (String) -> Unit = {},
+    onCompareClick: (Pair<String, String>) -> Unit = {},
     viewModel: SelectComparisonViewModel = koinViewModel { parametersOf(firstId ?: "") }
 ) {
     val state by viewModel.state.collectAsState()
@@ -46,8 +52,19 @@ fun SelectComparisonScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Text(
+                        text = "Selecione",
+                        style = TokenDefaultTypography.titleLarge,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TokenColors.Title,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
                 navigationIcon = {
+
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
@@ -114,7 +131,7 @@ fun SelectComparisonScreen(
                     onSearchQueryChange = viewModel::updateSearchQuery,
                     onSearchFocusChanged = viewModel::updateSearchFocus,
                     onToggleSelect = viewModel::toggleSelection,
-                    onCompareClick = { secondId -> onCompareClick(secondId) }
+                    onCompareClick = { pair -> onCompareClick(pair) }
                 )
             }
         }

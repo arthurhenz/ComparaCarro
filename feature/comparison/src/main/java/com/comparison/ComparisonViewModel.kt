@@ -4,17 +4,19 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.data.usecase.GetCarByIdUseCase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import org.koin.core.annotation.InjectedParam
+
+data class ComparisonParams(val firstId: String, val secondId: String)
 
 @KoinViewModel
 class ComparisonViewModel(
     private val getCarByIdUseCase: GetCarByIdUseCase,
-    @InjectedParam private val cardId: String
+    private val params: ComparisonParams
 ) : ViewModel() {
     private val _state = MutableStateFlow<ComparisonScreenState>(ComparisonScreenState.Loading)
     val state: StateFlow<ComparisonScreenState> = _state.asStateFlow()
@@ -26,14 +28,30 @@ class ComparisonViewModel(
     private fun loadCardComparisons() =
         viewModelScope.launch {
             try {
-                Log.d("ComparisonViewModel", "Received cardId='$cardId'")
-                val id =
-                    cardId.toIntOrNull()
-                        ?: throw IllegalArgumentException("Invalid id: $cardId")
-                val car = getCarByIdUseCase(id)
-                _state.value = ComparisonScreenState.Success(car = car)
+                Log.d("ComparisonViewModel", "Received firstId='${params.firstId}', secondId='${params.secondId}'")
+
+                val firstIdInt =
+                    params.firstId.toIntOrNull()
+                        ?: throw IllegalArgumentException("Invalid firstId: ${params.firstId}")
+                val secondIdInt =
+                    params.secondId.toIntOrNull()
+                        ?: throw IllegalArgumentException("Invalid secondId: ${params.secondId}")
+
+                // Fetch both cars in parallel
+                val firstCarDeferred = async { getCarByIdUseCase(firstIdInt) }
+                val secondCarDeferred = async { getCarByIdUseCase(secondIdInt) }
+
+                val firstCar = firstCarDeferred.await()
+                val secondCar = secondCarDeferred.await()
+
+                _state.value =
+                    ComparisonScreenState.Success(
+                        firstCar = firstCar,
+                        secondCar = secondCar
+                    )
             } catch (e: Exception) {
-                _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
+                Log.e("ComparisonViewModel", "Error loading cars", e)
+                _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load car comparisons")
             }
         }
 

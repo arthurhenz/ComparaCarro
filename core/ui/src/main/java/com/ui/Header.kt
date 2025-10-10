@@ -39,11 +39,11 @@ import com.theme.TokenIconSize
 fun Header(
     modifier: Modifier = Modifier,
     onMenuClick: () -> Unit,
-    mainHeader: Boolean = true,
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
-    isSearchFocused: Boolean = false
+    isSearchFocused: Boolean = false,
+    title: String = "",
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -54,48 +54,47 @@ fun Header(
             modifier
                 .fillMaxWidth()
     ) {
-        if (mainHeader) {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            indication = null,
-                            interactionSource = interactionSource
-                        ) {
-                            if (isSearchFocused) {
-                                focusManager.clearFocus()
-                            }
-                        }
-            ) {
-                IconButton(
-                    onClick = {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        indication = null,
+                        interactionSource = interactionSource
+                    ) {
                         if (isSearchFocused) {
                             focusManager.clearFocus()
-                        } else {
-                            onMenuClick()
                         }
-                    },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Menu",
-                        tint = TokenColors.Icon,
-                        modifier = Modifier.size(TokenIconSize.Medium)
-                    )
-                }
-
-                Text(
-                    text = "ComparaCarros",
-                    style = TokenDefaultTypography.titleLarge,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = TokenColors.Primary,
-                    modifier = Modifier.align(Alignment.Center)
+                    }
+        ) {
+            IconButton(
+                onClick = {
+                    if (isSearchFocused) {
+                        focusManager.clearFocus()
+                    } else {
+                        onMenuClick()
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterStart)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    tint = TokenColors.Icon,
+                    modifier = Modifier.size(TokenIconSize.Medium)
                 )
             }
+
+            Text(
+                text = title,
+                style = TokenDefaultTypography.titleLarge,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = TokenColors.Primary,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
+
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
@@ -150,17 +149,91 @@ fun Header(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun HeaderPreview() {
-    ComparaCarrosTheme {
-        Header(
-            onMenuClick = {},
-            searchQuery = "",
-            onSearchQueryChange = {},
-            onSearchFocusChanged = {},
-            isSearchFocused = false,
-            mainHeader = true
+fun Header(
+    modifier: Modifier = Modifier,
+    title: String = "",
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {},
+    onSearchFocusChanged: (Boolean) -> Unit = {},
+    isSearchFocused: Boolean = false
+) {
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        onSearchFocusChanged(focusState.isFocused)
+                    },
+            placeholder = {
+                Text(
+                    text = "Buscar por modelo...",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TokenColors.Subtitle
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search",
+                    tint = TokenColors.Subtitle
+                )
+            },
+            trailingIcon = {
+                if (isSearchFocused) {
+                    IconButton(
+                        onClick = {
+                            onSearchQueryChange("")
+                            focusManager.clearFocus()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Clear and unfocus",
+                            tint = TokenColors.Subtitle
+                        )
+                    }
+                }
+            },
+            shape = RoundedCornerShape(8.dp),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = TokenColors.White,
+                    unfocusedContainerColor = TokenColors.White,
+                    focusedIndicatorColor = TokenColors.Primary,
+                    unfocusedIndicatorColor = TokenColors.Subtitle.copy(alpha = 0.3f)
+                ),
+            singleLine = true
         )
     }
 }
+
+
+
+
+    @Preview(showBackground = true)
+    @Composable
+    fun HeaderPreview() {
+        ComparaCarrosTheme {
+            Header(
+                onMenuClick = {},
+                searchQuery = "",
+                onSearchQueryChange = {},
+                onSearchFocusChanged = {},
+                isSearchFocused = false,
+            )
+        }
+    }

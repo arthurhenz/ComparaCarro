@@ -19,9 +19,8 @@ fun NavGraphBuilder.selectComparisonRoute(
             firstId = maybeFirstId,
             onBackClick = goBack,
             onCardClick = onCardClick,
-            onCompareClick = { second ->
-                val first = maybeFirstId ?: return@SelectComparisonScreen
-                onCompareSelected(first, second)
+            onCompareClick = { pair ->
+                onCompareSelected(pair.first, pair.second)
             }
         )
     }

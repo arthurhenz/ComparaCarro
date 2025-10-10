@@ -1,20 +1,28 @@
 package com.comparison
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.data.R
@@ -36,9 +45,6 @@ import com.data.model.CarDetailData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
-import com.ui.CarDetailOptionalsList
-import com.ui.OptionalItem
-import com.ui.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -48,14 +54,19 @@ fun ComparisonScreen(
     firstId: String,
     secondId: String,
     onBackClick: () -> Unit = {},
-    viewModel: ComparisonViewModel = koinViewModel { parametersOf(firstId) }
+    viewModel: ComparisonViewModel = koinViewModel { parametersOf(ComparisonParams(firstId, secondId)) }
 ) {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Text(
+                        text = "Comparação",
+                        style = TokenDefaultTypography.titleLarge
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -106,9 +117,10 @@ fun ComparisonScreen(
             }
 
             is ComparisonScreenState.Success -> {
-                CardDetailContent(
+                ComparisonContent(
                     modifier = Modifier.padding(paddingValues),
-                    car = currentState.car
+                    firstCar = currentState.firstCar,
+                    secondCar = currentState.secondCar
                 )
             }
         }
@@ -116,70 +128,209 @@ fun ComparisonScreen(
 }
 
 @Composable
-private fun CardDetailContent(
+private fun ComparisonContent(
     modifier: Modifier = Modifier,
-    car: CarDetailData
+    firstCar: CarDetailData,
+    secondCar: CarDetailData
 ) {
-    Box(
-        modifier = modifier.fillMaxSize()
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 16.dp)
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp)
+        // Car Images Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Image(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 360.dp)
+                        .weight(1f)
+                        .height(180.dp)
                         .clip(RoundedCornerShape(10.dp)),
                 painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "",
+                contentDescription = firstCar.title,
                 contentScale = ContentScale.Crop
             )
 
-            Text(text = car.title, style = TokenDefaultTypography.headlineMedium, modifier = Modifier.padding(top = 24.dp))
-            Text(text = car.price, style = TokenDefaultTypography.titleMedium, color = TokenColors.Subtitle, modifier = Modifier.padding(top = 2.dp))
-            if (car.optionals.isNotEmpty()) {
-                CarDetailOptionalsList(
-                    optionals =
-                        car.optionals.map { optional ->
-                            OptionalItem(
-                                icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-                                title = optional
-                            )
-                        },
-                    modifier = Modifier.padding(vertical = 12.dp)
-                )
-            }
+            Image(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = secondCar.title,
+                contentScale = ContentScale.Crop
+            )
         }
 
-        PrimaryButton(
-            text = "Comparar",
-            onClick = {},
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = firstCar.title,
+                style = TokenDefaultTypography.titleMedium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = secondCar.title,
+                style = TokenDefaultTypography.titleMedium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Comparison Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = TokenColors.Primary)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                // Price Comparison
+                ComparisonRow(
+                    label = "Preço",
+                    firstValue = firstCar.price,
+                    secondValue = secondCar.price
+                )
+
+                Divider(modifier = Modifier.padding(vertical = 12.dp))
+
+                // Category Comparison
+                ComparisonRow(
+                    label = "Categoria",
+                    firstValue = firstCar.category,
+                    secondValue = secondCar.category
+                )
+
+                Divider(modifier = Modifier.padding(vertical = 12.dp))
+
+                // Views Comparison
+                ComparisonRow(
+                    label = "Visualizações",
+                    firstValue = firstCar.views.toString(),
+                    secondValue = secondCar.views.toString()
+                )
+
+                Divider(modifier = Modifier.padding(vertical = 12.dp))
+
+                // Optionals Comparison
+                Text(
+                    text = "Opcionais",
+                    style = TokenDefaultTypography.titleSmall,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        if (firstCar.optionals.isEmpty()) {
+                            Text(
+                                text = "Nenhum opcional",
+                                style = TokenDefaultTypography.bodySmall,
+                                color = TokenColors.Subtitle
+                            )
+                        } else {
+                            firstCar.optionals.forEach { optional ->
+                                Text(
+                                    text = "• $optional",
+                                    style = TokenDefaultTypography.bodySmall,
+                                    modifier = Modifier.padding(vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        if (secondCar.optionals.isEmpty()) {
+                            Text(
+                                text = "Nenhum opcional",
+                                style = TokenDefaultTypography.bodySmall,
+                                color = TokenColors.Subtitle
+                            )
+                        } else {
+                            secondCar.optionals.forEach { optional ->
+                                Text(
+                                    text = "• $optional",
+                                    style = TokenDefaultTypography.bodySmall,
+                                    modifier = Modifier.padding(vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ComparisonRow(
+    label: String,
+    firstValue: String,
+    secondValue: String
+) {
+    Column {
+        Text(
+            text = label,
+            style = TokenDefaultTypography.titleSmall,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = firstValue,
+                style = TokenDefaultTypography.bodyMedium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = secondValue,
+                style = TokenDefaultTypography.bodyMedium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DetailScreenPreview() {
+fun ComparisonScreenPreview() {
     ComparaCarrosTheme {
-        CardDetailContent(
-            car =
+        ComparisonContent(
+            firstCar =
                 CarDetailData(
                     id = "1",
                     title = "Honda Civic",
                     price = "R$ 45.000,00",
                     category = "SEDAN",
-                    views = 10,
-                    optionals = listOf("BANCO_COURO", "TETO_SOLAR")
+                    views = 150,
+                    optionals = listOf("BANCO_COURO", "TETO_SOLAR", "SENSOR_RE")
+                ),
+            secondCar =
+                CarDetailData(
+                    id = "2",
+                    title = "Toyota Corolla",
+                    price = "R$ 50.000,00",
+                    category = "SEDAN",
+                    views = 200,
+                    optionals = listOf("BANCO_COURO", "ALARME")
                 )
         )
     }

@@ -71,7 +71,8 @@ fun HomeContent(
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
             onSearchFocusChanged = onSearchFocusChanged,
-            isSearchFocused = isSearchFocused
+            isSearchFocused = isSearchFocused,
+            title = "ComparaCarros"
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
