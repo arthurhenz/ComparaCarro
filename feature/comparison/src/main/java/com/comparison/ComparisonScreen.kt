@@ -85,7 +85,7 @@ fun ComparisonScreen(
                             .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = TokenColors.Primary)
                 }
             }
 

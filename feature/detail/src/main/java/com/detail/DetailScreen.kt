@@ -85,7 +85,7 @@ fun DetailScreen(
                             .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = TokenColors.Primary)
                 }
             }
 

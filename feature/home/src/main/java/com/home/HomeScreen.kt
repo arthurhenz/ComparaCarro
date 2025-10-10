@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
+import com.theme.TokenColors
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -51,7 +52,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = TokenColors.Primary)
             }
         }
 

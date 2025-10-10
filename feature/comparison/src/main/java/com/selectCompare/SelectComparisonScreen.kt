@@ -41,6 +41,7 @@ import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
+import com.ui.Header
 import com.ui.PrimaryButton
 import com.ui.SmallCard
 import com.ui.SmallCardList
@@ -90,7 +91,7 @@ fun SelectComparisonScreen(
                             .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = TokenColors.Primary)
                 }
             }
 
@@ -133,7 +134,6 @@ private fun SelectComparisonContent(
     onToggleSelect: (String) -> Unit,
     onCompareClick: (String) -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val selectedIds = state.allSmallCards.filter { it.selected }.map { it.id }
     val isCompareEnabled = selectedIds.size == 2
 
@@ -143,12 +143,12 @@ private fun SelectComparisonContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
     ) {
-        // Reuse only the search field from Header: create an inline text field copy
-        com.ui.Header(
+        Header(
             onMenuClick = {},
             searchQuery = state.searchQuery,
             onSearchQueryChange = onSearchQueryChange,
             onSearchFocusChanged = onSearchFocusChanged,
+            mainHeader = false,
             isSearchFocused = state.isSearchFocused
         )
 

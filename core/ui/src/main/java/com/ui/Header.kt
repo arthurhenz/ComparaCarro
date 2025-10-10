@@ -39,6 +39,7 @@ import com.theme.TokenIconSize
 fun Header(
     modifier: Modifier = Modifier,
     onMenuClick: () -> Unit,
+    mainHeader: Boolean = true,
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
@@ -53,47 +54,48 @@ fun Header(
             modifier
                 .fillMaxWidth()
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        indication = null,
-                        interactionSource = interactionSource
-                    ) {
+        if (mainHeader) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            indication = null,
+                            interactionSource = interactionSource
+                        ) {
+                            if (isSearchFocused) {
+                                focusManager.clearFocus()
+                            }
+                        }
+            ) {
+                IconButton(
+                    onClick = {
                         if (isSearchFocused) {
                             focusManager.clearFocus()
+                        } else {
+                            onMenuClick()
                         }
-                    }
-        ) {
-            IconButton(
-                onClick = {
-                    if (isSearchFocused) {
-                        focusManager.clearFocus()
-                    } else {
-                        onMenuClick()
-                    }
-                },
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu",
-                    tint = TokenColors.Icon,
-                    modifier = Modifier.size(TokenIconSize.Medium)
+                    },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = "Menu",
+                        tint = TokenColors.Icon,
+                        modifier = Modifier.size(TokenIconSize.Medium)
+                    )
+                }
+
+                Text(
+                    text = "ComparaCarros",
+                    style = TokenDefaultTypography.titleLarge,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = TokenColors.Primary,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-
-            Text(
-                text = "ComparaCarros",
-                style = TokenDefaultTypography.titleLarge,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TokenColors.Primary,
-                modifier = Modifier.align(Alignment.Center)
-            )
         }
-
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
@@ -157,7 +159,8 @@ fun HeaderPreview() {
             searchQuery = "",
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
-            isSearchFocused = false
+            isSearchFocused = false,
+            mainHeader = true
         )
     }
 }
