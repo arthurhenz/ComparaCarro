@@ -41,7 +41,8 @@ fun AppNavigation(
             goBack = { navController.navigateUp() },
             onCompareSelected = { firstId, secondId ->
                 navController.navigate(Screen.Compare.createRoute(firstId, secondId))
-            }
+            },
+            onCardClick = { cardId -> navController.navigate(route = Screen.CardDetail.createRoute(cardId)) }
         )
 
         compareScreenRoute(goBack = { navController.navigateUp() })

@@ -182,10 +182,9 @@ fun HomeContent(
                         SmallCard(
                             modifier = Modifier.clickable { onCardClick(cardData.id) },
                             image = painterResource(id = cardData.backgroundRes),
-                            selected = cardData.selected,
-                            onToggleButton = {},
                             title = cardData.title,
-                            fipe = cardData.fipe
+                            fipe = cardData.fipe,
+                            onClick = { onCardClick(cardData.id) }
                         )
                     }
                 }

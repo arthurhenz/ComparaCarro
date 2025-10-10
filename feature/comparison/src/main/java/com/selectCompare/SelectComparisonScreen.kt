@@ -1,6 +1,5 @@
 package com.selectCompare
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -13,17 +12,13 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +47,7 @@ import org.koin.core.parameter.parametersOf
 fun SelectComparisonScreen(
     firstId: String?,
     onBackClick: () -> Unit = {},
+    onCardClick: (String) -> Unit,
     onCompareClick: (String) -> Unit = {},
     viewModel: SelectComparisonViewModel = koinViewModel { parametersOf(firstId ?: "") }
 ) {
@@ -63,20 +58,28 @@ fun SelectComparisonScreen(
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Voltar",
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { onBackClick() }
+                            .padding(12.dp)
+                    )
                 },
                 actions = {
-                    IconButton(onClick = { /* No function */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = "Compartilhar"
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        contentDescription = "Compartilhar",
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { /* No function */ }
+                            .padding(12.dp)
+                    )
                 },
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
             )
@@ -115,6 +118,7 @@ fun SelectComparisonScreen(
                 SelectComparisonContent(
                     modifier = Modifier.padding(paddingValues),
                     state = currentState,
+                    onCardClick = {it -> onCardClick(it)},
                     onSearchQueryChange = viewModel::updateSearchQuery,
                     onSearchFocusChanged = viewModel::updateSearchFocus,
                     onToggleSelect = viewModel::toggleSelection,
@@ -122,96 +126,6 @@ fun SelectComparisonScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun SelectComparisonContent(
-    modifier: Modifier = Modifier,
-    state: SelectComparisonScreenState.Success,
-    onSearchQueryChange: (String) -> Unit,
-    onSearchFocusChanged: (Boolean) -> Unit,
-    onToggleSelect: (String) -> Unit,
-    onCompareClick: (String) -> Unit
-) {
-    val selectedIds = state.allSmallCards.filter { it.selected }.map { it.id }
-    val isCompareEnabled = selectedIds.size == 2
-
-    Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-    ) {
-        Header(
-            onMenuClick = {},
-            searchQuery = state.searchQuery,
-            onSearchQueryChange = onSearchQueryChange,
-            onSearchFocusChanged = onSearchFocusChanged,
-            mainHeader = false,
-            isSearchFocused = state.isSearchFocused
-        )
-
-        val cardHeight = 230.dp
-        val verticalSpacing = 24.dp
-        val numberOfRows = (state.smallCards.size + 1) / 2
-        val totalHeight = (cardHeight * numberOfRows) + (verticalSpacing * (numberOfRows - 1))
-
-        SmallCardList(
-            modifier =
-                Modifier
-                    .padding(horizontal = 24.dp)
-                    .height(totalHeight)
-        ) {
-            items(state.smallCards) { cardData ->
-                val borderColor = if (cardData.selected) TokenColors.Primary else Color.Transparent
-                Box(
-                    modifier =
-                        Modifier
-                            .border(width = 2.dp, color = borderColor, shape = RoundedCornerShape(8.dp))
-                            .clickable { onToggleSelect(cardData.id) }
-                ) {
-                    SmallCard(
-                        image = painterResource(id = cardData.backgroundRes),
-                        selected = cardData.selected,
-                        onToggleButton = { _ -> onToggleSelect(cardData.id) },
-                        showFavoriteToggle = false,
-                        title = cardData.title,
-                        fipe = cardData.fipe
-                    )
-
-                    IconButton(
-                        onClick = { onToggleSelect(cardData.id) },
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        if (cardData.selected) {
-                            Icon(
-                                imageVector = Icons.Filled.CheckCircle,
-                                contentDescription = "Selecionado",
-                                tint = TokenColors.Primary
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Filled.AddCircle,
-                                contentDescription = "Selecionar",
-                                tint = TokenColors.Subtitle
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        PrimaryButton(
-            text = "Comparar",
-            onClick = {
-                if (selectedIds.size == 2) {
-                    onCompareClick(selectedIds[1])
-                }
-            },
-            enabled = isCompareEnabled,
-            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
-        )
     }
 }
 
@@ -237,7 +151,8 @@ fun DetailScreenPreview() {
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
             onToggleSelect = {},
-            onCompareClick = {}
+            onCompareClick = {},
+            onCardClick = {}
         )
     }
 }

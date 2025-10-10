@@ -41,10 +41,8 @@ private const val CARD_WIDTH = 175
 fun SmallCard(
     modifier: Modifier = Modifier,
     image: Painter,
+    onClick: () -> Unit,
     contentDescription: String = "",
-    selected: Boolean,
-    onToggleButton: (Boolean) -> Unit,
-    showFavoriteToggle: Boolean = true,
     title: String,
     fipe: String
 ) {
@@ -62,7 +60,8 @@ fun SmallCard(
             CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),
-        shape = RoundedCornerShape(0.dp)
+        shape = RoundedCornerShape(0.dp),
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier.padding(top = 6.dp)
@@ -77,15 +76,81 @@ fun SmallCard(
                     contentDescription = title,
                     contentScale = ContentScale.Crop
                 )
-                if (showFavoriteToggle) {
-                    FavoriteButton(
+            }
+
+            Text(
+                text = title,
+                color = TokenColors.Title,
+                style = TokenDefaultTypography.titleSmall,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+            )
+
+            Text(
+                text = fipe,
+                color = TokenColors.Subtitle,
+                style = TokenDefaultTypography.labelMedium,
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+fun SmallCard(
+    modifier: Modifier = Modifier,
+    image: Painter,
+    contentDescription: String = "",
+    selected: Boolean,
+    onSelect: (Boolean) -> Unit,
+    onClick: () -> Unit,
+    title: String,
+    fipe: String
+) {
+    Card(
+        modifier =
+            modifier
+                .height(CARD_HEIGHT.dp)
+                .width(CARD_WIDTH.dp)
+                .clearAndSetSemantics { this.contentDescription = contentDescription },
+
+        colors =
+            CardDefaults.cardColors(
+                containerColor = TokenColors.White
+            ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            ),
+        shape = RoundedCornerShape(0.dp),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier.padding(top = 6.dp)
+        ) {
+            Box(modifier = Modifier.padding(bottom = 6.dp)) {
+                Image(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp)),
+                    painter = image,
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop
+                )
+                    ToggleSelectButton(
                         selected = selected,
-                        onToggle = onToggleButton,
+                        onClick = { onSelect(!selected) },
                         modifier =
                             Modifier
-                                .align(Alignment.TopEnd)
+                                .align(Alignment.BottomStart)
+                                .padding(start = 4.dp, bottom = 4.dp)
                     )
-                }
             }
 
             Text(
@@ -118,7 +183,8 @@ fun SmallCardPreview() {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             selected = true,
-            onToggleButton = { true },
+            onSelect = { true },
+            onClick = {},
             title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
             fipe = "R$30.000,00"
         )
@@ -128,7 +194,8 @@ fun SmallCardPreview() {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             selected = false,
-            onToggleButton = { true },
+            onClick = {},
+            onSelect = { true },
             title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
             fipe = "R$30.000,00"
         )

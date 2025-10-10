@@ -7,8 +7,9 @@ import com.selectCompare.SelectComparisonScreen
 
 fun NavGraphBuilder.selectComparisonRoute(
     goBack: () -> Unit,
-    onCompareSelected: (firstId: String, secondId: String) -> Unit
-) {
+    onCompareSelected: (firstId: String, secondId: String) -> Unit,
+    onCardClick: (String) -> Unit,
+    ) {
     composable(
         route = Screen.SelectComparison.route,
         arguments = Screen.SelectComparison.arguments
@@ -17,6 +18,7 @@ fun NavGraphBuilder.selectComparisonRoute(
         SelectComparisonScreen(
             firstId = maybeFirstId,
             onBackClick = goBack,
+            onCardClick = onCardClick,
             onCompareClick = { second ->
                 val first = maybeFirstId ?: return@SelectComparisonScreen
                 onCompareSelected(first, second)
