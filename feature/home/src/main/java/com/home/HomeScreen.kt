@@ -70,7 +70,7 @@ fun HomeScreen(
         }
 
         is HomeScreenState.Success -> {
-            HomeContent(
+            HomeScreenContent(
                 smallCards = currentState.smallCards,
                 recentlyViewedCards = currentState.recentlyViewedCards,
                 searchQuery = searchQuery,
@@ -93,7 +93,7 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     ComparaCarrosTheme {
-        HomeContent(
+        HomeScreenContent(
             smallCards =
                 listOf(
                     SmallCardData(

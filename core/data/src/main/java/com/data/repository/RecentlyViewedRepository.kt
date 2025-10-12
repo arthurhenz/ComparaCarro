@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.common.utils.Constants.MAX_RECENT_ITEMS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -18,7 +19,6 @@ class RecentlyViewedRepository(
     private val context: Context
 ) {
     private val RECENTLY_VIEWED_KEY = stringPreferencesKey("recently_viewed_car_ids")
-    private val MAX_RECENT_ITEMS = 5
 
     suspend fun addRecentlyViewedCarId(carId: String) {
         context.dataStore.edit { preferences ->

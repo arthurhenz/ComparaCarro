@@ -42,7 +42,7 @@ fun PrimaryButton(
             modifier
                 .fillMaxWidth()
                 .height(54.dp)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 18.dp),
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(

@@ -44,7 +44,7 @@ import com.ui.SmallCardList
 import kotlin.collections.forEach
 
 @Composable
-fun HomeContent(
+fun HomeScreenContent(
     smallCards: List<SmallCardData>,
     recentlyViewedCards: List<LargeCardData> = emptyList(),
     searchQuery: String = "",
@@ -81,6 +81,7 @@ fun HomeContent(
                     Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
+                        .padding(bottom = 80.dp)
                         .clickable(
                             indication = null,
                             interactionSource = interactionSource
@@ -110,13 +111,7 @@ fun HomeContent(
                             }
                         }
 
-                        PrimaryButton(
-                            text = "Comparar",
-                            onClick = onCompareClick,
-                            modifier =
-                                Modifier
-                                    .padding(bottom = 8.dp)
-                        )
+                        // Button moved to Box overlay at bottom
                     }
 
                     var dropdownExpanded by remember { mutableStateOf(false) }
@@ -125,7 +120,8 @@ fun HomeContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 24.dp, horizontal = 24.dp),
+                                .padding(horizontal = 24.dp)
+                                .padding(bottom = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -194,14 +190,17 @@ fun HomeContent(
                     Spacer(modifier = Modifier.padding(bottom = 80.dp))
                 }
 
-                if (searchQuery.isEmpty() && recentlyViewedCards.isEmpty()) {
-                    PrimaryButton(
-                        text = "Comparar",
-                        onClick = onCompareClick,
-                        modifier = Modifier.padding(bottom = 24.dp)
-                    )
-                }
+                // Button moved to Box overlay at bottom
             }
+
+            PrimaryButton(
+                text = "Comparar",
+                onClick = onCompareClick,
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 24.dp)
+            )
         }
     }
 }

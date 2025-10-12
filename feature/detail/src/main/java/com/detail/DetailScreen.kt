@@ -131,6 +131,7 @@ private fun CardDetailContent(
                 Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
+                    .padding(bottom = 80.dp)
         ) {
             Image(
                 modifier =

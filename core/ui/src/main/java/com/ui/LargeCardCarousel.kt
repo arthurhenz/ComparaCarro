@@ -13,12 +13,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LargeCardCarousel(
     modifier: Modifier = Modifier,
-    itemSpacingDp: Dp = 18.dp,
     content: LazyListScope.() -> Unit
 ) {
     LazyRow(
         modifier = modifier,
-        contentPadding = PaddingValues(start = itemSpacingDp, end = itemSpacingDp),
+        contentPadding = PaddingValues(start = 18.dp, end = 18.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
     ) {
         content()

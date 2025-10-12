@@ -94,7 +94,6 @@ fun SelectComparisonContent(
             )
         }
 
-        // Floating button at the bottom
         PrimaryButton(
             text = "Comparar",
             onClick = {
