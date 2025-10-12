@@ -4,41 +4,37 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class PaginatedResponse<T>(
+    @SerialName("data") val data: List<T>,
+    @SerialName("page") val page: Int,
+    @SerialName("pageSize") val pageSize: Int,
+    @SerialName("totalItems") val totalItems: Int,
+    @SerialName("totalPages") val totalPages: Int,
+    @SerialName("hasNext") val hasNext: Boolean,
+    @SerialName("hasPrevious") val hasPrevious: Boolean
+)
+
+@Serializable
 data class BackendCar(
     @SerialName("id") val id: Int,
-    @SerialName("title") val title: String,
-    @SerialName("category") val category: BackendCarCategory,
-    @SerialName("fipe") val fipe: Float,
-    @SerialName("views") val views: Int,
-    @SerialName("opcionais") val opcionais: List<BackendCarOptionals> = emptyList()
+    @SerialName("codigoFipe") val codigoFipe: String = "",
+    @SerialName("marca") val marca: String = "",
+    @SerialName("modelo") val modelo: String = "",
+    @SerialName("anoModelo") val anoModelo: Int = 0,
+    @SerialName("mesReferencia") val mesReferencia: Int = 0,
+    @SerialName("anoReferencia") val anoReferencia: Int = 0,
+    @SerialName("valor") val valor: Double = 0.0
 )
 
 @Serializable
 data class BackendCarDetail(
     @SerialName("id") val id: Int,
-    @SerialName("title") val title: String,
-    @SerialName("category") val category: BackendCarCategory,
-    @SerialName("fipe") val fipe: Float,
-    @SerialName("views") val views: Int,
-    @SerialName("opcionais") val opcionais: List<BackendCarOptionals> = emptyList()
+    @SerialName("codigoFipe") val codigoFipe: String = "",
+    @SerialName("marca") val marca: String = "",
+    @SerialName("modelo") val modelo: String = "",
+    @SerialName("anoModelo") val anoModelo: Int = 0,
+    @SerialName("mesReferencia") val mesReferencia: Int = 0,
+    @SerialName("anoReferencia") val anoReferencia: Int = 0,
+    @SerialName("valor") val valor: Double = 0.0
 )
-
-@Serializable
-enum class BackendCarCategory {
-    SEDAN,
-    SUV,
-    HATCHBACK,
-    LUXURY,
-    PICKUP,
-    SPORTS,
-    ELECTRIC
-}
-
-@Serializable
-enum class BackendCarOptionals {
-    @SerialName("BANCO_COURO") BANCO_COURO,
-    @SerialName("TETO_SOLAR") TETO_SOLAR
-}
-
-
 

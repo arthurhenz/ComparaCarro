@@ -43,7 +43,7 @@ fun Header(
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     isSearchFocused: Boolean = false,
-    title: String = "",
+    title: String = ""
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -152,7 +152,6 @@ fun Header(
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
-    title: String = "",
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
@@ -160,7 +159,6 @@ fun Header(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    val interactionSource = remember { MutableInteractionSource() }
 
     Column(
         modifier =
@@ -221,19 +219,16 @@ fun Header(
     }
 }
 
-
-
-
-    @Preview(showBackground = true)
-    @Composable
-    fun HeaderPreview() {
-        ComparaCarrosTheme {
-            Header(
-                onMenuClick = {},
-                searchQuery = "",
-                onSearchQueryChange = {},
-                onSearchFocusChanged = {},
-                isSearchFocused = false,
-            )
-        }
+@Preview(showBackground = true)
+@Composable
+fun HeaderPreview() {
+    ComparaCarrosTheme {
+        Header(
+            onMenuClick = {},
+            searchQuery = "",
+            onSearchQueryChange = {},
+            onSearchFocusChanged = {},
+            isSearchFocused = false
+        )
     }
+}

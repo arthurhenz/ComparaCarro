@@ -2,6 +2,7 @@ package com.selectCompare
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.data.usecase.GetSmallCardsPageUseCase
 import com.data.usecase.GetSmallCardsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,7 @@ import org.koin.core.annotation.InjectedParam
 @KoinViewModel
 class SelectComparisonViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
+    private val getSmallCardsPageUseCase: GetSmallCardsPageUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
     private val _state = MutableStateFlow<SelectComparisonScreenState>(SelectComparisonScreenState.Loading)
@@ -25,7 +27,9 @@ class SelectComparisonViewModel(
     private fun loadCards() =
         viewModelScope.launch {
             try {
-                val allSmallCards = getSmallCardsUseCase()
+                val firstPageSize = 30
+                val firstPage = getSmallCardsPageUseCase(page = 1, pageSize = firstPageSize)
+                val allSmallCards = firstPage.data
                 val initialSelected = cardId.takeIf { it.isNotBlank() }
                 val marked =
                     allSmallCards.map { card ->
@@ -37,7 +41,11 @@ class SelectComparisonViewModel(
                         smallCards = marked,
                         allSmallCards = marked,
                         searchQuery = "",
-                        isSearchFocused = false
+                        isSearchFocused = false,
+                        isLoadingMore = false,
+                        nextPage = if (firstPage.hasNext) 2 else null,
+                        pageSize = firstPage.pageSize,
+                        hasNext = firstPage.hasNext
                     )
             } catch (e: Exception) {
                 _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
@@ -106,6 +114,42 @@ class SelectComparisonViewModel(
                     allSmallCards = updatedAll,
                     smallCards = updatedFiltered
                 )
+        }
+    }
+
+    fun loadNextPageIfNeeded(lastVisibleIndex: Int) {
+        val current = _state.value
+        if (current is SelectComparisonScreenState.Success) {
+            if (current.isLoadingMore || current.nextPage == null) return
+            // Trigger when user scrolls near the end of current list
+            if (lastVisibleIndex >= current.smallCards.size - 4) {
+                _state.value = current.copy(isLoadingMore = true)
+                viewModelScope.launch {
+                    try {
+                        val nextPageNumber = current.nextPage
+                        if (nextPageNumber != null) {
+                            val page = getSmallCardsPageUseCase(page = nextPageNumber, pageSize = current.pageSize)
+                            val appendedAll = current.allSmallCards + page.data
+                            val appendedFiltered =
+                                if (current.searchQuery.isBlank()) {
+                                    appendedAll
+                                } else {
+                                    appendedAll.filter { it.title.contains(current.searchQuery.trim(), ignoreCase = true) }
+                                }
+                            _state.value =
+                                current.copy(
+                                    allSmallCards = appendedAll,
+                                    smallCards = appendedFiltered,
+                                    isLoadingMore = false,
+                                    nextPage = if (page.hasNext) nextPageNumber + 1 else null,
+                                    hasNext = page.hasNext
+                                )
+                        }
+                    } catch (e: Exception) {
+                        _state.value = current.copy(isLoadingMore = false)
+                    }
+                }
+            }
         }
     }
 }

@@ -64,7 +64,6 @@ fun SelectComparisonScreen(
                     )
                 },
                 navigationIcon = {
-
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
@@ -131,7 +130,8 @@ fun SelectComparisonScreen(
                     onSearchQueryChange = viewModel::updateSearchQuery,
                     onSearchFocusChanged = viewModel::updateSearchFocus,
                     onToggleSelect = viewModel::toggleSelection,
-                    onCompareClick = { pair -> onCompareClick(pair) }
+                    onCompareClick = { pair -> onCompareClick(pair) },
+                    onLoadMore = { lastVisibleIndex -> viewModel.loadNextPageIfNeeded(lastVisibleIndex) }
                 )
             }
         }
@@ -161,7 +161,8 @@ fun DetailScreenPreview() {
             onSearchFocusChanged = {},
             onToggleSelect = {},
             onCompareClick = {},
-            onCardClick = {}
+            onCardClick = {},
+            onLoadMore = {}
         )
     }
 }

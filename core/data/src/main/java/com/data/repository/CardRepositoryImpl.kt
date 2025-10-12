@@ -2,6 +2,7 @@ package com.data.repository
 
 import com.data.model.CarDetailData
 import com.data.model.LargeCardData
+import com.data.model.PaginationResult
 import com.data.model.SmallCardData
 import comparacarro.network.api.CarsApi
 import comparacarro.network.result.NetworkResult
@@ -12,12 +13,12 @@ class CardRepositoryImpl(
     private val carsApi: CarsApi
 ) : CardRepository {
     override suspend fun getLargeCards(): List<LargeCardData> {
-        return when (val result = carsApi.getCars()) {
+        return when (val result = carsApi.getCars(page = 1, pageSize = 15)) {
             is NetworkResult.Success ->
-                result.data.take(2).map { car ->
+                result.data.data.take(2).map { car ->
                     LargeCardData(
                         id = car.id.toString(),
-                        title = car.title
+                        title = "${car.marca} ${car.modelo}"
                     )
                 }
             is NetworkResult.Error -> {
@@ -36,11 +37,11 @@ class CardRepositoryImpl(
                 val car = result.data
                 CarDetailData(
                     id = car.id.toString(),
-                    title = car.title,
-                    price = formatPrice(car.fipe),
-                    category = car.category.name,
-                    views = car.views,
-                    optionals = car.opcionais.map { it.name }
+                    title = "${car.marca} ${car.modelo}",
+                    price = formatPrice(car.valor.toFloat()),
+                    category = car.marca,
+                    views = 0,
+                    optionals = emptyList()
                 )
             }
             is NetworkResult.Error -> {
@@ -54,27 +55,50 @@ class CardRepositoryImpl(
     }
 
     override suspend fun getSmallCards(): List<SmallCardData> {
-        return when (val result = carsApi.getCars()) {
+        // Return only first page by default for initial load
+        val firstPage = getSmallCardsPage(page = 1, pageSize = 30)
+        return firstPage.data
+    }
+
+    override suspend fun getSmallCardsPage(
+        page: Int,
+        pageSize: Int
+    ): PaginationResult<SmallCardData> {
+        return when (val result = carsApi.getCars(page = page, pageSize = pageSize)) {
             is NetworkResult.Success -> {
-                android.util.Log.d(
-                    "CardRepositoryImpl",
-                    "getSmallCards cars=" + result.data.size
+                val pageData = result.data
+                PaginationResult(
+                    data =
+                        pageData.data.map { car ->
+                            SmallCardData(
+                                id = car.id.toString(),
+                                title = "${car.marca} ${car.modelo}",
+                                fipe = formatPrice(car.valor.toFloat()),
+                                selected = false
+                            )
+                        },
+                    page = pageData.page,
+                    pageSize = pageData.pageSize,
+                    totalItems = pageData.totalItems,
+                    totalPages = pageData.totalPages,
+                    hasNext = pageData.hasNext,
+                    hasPrevious = pageData.hasPrevious
                 )
-                result.data.map { car ->
-                    SmallCardData(
-                        id = car.id.toString(),
-                        title = car.title,
-                        fipe = formatPrice(car.fipe),
-                        selected = false
-                    )
-                }
             }
             is NetworkResult.Error -> {
                 android.util.Log.e(
                     "CardRepositoryImpl",
-                    "getSmallCards error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
+                    "getSmallCardsPage error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
                 )
-                emptyList()
+                PaginationResult(
+                    data = emptyList(),
+                    page = page,
+                    pageSize = pageSize,
+                    totalItems = 0,
+                    totalPages = 0,
+                    hasNext = false,
+                    hasPrevious = page > 1
+                )
             }
         }
     }

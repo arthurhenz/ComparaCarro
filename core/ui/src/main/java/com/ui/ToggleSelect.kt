@@ -1,7 +1,6 @@
 package com.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -42,16 +41,10 @@ fun ToggleSelectButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val cornerRadius by animateDpAsState(
-        targetValue = if (selected) 20.dp else 20.dp,
-        animationSpec = tween(durationMillis = 300),
-        label = "cornerRadius"
-    )
-
     Row(
         modifier =
             modifier
-                .clip(RoundedCornerShape(cornerRadius))
+                .clip(RoundedCornerShape(20.dp))
                 .background(
                     color = if (selected) TokenColors.Primary else TokenColors.Subtitle.copy(alpha = 0.2f)
                 )

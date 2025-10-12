@@ -2,6 +2,7 @@ package comparacarro.network.api
 
 import comparacarro.network.model.BackendCar
 import comparacarro.network.model.BackendCarDetail
+import comparacarro.network.model.PaginatedResponse
 import comparacarro.network.result.NetworkResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -14,8 +15,8 @@ class CarsApiImpl(
     private val baseUrl: String
 ) : CarsApi {
 
-    override suspend fun getCars(): NetworkResult<List<BackendCar>> {
-        return safeGet("$baseUrl/cars")
+    override suspend fun getCars(page: Int, pageSize: Int): NetworkResult<PaginatedResponse<BackendCar>> {
+        return safeGet("$baseUrl/cars?page=$page&pageSize=$pageSize")
     }
 
     override suspend fun getCarById(id: Int): NetworkResult<BackendCarDetail> {

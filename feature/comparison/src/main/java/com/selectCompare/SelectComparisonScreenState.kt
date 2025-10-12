@@ -10,6 +10,10 @@ sealed class SelectComparisonScreenState {
         val smallCards: List<SmallCardData>,
         val allSmallCards: List<SmallCardData>,
         val searchQuery: String,
-        val isSearchFocused: Boolean
+        val isSearchFocused: Boolean,
+        val isLoadingMore: Boolean = false,
+        val nextPage: Int? = null,
+        val pageSize: Int = 30,
+        val hasNext: Boolean = false
     ) : SelectComparisonScreenState()
 }

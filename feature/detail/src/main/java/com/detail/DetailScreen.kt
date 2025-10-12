@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,8 +37,8 @@ import com.data.model.CarDetailData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
+import com.ui.CarDetailOptional
 import com.ui.CarDetailOptionalsList
-import com.ui.OptionalItem
 import com.ui.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -142,19 +143,29 @@ private fun CardDetailContent(
                 contentScale = ContentScale.Crop
             )
 
-            Text(text = car.title, style = TokenDefaultTypography.headlineMedium, modifier = Modifier.padding(top = 24.dp))
-            Text(text = car.price, style = TokenDefaultTypography.titleMedium, color = TokenColors.Subtitle, modifier = Modifier.padding(top = 2.dp))
+            Text(
+                text = car.title,
+                style = TokenDefaultTypography.headlineMedium,
+                modifier = Modifier.padding(top = 24.dp)
+            )
+            Text(
+                text = car.price,
+                style = TokenDefaultTypography.titleMedium,
+                color = TokenColors.Subtitle,
+                modifier = Modifier.padding(top = 2.dp)
+            )
             if (car.optionals.isNotEmpty()) {
+                val optionals = car.optionals
                 CarDetailOptionalsList(
-                    optionals =
-                        car.optionals.map { optional ->
-                            OptionalItem(
-                                icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-                                title = optional
-                            )
-                        },
                     modifier = Modifier.padding(vertical = 12.dp)
-                )
+                ) {
+                    items(optionals) { optional ->
+                        CarDetailOptional(
+                            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+                            title = optional
+                        )
+                    }
+                }
             }
         }
 
