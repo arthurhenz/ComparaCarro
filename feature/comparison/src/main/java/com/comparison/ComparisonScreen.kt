@@ -140,7 +140,6 @@ private fun ComparisonContent(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp, vertical = 16.dp)
     ) {
-        // Car Images Row
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -190,7 +189,6 @@ private fun ComparisonContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Comparison Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = TokenColors.Primary)
@@ -198,7 +196,6 @@ private fun ComparisonContent(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                // Price Comparison
                 ComparisonRow(
                     label = "Preço",
                     firstValue = firstCar.price,
@@ -207,7 +204,6 @@ private fun ComparisonContent(
 
                 Divider(modifier = Modifier.padding(vertical = 12.dp))
 
-                // Category Comparison
                 ComparisonRow(
                     label = "Categoria",
                     firstValue = firstCar.category,
@@ -216,7 +212,6 @@ private fun ComparisonContent(
 
                 Divider(modifier = Modifier.padding(vertical = 12.dp))
 
-                // Views Comparison
                 ComparisonRow(
                     label = "Visualizações",
                     firstValue = firstCar.views.toString(),
@@ -225,7 +220,6 @@ private fun ComparisonContent(
 
                 Divider(modifier = Modifier.padding(vertical = 12.dp))
 
-                // Optionals Comparison
                 Text(
                     text = "Opcionais",
                     style = TokenDefaultTypography.titleSmall,

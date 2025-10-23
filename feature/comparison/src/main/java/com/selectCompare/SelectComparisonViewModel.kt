@@ -13,7 +13,6 @@ import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
 class SelectComparisonViewModel(
-    private val getSmallCardsUseCase: GetSmallCardsUseCase,
     private val getSmallCardsPageUseCase: GetSmallCardsPageUseCase,
     @InjectedParam private val cardId: String
 ) : ViewModel() {
@@ -58,11 +57,8 @@ class SelectComparisonViewModel(
                 loadCards()
             }
             is SelectComparisonScreenEvent.ToggleFavorite -> {
-                // Handle favorite toggle logic here
-                // This would typically call a use case to update favorite status
             }
             is SelectComparisonScreenEvent.LoadRelatedCards -> {
-                // Handle loading related cards
                 loadCards()
             }
         }
@@ -121,7 +117,6 @@ class SelectComparisonViewModel(
         val current = _state.value
         if (current is SelectComparisonScreenState.Success) {
             if (current.isLoadingMore || current.nextPage == null) return
-            // Trigger when user scrolls near the end of current list
             if (lastVisibleIndex >= current.smallCards.size - 4) {
                 _state.value = current.copy(isLoadingMore = true)
                 viewModelScope.launch {

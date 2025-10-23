@@ -37,7 +37,6 @@ class ComparisonViewModel(
                     params.secondId.toIntOrNull()
                         ?: throw IllegalArgumentException("Invalid secondId: ${params.secondId}")
 
-                // Fetch both cars in parallel
                 val firstCarDeferred = async { getCarByIdUseCase(firstIdInt) }
                 val secondCarDeferred = async { getCarByIdUseCase(secondIdInt) }
 
