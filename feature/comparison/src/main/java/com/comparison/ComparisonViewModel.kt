@@ -60,11 +60,8 @@ class ComparisonViewModel(
                 loadCardComparisons()
             }
             is ComparisonScreenEvent.ToggleFavorite -> {
-                // Handle favorite toggle logic here
-                // This would typically call a use case to update favorite status
             }
             is ComparisonScreenEvent.LoadRelatedCards -> {
-                // Handle loading related cards
                 loadCardComparisons()
             }
         }

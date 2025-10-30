@@ -17,9 +17,9 @@ object KtorClientProvider {
             install(ContentNegotiation) {
                 json(Json { ignoreUnknownKeys = true })
             }
-
-            // Default request base URL can be handled per-call. Keeping simple here.
         }
     }
 }
 
+
+//Data transformation plugin

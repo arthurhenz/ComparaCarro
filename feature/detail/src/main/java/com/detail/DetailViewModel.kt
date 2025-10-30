@@ -43,11 +43,8 @@ class DetailViewModel(
                 loadCardDetails()
             }
             is DetailScreenEvent.ToggleFavorite -> {
-                // Handle favorite toggle logic here
-                // This would typically call a use case to update favorite status
             }
             is DetailScreenEvent.LoadRelatedCards -> {
-                // Handle loading related cards
                 loadCardDetails()
             }
         }

@@ -13,19 +13,18 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "recently_viewed")
+private val RECENTLY_VIEWED_KEY = stringPreferencesKey("recently_viewed_car_ids")
 
 @Single
 class RecentlyViewedRepository(
     private val context: Context
 ) {
-    private val RECENTLY_VIEWED_KEY = stringPreferencesKey("recently_viewed_car_ids")
 
     suspend fun addRecentlyViewedCarId(carId: String) {
         context.dataStore.edit { preferences ->
             val currentList = preferences[RECENTLY_VIEWED_KEY]?.split(",")?.filter { it.isNotEmpty() } ?: emptyList()
             val newList = mutableListOf(carId)
 
-            // Add existing items, excluding the current carId to avoid duplicates
             currentList.filter { it != carId }.forEach { existingId ->
                 if (newList.size < MAX_RECENT_ITEMS) {
                     newList.add(existingId)

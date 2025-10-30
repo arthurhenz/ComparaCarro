@@ -55,7 +55,6 @@ class CardRepositoryImpl(
     }
 
     override suspend fun getSmallCards(): List<SmallCardData> {
-        // Return only first page by default for initial load
         val firstPage = getSmallCardsPage(page = 1, pageSize = 30)
         return firstPage.data
     }

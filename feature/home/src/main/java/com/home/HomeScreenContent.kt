@@ -111,7 +111,6 @@ fun HomeScreenContent(
                             }
                         }
 
-                        // Button moved to Box overlay at bottom
                     }
 
                     var dropdownExpanded by remember { mutableStateOf(false) }
@@ -190,7 +189,6 @@ fun HomeScreenContent(
                     Spacer(modifier = Modifier.padding(bottom = 80.dp))
                 }
 
-                // Button moved to Box overlay at bottom
             }
 
             PrimaryButton(

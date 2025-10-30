@@ -3,7 +3,6 @@ package com.selectCompare
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.data.usecase.GetSmallCardsPageUseCase
-import com.data.usecase.GetSmallCardsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
