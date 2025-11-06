@@ -9,3 +9,4 @@ data class CarDetailData(
     val optionals: List<String>
 )
 
+
