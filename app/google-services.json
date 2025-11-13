@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "923880963941",
+    "project_id": "comparacarro-ea199",
+    "storage_bucket": "comparacarro-ea199.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923880963941:android:8032bfaa4641fc56666b8c",
+        "android_client_info": {
+          "package_name": "com.comparacarro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn552ahN2D63N9aejYZlMqdQ9V3NDQTSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
