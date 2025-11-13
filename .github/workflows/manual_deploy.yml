@@ -40,10 +40,9 @@ jobs:
         run: echo '${{ secrets.CREDENTIAL_FILE_CONTENT_2 }}' > service-credentials.json
 
       - name: Upload Artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFile: service-credentials.json
-          groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
-          releaseNotes: ${{ inputs.release_notes || format('Build from commit {0}', github.sha) }}
+          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+          tester_groups: testers
+          app_file: app/build/outputs/apk/debug/app-debug.apk
