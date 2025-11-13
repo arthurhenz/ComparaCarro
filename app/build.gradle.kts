@@ -1,4 +1,5 @@
 import org.gradle.kotlin.dsl.implementation
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.appdistribution)
 }
 
 kotlin {
@@ -39,6 +41,21 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            firebaseAppDistribution {
+                artifactType = "APK"
+                releaseNotes = "New release version for testing"
+                // Add testers by email (comma-separated)
+                testers = "your-tester@example.com"
+                // Or use groups (comma-separated group aliases from Firebase console)
+                // groups = "qa-team, android-testers"
+            }
+        }
+        debug {
+            firebaseAppDistribution {
+                artifactType = "APK"
+                releaseNotes = "Debug build for testing"
+                testers = "your-tester@example.com"
+            }
         }
     }
     compileOptions {
