@@ -48,6 +48,12 @@ android {
                 testers = "your-tester@example.com"
                 // Or use groups (comma-separated group aliases from Firebase console)
                 // groups = "qa-team, android-testers"
+                
+                // Service account for CI/CD
+                val serviceAccountFile = file("${rootProject.projectDir}/firebase-service-account.json")
+                if (serviceAccountFile.exists()) {
+                    serviceCredentialsFile = serviceAccountFile.absolutePath
+                }
             }
         }
         debug {
@@ -55,6 +61,12 @@ android {
                 artifactType = "APK"
                 releaseNotes = "Debug build for testing"
                 testers = "your-tester@example.com"
+                
+                // Service account for CI/CD
+                val serviceAccountFile = file("${rootProject.projectDir}/firebase-service-account.json")
+                if (serviceAccountFile.exists()) {
+                    serviceCredentialsFile = serviceAccountFile.absolutePath
+                }
             }
         }
     }
