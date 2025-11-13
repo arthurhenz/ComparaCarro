@@ -17,9 +17,9 @@ jobs:
     name: Building and distributing app
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '18.0.2+101'
@@ -31,13 +31,13 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Execute Gradle command - assembleDebug
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug
 
       - name: Upload Artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk
           releaseNotes: ${{ inputs.release_notes }}
