@@ -21,28 +21,23 @@ jobs:
 
       - uses: actions/setup-java@v5
         with:
-          distribution: 'zulu'
-          java-version: '17.0'
+          distribution: 'temurin'
+          java-version: '18.0.2+101'
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
-
-      - name: Create google-services.json
-        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Execute Gradle command - assembleDebug
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug
 
-      - name: Create service credentials file
-        run: echo '${{ secrets.CREDENTIAL_FILE_CONTENT_2 }}' > service-credentials.json
-
-      - name: Firebase App Distribution
-        uses: hasretsariyer/firebase-app-distribution-github-action@v1
+      - name: Upload Artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
-          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
-          tester_groups: testers
-          app_file: app/build/outputs/apk/debug/app-debug.apk
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: app/build/outputs/apk/debug/app-debug.apk
+          releaseNotes: ${{ inputs.release_notes }}
