@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "923880963941",
-    "project_id": "comparacarro-ea199",
-    "storage_bucket": "comparacarro-ea199.firebasestorage.app"
+    "project_number": "199222159644",
+    "project_id": "teste-agora-vai-9501a",
+    "storage_bucket": "teste-agora-vai-9501a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:923880963941:android:8032bfaa4641fc56666b8c",
+        "mobilesdk_app_id": "1:199222159644:android:7b11fd02aace69978d32d9",
         "android_client_info": {
           "package_name": "com.comparacarro"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCn552ahN2D63N9aejYZlMqdQ9V3NDQTSo"
+          "current_key": "AIzaSyDyW1f7ViHf2TL74IxHUaYR0q5_qk_FjZo"
         }
       ],
       "services": {
