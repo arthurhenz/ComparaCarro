@@ -14,11 +14,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.comparacarro"
+    namespace = "com.comparacarro2"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.comparacarro"
+        applicationId = "com.comparacarro2"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
