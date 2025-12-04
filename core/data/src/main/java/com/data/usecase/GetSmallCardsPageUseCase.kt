@@ -16,7 +16,3 @@ class GetSmallCardsPageUseCase(
         return cardRepository.getSmallCardsPage(page, pageSize)
     }
 }
-
-
-
-

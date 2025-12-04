@@ -12,7 +12,3 @@ class GetCarByIdUseCase(
         return cardRepository.getCarById(id)
     }
 }
-
-
-
-

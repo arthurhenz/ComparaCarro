@@ -9,7 +9,3 @@ data class PaginationResult<T>(
     val hasNext: Boolean,
     val hasPrevious: Boolean
 )
-
-
-
-
