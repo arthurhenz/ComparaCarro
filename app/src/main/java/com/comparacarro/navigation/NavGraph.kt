@@ -1,4 +1,4 @@
-package com.comparacarro.navigation
+package com.comparacarro2.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
@@ -7,10 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.comparacarro.navigation.routes.cardDetailRoute
-import com.comparacarro.navigation.routes.compareScreenRoute
-import com.comparacarro.navigation.routes.homeScreenRoute
-import com.comparacarro.navigation.routes.selectComparisonRoute
+import com.comparacarro2.navigation.routes.cardDetailRoute
+import com.comparacarro2.navigation.routes.compareScreenRoute
+import com.comparacarro2.navigation.routes.homeScreenRoute
+import com.comparacarro2.navigation.routes.selectComparisonRoute
 
 @Composable
 fun AppNavigation(

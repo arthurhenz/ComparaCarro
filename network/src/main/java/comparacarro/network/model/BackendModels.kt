@@ -1,4 +1,4 @@
-package comparacarro.network.model
+package comparacarro2.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

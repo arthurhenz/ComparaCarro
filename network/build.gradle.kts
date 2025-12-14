@@ -10,7 +10,7 @@ kotlin {
 }
 
 android {
-    namespace = "comparacarro.network"
+    namespace = "comparacarro2.network"
     compileSdk = 36
 
     defaultConfig {

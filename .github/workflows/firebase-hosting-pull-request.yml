@@ -17,4 +17,4 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_COMPARACARRO_EA199 }}
-          projectId: comparacarro-ea199
+          projectId: comparacarro2-ea199

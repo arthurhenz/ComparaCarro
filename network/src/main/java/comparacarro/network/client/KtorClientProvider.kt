@@ -1,4 +1,4 @@
-package comparacarro.network.client
+package comparacarro2.network.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp

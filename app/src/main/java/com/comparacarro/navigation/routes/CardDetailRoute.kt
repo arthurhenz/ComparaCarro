@@ -1,8 +1,8 @@
-package com.comparacarro.navigation.routes
+package com.comparacarro2.navigation.routes
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.comparacarro.navigation.Screen
+import com.comparacarro2.navigation.Screen
 import com.detail.DetailScreen
 
 fun NavGraphBuilder.cardDetailRoute(

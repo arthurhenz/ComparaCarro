@@ -1,9 +1,9 @@
-package comparacarro.network.api
+package comparacarro2.network.api
 
-import comparacarro.network.model.BackendCar
-import comparacarro.network.model.BackendCarDetail
-import comparacarro.network.model.PaginatedResponse
-import comparacarro.network.result.NetworkResult
+import comparacarro2.network.model.BackendCar
+import comparacarro2.network.model.BackendCarDetail
+import comparacarro2.network.model.PaginatedResponse
+import comparacarro2.network.result.NetworkResult
 
 interface CarsApi {
     suspend fun getCars(page: Int, pageSize: Int): NetworkResult<PaginatedResponse<BackendCar>>

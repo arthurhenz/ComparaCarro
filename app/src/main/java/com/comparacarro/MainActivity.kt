@@ -1,4 +1,4 @@
-package com.comparacarro
+package com.comparacarro2
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,8 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.comparacarro.navigation.AppNavigation
-import com.comparacarro.navigation.Screen
+import com.comparacarro2.navigation.AppNavigation
+import com.comparacarro2.navigation.Screen
 import com.theme.ComparaCarrosTheme
 
 class MainActivity : ComponentActivity() {

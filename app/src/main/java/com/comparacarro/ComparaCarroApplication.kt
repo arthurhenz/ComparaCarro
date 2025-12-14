@@ -1,4 +1,4 @@
-package com.comparacarro
+package com.comparacarro2
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext

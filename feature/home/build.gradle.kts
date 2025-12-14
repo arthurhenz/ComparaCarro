@@ -11,7 +11,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.comparacarro"
+    namespace = "com.comparacarro2"
     compileSdk = 36
 
     defaultConfig {
@@ -61,8 +61,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(kotlin("test"))
-    implementation(libs.androidx.navigation.runtime.android)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.koin.android)
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
