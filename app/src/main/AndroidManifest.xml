@@ -18,7 +18,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.comparacarro.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ComparaCarro" >
             <intent-filter>

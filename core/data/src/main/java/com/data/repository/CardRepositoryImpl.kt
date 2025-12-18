@@ -4,8 +4,8 @@ import com.data.model.CarDetailData
 import com.data.model.LargeCardData
 import com.data.model.PaginationResult
 import com.data.model.SmallCardData
-import comparacarro2.network.api.CarsApi
-import comparacarro2.network.result.NetworkResult
+import comparacarro.network.api.CarsApi
+import comparacarro.network.result.NetworkResult
 import org.koin.core.annotation.Single
 
 @Single

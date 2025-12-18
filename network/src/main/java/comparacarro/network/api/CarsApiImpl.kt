@@ -1,9 +1,9 @@
-package comparacarro2.network.api
+package comparacarro.network.api
 
-import comparacarro2.network.model.BackendCar
-import comparacarro2.network.model.BackendCarDetail
-import comparacarro2.network.model.PaginatedResponse
-import comparacarro2.network.result.NetworkResult
+import comparacarro.network.model.BackendCar
+import comparacarro.network.model.BackendCarDetail
+import comparacarro.network.model.PaginatedResponse
+import comparacarro.network.result.NetworkResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
