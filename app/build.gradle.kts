@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
@@ -14,11 +15,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.comparacarro2"
+    namespace = "com.comparacarro"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.comparacarro2"
+        applicationId = "com.comparacarro"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

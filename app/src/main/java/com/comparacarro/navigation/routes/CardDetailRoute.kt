@@ -1,21 +1,20 @@
-package com.comparacarro2.navigation.routes
+package com.comparacarro.navigation.routes
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import com.comparacarro2.navigation.Screen
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.detail.DetailScreen
+import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.cardDetailRoute(
+@Serializable
+data class CardDetailRoute(val cardId: String) : NavKey
+
+fun EntryProviderScope<NavKey>.cardDetailRoute(
     goBack: () -> Unit,
     onCompareFromDetail: (String) -> Unit
 ) {
-    composable(
-        route = Screen.CardDetail.route,
-        arguments = Screen.CardDetail.arguments
-    ) { backStackEntry ->
-        val cardId = backStackEntry.arguments?.getString("cardId") ?: ""
+    entry<CardDetailRoute> { key ->
         DetailScreen(
-            cardId = cardId,
+            cardId = key.cardId,
             onBackClick = goBack,
             onCompareClick = { firstId -> onCompareFromDetail(firstId) }
         )

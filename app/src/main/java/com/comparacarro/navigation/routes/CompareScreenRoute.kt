@@ -1,20 +1,18 @@
-package com.comparacarro2.navigation.routes
+package com.comparacarro.navigation.routes
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import com.comparacarro2.navigation.Screen
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.comparison.ComparisonScreen
+import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.compareScreenRoute(goBack: () -> Unit) {
-    composable(
-        route = Screen.Compare.route,
-        arguments = Screen.Compare.arguments
-    ) { backStackEntry ->
-        val firstId = backStackEntry.arguments?.getString("firstId") ?: ""
-        val secondId = backStackEntry.arguments?.getString("secondId") ?: ""
+@Serializable
+data class CompareScreenRoute(val firstId: String, val secondId: String) : NavKey
+
+fun EntryProviderScope<NavKey>.compareScreenRoute(goBack: () -> Unit) {
+    entry<CompareScreenRoute> { key ->
         ComparisonScreen(
-            firstId = firstId,
-            secondId = secondId,
+            firstId = key.firstId,
+            secondId = key.secondId,
             onBackClick = goBack
         )
     }

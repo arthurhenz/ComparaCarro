@@ -1,4 +1,4 @@
-package com.comparacarro2
+package com.comparacarro
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,8 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.comparacarro2.navigation.AppNavigation
-import com.comparacarro2.navigation.Screen
+import com.comparacarro.navigation.AppNavigation
 import com.theme.ComparaCarrosTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,13 +23,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(startDestination: String = Screen.Home.route) {
+fun App() {
+    // startDestination: String = Screen.Home.route
     ComparaCarrosTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            AppNavigation(startDestination = startDestination)
+            AppNavigation()
         }
     }
 }

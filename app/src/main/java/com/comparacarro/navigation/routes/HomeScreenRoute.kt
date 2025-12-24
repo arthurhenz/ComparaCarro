@@ -1,30 +1,21 @@
-package com.comparacarro2.navigation.routes
+package com.comparacarro.navigation.routes
 
-import androidx.compose.runtime.Composable
-import com.comparacarro2.navigation.Screen
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.home.HomeScreen
+import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.homeScreenRoute(
+@Serializable
+data class HomeScreenRoute(val route: String) : NavKey
+
+fun EntryProviderScope<NavKey>.homeScreenRoute(
     onCardClick: (String) -> Unit,
     onCompareFromHome: () -> Unit
 ) {
-    composable(
-        route = Screen.Home.route
-    ) {
-        HomeScreenRoute(
+    entry<HomeScreenRoute> { key ->
+        HomeScreen(
             onCardClick = onCardClick,
             onCompareFromHome = onCompareFromHome
         )
     }
-}
-
-@Composable
-private fun HomeScreenRoute(
-    onCardClick: (String) -> Unit,
-    onCompareFromHome: () -> Unit
-) {
-    HomeScreen(
-        onCardClick = onCardClick,
-        onCompareFromHome = onCompareFromHome
-    )
 }

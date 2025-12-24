@@ -1,4 +1,4 @@
-package comparacarro2.network.result
+package comparacarro.network.result
 
 sealed class NetworkResult<out T> {
     data class Success<T>(val data: T) : NetworkResult<T>()
