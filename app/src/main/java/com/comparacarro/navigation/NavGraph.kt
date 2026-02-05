@@ -2,7 +2,9 @@ package com.comparacarro.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.comparacarro.navigation.routes.CardDetailRoute
 import com.comparacarro.navigation.routes.CompareScreenRoute
@@ -12,48 +14,25 @@ import com.comparacarro.navigation.routes.cardDetailRoute
 import com.comparacarro.navigation.routes.compareScreenRoute
 import com.comparacarro.navigation.routes.homeScreenRoute
 import com.comparacarro.navigation.routes.selectComparisonRoute
-
+import com.comparacarro.navigation.utils.EntriesProviderAggregator
+import jakarta.inject.Inject
+import org.koin.compose.koinInject
+import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun AppNavigation() {
-    
-    val navigationState = rememberNavigationState(
-        startRoute = HomeScreenRoute("home"),
-        topLevelRoutes = setOf(HomeScreenRoute("home"))
-    )
 
-    val navigator = remember { Navigator(navigationState) }
+//    val navigationState = rememberNavigationState(
+//        startRoute = HomeScreenRoute("home"),
+//        topLevelRoutes = setOf(HomeScreenRoute("home"))
+//    )
 
-    val entryProvider = entryProvider {
-        homeScreenRoute(
-            onCardClick = { cardId ->
-                navigator.navigate(CardDetailRoute(cardId))
-            },
-            onCompareFromHome = {
-                navigator.navigate(SelectComparisonRoute(null))
-            }
-        )
-
-        cardDetailRoute(
-            goBack = { navigator.goBack() },
-            onCompareFromDetail = { firstId ->
-                navigator.navigate(SelectComparisonRoute(firstId))
-            }
-        )
-
-        selectComparisonRoute(
-            goBack = { navigator.goBack() },
-            onCompareSelected = { firstId, secondId ->
-                navigator.navigate(CompareScreenRoute(firstId, secondId))
-            },
-            onCardClick = { cardId -> navigator.navigate(CardDetailRoute(cardId)) }
-        )
-
-        compareScreenRoute(goBack = { navigator.goBack() })
-    }
+    val entryBuilders = koinInject<EntriesProviderAggregator>().entries
 
     NavDisplay(
-        entries = navigationState.toEntries(entryProvider),
-        onBack = { navigator.goBack() }
+        backStack = rememberNavBackStack(HomeScreenRoute),
+        entryProvider = entryProvider {
+            entryBuilders.forEach { builder -> this.builder() }
+        },
     )
 }

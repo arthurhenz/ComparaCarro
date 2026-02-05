@@ -79,6 +79,7 @@ dependencies {
     implementation(project(":network"))
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
