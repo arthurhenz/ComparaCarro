@@ -1,4 +1,7 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -30,3 +33,4 @@ include(":feature:detail")
 include(":feature:comparison")
 include(":network")
 include(":core:utils")
+include(":core:navigation")

@@ -2,7 +2,12 @@ package com.selectCompare
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.common.navigation.NavOptions
+import com.common.navigation.Navigator
 import com.data.usecase.GetSmallCardsPageUseCase
+import com.navigation.routes.CardDetailRoute
+import com.navigation.routes.CompareScreenRoute
+import com.navigation.routes.HomeScreenRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +18,9 @@ import org.koin.core.annotation.InjectedParam
 @KoinViewModel
 class SelectComparisonViewModel(
     private val getSmallCardsPageUseCase: GetSmallCardsPageUseCase,
-    @InjectedParam private val cardId: String
-) : ViewModel() {
+    @InjectedParam private val cardId: String,
+    navigator: Navigator
+) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<SelectComparisonScreenState>(SelectComparisonScreenState.Loading)
     val state: StateFlow<SelectComparisonScreenState> = _state.asStateFlow()
 

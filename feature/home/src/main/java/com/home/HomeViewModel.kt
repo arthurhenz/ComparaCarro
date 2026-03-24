@@ -1,11 +1,16 @@
 package com.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.common.navigation.NavOptions
+import com.common.navigation.Navigator
 import com.data.model.SmallCardData
 import com.data.usecase.GetRecentlyViewedCarsUseCase
 import com.data.usecase.GetSmallCardsUseCase
 import com.data.usecase.SaveRecentlyViewedCarUseCase
+import com.navigation.routes.CardDetailRoute
+import com.navigation.routes.SelectComparisonRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +26,9 @@ enum class SortType {
 class HomeViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
     private val getRecentlyViewedCarsUseCase: GetRecentlyViewedCarsUseCase,
-    private val saveRecentlyViewedCarUseCase: SaveRecentlyViewedCarUseCase
-) : ViewModel() {
+    private val saveRecentlyViewedCarUseCase: SaveRecentlyViewedCarUseCase,
+    navigator: Navigator
+) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
 
@@ -94,7 +100,7 @@ class HomeViewModel(
                         recentlyViewedCards = recentlyViewedCards
                     )
             } catch (e: Exception) {
-                android.util.Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)
+                Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)
                 _state.value = HomeScreenState.Error(e.message ?: "Failed to load cards")
             }
         }
@@ -105,28 +111,33 @@ class HomeViewModel(
             if (currentState is HomeScreenState.Success) {
                 try {
                     val recentlyViewedCards = getRecentlyViewedCarsUseCase()
-                    android.util.Log.d("HomeViewModel", "Refreshed recently viewed: " + recentlyViewedCards.size)
+                    Log.d("HomeViewModel", "Refreshed recently viewed: " + recentlyViewedCards.size)
                     _state.value = currentState.copy(recentlyViewedCards = recentlyViewedCards)
                 } catch (e: Exception) {
-                    android.util.Log.e("HomeViewModel", "Failed to refresh recently viewed: " + (e.message ?: "unknown"), e)
+                    Log.e("HomeViewModel", "Failed to refresh recently viewed: " + (e.message ?: "unknown"), e)
                 }
             }
         }
 
-    fun onCardClick(cardId: String) =
+    fun navigateToDetail(cardId: String) {
         viewModelScope.launch {
             try {
                 saveRecentlyViewedCarUseCase(cardId)
-                android.util.Log.d("HomeViewModel", "Saved recently viewed car: $cardId")
             } catch (e: Exception) {
-                android.util.Log.e("HomeViewModel", "Failed to save recently viewed car: ${e.message}")
+                Log.e("HomeViewModel", "Failed to save recently viewed car: ${e.message}")
             }
         }
+        navigate(CardDetailRoute(cardId), NavOptions(singleTop = true))
+    }
+
+    fun navigateToSelectComparison() {
+        navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
+    }
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
             HomeScreenEvent.ReloadCards -> {
-                android.util.Log.d("HomeViewModel", "Reload event received")
+                Log.d("HomeViewModel", "Reload event received")
                 loadCards()
             }
         }

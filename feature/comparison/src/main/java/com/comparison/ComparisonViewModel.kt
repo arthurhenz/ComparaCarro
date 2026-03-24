@@ -3,7 +3,10 @@ package com.comparison
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.common.navigation.NavOptions
+import com.common.navigation.Navigator
 import com.data.usecase.GetCarByIdUseCase
+import com.navigation.routes.HomeScreenRoute
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +19,9 @@ data class ComparisonParams(val firstId: String, val secondId: String)
 @KoinViewModel
 class ComparisonViewModel(
     private val getCarByIdUseCase: GetCarByIdUseCase,
-    private val params: ComparisonParams
-) : ViewModel() {
+    private val params: ComparisonParams,
+    navigator: Navigator
+) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<ComparisonScreenState>(ComparisonScreenState.Loading)
     val state: StateFlow<ComparisonScreenState> = _state.asStateFlow()
 
@@ -53,6 +57,10 @@ class ComparisonViewModel(
                 _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load car comparisons")
             }
         }
+
+    fun navigateToHome() {
+        navigate(HomeScreenRoute, NavOptions(popUpTo = HomeScreenRoute, popUpToInclusive = true))
+    }
 
     fun onEvent(event: ComparisonScreenEvent) {
         when (event) {

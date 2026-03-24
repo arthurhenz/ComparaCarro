@@ -3,7 +3,10 @@ package com.detail
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.common.navigation.NavOptions
+import com.common.navigation.Navigator
 import com.data.usecase.GetCarByIdUseCase
+import com.navigation.routes.SelectComparisonRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,8 +17,9 @@ import org.koin.core.annotation.InjectedParam
 @KoinViewModel
 class DetailViewModel(
     private val getCarByIdUseCase: GetCarByIdUseCase,
-    @InjectedParam private val cardId: String
-) : ViewModel() {
+    @InjectedParam private val cardId: String,
+    navigator: Navigator
+) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<DetailScreenState>(DetailScreenState.Loading)
     val state: StateFlow<DetailScreenState> = _state.asStateFlow()
 
@@ -36,6 +40,10 @@ class DetailViewModel(
                 _state.value = DetailScreenState.Error(e.message ?: "Failed to load card details")
             }
         }
+
+    fun navigateToCompare(cardId: String) {
+        navigate(SelectComparisonRoute(cardId), NavOptions(singleTop = true))
+    }
 
     fun onEvent(event: DetailScreenEvent) {
         when (event) {

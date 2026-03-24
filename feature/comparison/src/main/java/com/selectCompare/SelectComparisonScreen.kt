@@ -1,7 +1,5 @@
 package com.selectCompare
 
-import android.R.attr.navigationIcon
-import android.R.attr.text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -21,8 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,20 +31,19 @@ import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectComparisonScreen(
-    firstId: String?,
+    state: SelectComparisonScreenState,
     onBackClick: () -> Unit = {},
-    onCardClick: (String) -> Unit,
+    onCardClick: (String) -> Unit = {},
     onCompareClick: (Pair<String, String>) -> Unit = {},
-    viewModel: SelectComparisonViewModel = koinViewModel { parametersOf(firstId ?: "") }
+    onSearchQueryChange: (String) -> Unit = {},
+    onSearchFocusChanged: (Boolean) -> Unit = {},
+    onToggleSelect: (String) -> Unit = {},
+    onLoadMore: (Int) -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -93,7 +88,7 @@ fun SelectComparisonScreen(
             )
         }
     ) { paddingValues ->
-        when (val currentState = state) {
+        when (state) {
             is SelectComparisonScreenState.Loading -> {
                 Box(
                     modifier =
@@ -115,7 +110,7 @@ fun SelectComparisonScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = currentState.error ?: "Unknown error",
+                        text = state.error ?: "Unknown error",
                         style = TokenDefaultTypography.bodyLarge,
                         color = TokenColors.Error
                     )
@@ -125,13 +120,13 @@ fun SelectComparisonScreen(
             is SelectComparisonScreenState.Success -> {
                 SelectComparisonContent(
                     modifier = Modifier.padding(paddingValues),
-                    state = currentState,
-                    onCardClick = { it -> onCardClick(it) },
-                    onSearchQueryChange = viewModel::updateSearchQuery,
-                    onSearchFocusChanged = viewModel::updateSearchFocus,
-                    onToggleSelect = viewModel::toggleSelection,
-                    onCompareClick = { pair -> onCompareClick(pair) },
-                    onLoadMore = { lastVisibleIndex -> viewModel.loadNextPageIfNeeded(lastVisibleIndex) }
+                    state = state,
+                    onCardClick = onCardClick,
+                    onSearchQueryChange = onSearchQueryChange,
+                    onSearchFocusChanged = onSearchFocusChanged,
+                    onToggleSelect = onToggleSelect,
+                    onCompareClick = onCompareClick,
+                    onLoadMore = onLoadMore
                 )
             }
         }

@@ -23,8 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,19 +38,14 @@ import com.theme.TokenDefaultTypography
 import com.ui.CarDetailOptional
 import com.ui.CarDetailOptionalsList
 import com.ui.PrimaryButton
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    cardId: String,
+    state: DetailScreenState,
     onBackClick: () -> Unit = {},
-    onCompareClick: (String) -> Unit = {},
-    viewModel: DetailViewModel = koinViewModel { parametersOf(cardId) }
+    onCompareClick: (String) -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -77,7 +70,7 @@ fun DetailScreen(
             )
         }
     ) { paddingValues ->
-        when (val currentState = state) {
+        when (state) {
             is DetailScreenState.Loading -> {
                 Box(
                     modifier =
@@ -99,7 +92,7 @@ fun DetailScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = currentState.error ?: "Unknown error",
+                        text = state.error ?: "Unknown error",
                         style = TokenDefaultTypography.bodyLarge,
                         color = TokenColors.Error
                     )
@@ -109,7 +102,7 @@ fun DetailScreen(
             is DetailScreenState.Success -> {
                 CardDetailContent(
                     modifier = Modifier.padding(paddingValues),
-                    car = currentState.car,
+                    car = state.car,
                     onCompareClick = onCompareClick
                 )
             }

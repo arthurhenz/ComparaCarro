@@ -7,8 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,25 +17,26 @@ import com.data.model.LargeCardData
 import com.data.model.SmallCardData
 import com.theme.ComparaCarrosTheme
 import com.theme.TokenColors
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel(),
+    state: HomeScreenState,
+    searchQuery: String,
+    isSearchFocused: Boolean,
+    sortType: SortType,
     onCardClick: (String) -> Unit = {},
-    onCompareFromHome: () -> Unit = {}
+    onCompareFromHome: () -> Unit = {},
+    onSearchQueryChange: (String) -> Unit = {},
+    onSearchFocusChanged: (Boolean) -> Unit = {},
+    onSortTypeChange: (SortType) -> Unit = {},
+    onRefreshRecentlyViewed: () -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val isSearchFocused by viewModel.isSearchFocused.collectAsState()
-    val sortType by viewModel.sortType.collectAsState()
-
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    viewModel.refreshRecentlyViewed()
+                    onRefreshRecentlyViewed()
                 }
             }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -46,7 +45,7 @@ fun HomeScreen(
         }
     }
 
-    when (val currentState = state) {
+    when (state) {
         is HomeScreenState.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -62,7 +61,7 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = currentState.error ?: "Unknown error",
+                    text = state.error ?: "Unknown error",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -71,19 +70,16 @@ fun HomeScreen(
 
         is HomeScreenState.Success -> {
             HomeScreenContent(
-                smallCards = currentState.smallCards,
-                recentlyViewedCards = currentState.recentlyViewedCards,
+                smallCards = state.smallCards,
+                recentlyViewedCards = state.recentlyViewedCards,
                 searchQuery = searchQuery,
-                onSearchQueryChange = viewModel::updateSearchQuery,
-                onSearchFocusChanged = viewModel::updateSearchFocus,
+                onSearchQueryChange = onSearchQueryChange,
+                onSearchFocusChanged = onSearchFocusChanged,
                 isSearchFocused = isSearchFocused,
                 sortType = sortType,
-                onSortTypeChange = viewModel::updateSortType,
-                onCardClick = { cardId ->
-                    viewModel.onCardClick(cardId)
-                    onCardClick(cardId)
-                },
-                onCompareClick = { onCompareFromHome() }
+                onSortTypeChange = onSortTypeChange,
+                onCardClick = onCardClick,
+                onCompareClick = onCompareFromHome
             )
         }
     }

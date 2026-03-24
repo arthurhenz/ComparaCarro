@@ -1,8 +1,5 @@
 package com.comparacarro.navigation.utils
 
-import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavKey
-import org.koin.core.annotation.Single
+import com.navigation.EntryProvider
 
-@Single
-class EntriesProviderAggregator(val entries : List<EntryProviderScope<NavKey>.() -> Unit>)
+class EntriesProviderAggregator(val entryProviders: List<EntryProvider>)
