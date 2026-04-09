@@ -1,12 +1,10 @@
-package com.comparacarro
+package extensions
 
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 internal fun Project.configureKotlinAndroid(
@@ -28,7 +26,12 @@ internal fun Project.configureKotlinAndroid(
     configure<KotlinAndroidProjectExtension> {
         jvmToolchain(17)
     }
-}
 
-internal val Project.libs: VersionCatalog
-    get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
+    dependencies {
+        add("implementation", libs.findLibrary("androidx-core-ktx").get())
+        add("testImplementation", libs.findLibrary("junit").get())
+        add("testImplementation", "org.jetbrains.kotlin:kotlin-test")
+        add("androidTestImplementation", libs.findLibrary("androidx-junit").get())
+        add("androidTestImplementation", libs.findLibrary("androidx-espresso-core").get())
+    }
+}
