@@ -1,12 +1,8 @@
 plugins {
-    id("comparacarro.android.library")
+    alias(libs.plugins.app.library)
     id("comparacarro.detekt")
 }
 
 android {
     namespace = "com.common"
-}
-
-dependencies {
-    implementation(libs.androidx.core.ktx)
 }
