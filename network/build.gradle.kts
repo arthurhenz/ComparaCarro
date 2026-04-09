@@ -1,5 +1,5 @@
 plugins {
-    id("comparacarro.android.library")
+    alias(libs.plugins.app.library)
     id("comparacarro.koin")
     id("comparacarro.detekt")
     alias(libs.plugins.kotlin.serialization)
@@ -10,7 +10,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
@@ -20,8 +19,4 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
