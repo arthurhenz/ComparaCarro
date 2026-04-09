@@ -11,22 +11,29 @@ kotlin {
     jvmToolchain(17)
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-stdlib:$embeddedKotlinVersion")
+    }
+}
+
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.detekt.gradlePlugin)
+    compileOnly(libs.screenshot.gradlePlugin)
 }
 
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = "comparacarro.android.application"
+            id = libs.plugins.app.application.get().pluginId
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibrary") {
-            id = "comparacarro.android.library"
+            id = libs.plugins.app.library.get().pluginId
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidCompose") {
