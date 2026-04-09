@@ -20,8 +20,27 @@
 
 ✅ Usar Koin para Navigation
 
-➖ ver now in android depois adicionar linha para fazer do outro jeito build gradle
+✅ ver now in android depois adicionar linha para fazer do outro jeito build gradle
 
 ➖ usar screenShot e uiTest
 
+➖ Criar icone do app
+
+➖ Github Releases
+
 ➖ integracao com Firebase para login usando google - ultimo se der
+
+➖ Requisitos: 
+    * API gratuita de fipe 
+    * Firebase AAS ou
+    * Oracle deploy (1 core e 1tb armazenamento) ou
+    * Cloudflare 0trust (necessita dominio)
+
+
+➖ Add individual commits
+
+
+Ter uma camada de abstracao do AnalyticsProvider e ter uma implementacao concreta do Adobe que pode ser AdobeAnalyticsProvider
+Provider deve ter metodos de trackear tela, erro e poder passar payload com informacoes adicionais
+
+
