@@ -1,5 +1,5 @@
 plugins {
-    id("comparacarro.android.application")
+    alias(libs.plugins.app.application)
     id("comparacarro.android.compose")
     id("comparacarro.koin")
     id("comparacarro.detekt")
@@ -30,19 +30,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation(kotlin("test"))
-
-    implementation(libs.androidx.navigation3.ui)
-    implementation(libs.androidx.navigation3.runtime)
-    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-
     implementation(project(":feature:home"))
     implementation(project(":feature:detail"))
     implementation(project(":feature:comparison"))
@@ -51,9 +38,6 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
     implementation(project(":network"))
-
-    implementation(libs.koin.compose)
-    implementation(libs.koin.compose.viewmodel)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
