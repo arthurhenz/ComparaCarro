@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.3"
+agp = "8.9.3" #mudar depois pro convention plugin
 koin = "4.1.1"
 koinAnnotations = "2.2.0-RC1"
 ksp = "2.2.10-2.0.2"
@@ -14,6 +14,7 @@ composeBom = "2025.09.00"
 appcompat = "1.7.1"
 material = "1.13.0"
 detekt = "1.23.7"
+screenshot = "0.0.1-alpha13"
 
 nav3Core = "1.0.0-alpha06"
 
@@ -40,6 +41,7 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "screenshot" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -79,6 +81,7 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+screenshot-gradlePlugin = { group = "com.android.compose.screenshot", name = "com.android.compose.screenshot.gradle.plugin", version.ref = "screenshot" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -89,4 +92,14 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+screenshot = { id = "com.android.compose.screenshot", version.ref = "screenshot" }
 
+
+# Deveria ter uma sessao de pluigins locais
+
+## Plugins defined by this project
+app-application = { id = "app.application" }
+app-library = { id = "app.library" }
+
+
+# Colocar app para ficar generico e facil de passar para outros projetos
