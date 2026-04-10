@@ -6,16 +6,10 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.navigation.EntryProvider
 import com.navigation.routes.HomeScreenRoute
-import org.koin.compose.module.rememberKoinModules
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.ksp.generated.module
 
 fun EntryProviderScope<NavKey>.homeScreenRoute() {
     entry<HomeScreenRoute> { key ->
-        rememberKoinModules(unloadOnForgotten = true, unloadOnAbandoned = true) {
-            listOf(HomeModule().module)
-        }
-
         // Tambem podemos ter Composable como HomeScreenRoute
         val viewModel: HomeViewModel = koinViewModel()
 

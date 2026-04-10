@@ -1,6 +1,5 @@
 plugins {
-    id("comparacarro.android.library")
-    id("comparacarro.detekt")
+    alias(libs.plugins.app.library)
 }
 
 android {
@@ -8,10 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

@@ -1,6 +1,5 @@
 plugins {
-    id("comparacarro.android.library")
-    id("comparacarro.detekt")
+    alias(libs.plugins.app.library)
     alias(libs.plugins.kotlin.serialization)
 }
 

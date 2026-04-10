@@ -29,11 +29,12 @@ class ComparaCarroApplication : Application() {
     }
 }
 
-private val navigationModule = module {
-    single { AppNavigator() } bind Navigator::class
-    single { EntriesProviderAggregator(getAll()) }
-    single { HomeScreenProvider() } bind EntryProvider::class
-    single { CardDetailScreenProvider() } bind EntryProvider::class
-    single { CompareScreenScreenProvider() } bind EntryProvider::class
-    single { SelectComparisonScreenProvider() } bind EntryProvider::class
-}
+private val navigationModule =
+    module {
+        single { AppNavigator() } bind Navigator::class
+        single { EntriesProviderAggregator(getAll()) }
+        single { HomeScreenProvider() } bind EntryProvider::class
+        single { CardDetailScreenProvider() } bind EntryProvider::class
+        single { CompareScreenScreenProvider() } bind EntryProvider::class
+        single { SelectComparisonScreenProvider() } bind EntryProvider::class
+    }
