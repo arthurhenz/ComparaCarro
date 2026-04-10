@@ -17,8 +17,9 @@ fun AppNavigation() {
 
     NavDisplay(
         backStack = navigator.backStack,
-        entryProvider = entryProvider {
-            entryBuilders.forEach { builder -> this.builder() }
-        },
+        entryProvider =
+            entryProvider {
+                entryBuilders.forEach { builder -> this.builder() }
+            }
     )
 }

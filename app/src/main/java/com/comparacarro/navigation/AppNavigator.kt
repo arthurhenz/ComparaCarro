@@ -14,10 +14,13 @@ class AppNavigator : Navigator {
         }
     }
 
-    override fun navigate(route: Any, options: NavOptions) {
+    override fun navigate(
+        route: Any,
+        options: NavOptions
+    ) {
         val navRoute = route as NavKey
 
-        //Usar navOption aqui
+        // Usar navOption aqui
 
         if (options.popUpTo != null) {
             val popTarget = options.popUpTo!!
