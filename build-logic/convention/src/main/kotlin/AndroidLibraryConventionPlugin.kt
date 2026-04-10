@@ -1,5 +1,6 @@
 import com.android.build.api.dsl.LibraryExtension
 import extensions.configureKotlinAndroid
+import extensions.configureKtlint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -14,6 +15,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 testOptions.targetSdk = 36
             }
+
+            configureKtlint()
         }
     }
 }

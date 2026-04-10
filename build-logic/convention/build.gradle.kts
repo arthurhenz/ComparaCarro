@@ -22,7 +22,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
-    compileOnly(libs.detekt.gradlePlugin)
+    implementation(libs.ktlint.gradlePlugin)
     compileOnly(libs.screenshot.gradlePlugin)
 }
 
@@ -43,10 +43,6 @@ gradlePlugin {
         register("koin") {
             id = "comparacarro.koin"
             implementationClass = "KoinConventionPlugin"
-        }
-        register("detekt") {
-            id = "comparacarro.detekt"
-            implementationClass = "DetektConventionPlugin"
         }
     }
 }

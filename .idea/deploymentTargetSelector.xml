@@ -22,9 +22,6 @@
       <SelectionState runConfigName="feature.home">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="HeartToggleButtonPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="app.feature">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

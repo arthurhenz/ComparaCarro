@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.app.application)
     id("comparacarro.android.compose")
     id("comparacarro.koin")
-    id("comparacarro.detekt")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
 }

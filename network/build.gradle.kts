@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.app.library)
     id("comparacarro.koin")
-    id("comparacarro.detekt")
     alias(libs.plugins.kotlin.serialization)
 }
 

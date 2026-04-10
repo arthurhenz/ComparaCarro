@@ -28,7 +28,6 @@ import org.gradle.api.provider.Provider
 val Project.libs
     get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-
 fun Project.version(dependency: String): Int = libs.findVersion(dependency).get().toString().toInt()
 
 fun Project.plugin(pluginName: String): PluginDependency = libs.findPlugin(pluginName).get().get()
