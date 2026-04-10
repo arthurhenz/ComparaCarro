@@ -24,9 +24,9 @@
 
 ➖ usar screenShot e uiTest
 
-➖ Criar icone do app
+✅ Criar icone do app
 
-➖ Github Releases
+✅ Github Releases
 
 ➖ integracao com Firebase para login usando google - ultimo se der
 
