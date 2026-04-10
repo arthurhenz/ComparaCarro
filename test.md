@@ -22,11 +22,13 @@
 
 ✅ ver now in android depois adicionar linha para fazer do outro jeito build gradle
 
-➖ usar screenShot e uiTest
-
 ✅ Criar icone do app
 
 ✅ Github Releases
+
+✅ Substituir Detekt para Ktlint.
+
+➖ usar screenShot e uiTest
 
 ➖ integracao com Firebase para login usando google - ultimo se der
 
