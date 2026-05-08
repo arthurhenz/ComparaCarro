@@ -31,8 +31,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
+import com.theme.Theme
+import com.theme.TokenShapes
+import com.theme.TokenSpacing
 
 private const val CARD_HEIGHT = 230
 private const val CARD_WIDTH = 175
@@ -54,19 +55,19 @@ fun SmallCard(
                 .clearAndSetSemantics { this.contentDescription = contentDescription },
         colors =
             CardDefaults.cardColors(
-                containerColor = TokenColors.White
+                containerColor = Theme.colors.surface
             ),
         elevation =
             CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),
-        shape = RoundedCornerShape(0.dp),
+        shape = TokenShapes.Card,
         onClick = onClick
     ) {
         Column(
-            modifier = Modifier.padding(top = 6.dp)
+            modifier = Modifier.padding(top = TokenSpacing.Item)
         ) {
-            Box(modifier = Modifier.padding(bottom = 6.dp)) {
+            Box(modifier = Modifier.padding(bottom = TokenSpacing.Item)) {
                 Image(
                     modifier =
                         Modifier
@@ -80,8 +81,8 @@ fun SmallCard(
 
             Text(
                 text = title,
-                color = TokenColors.Title,
-                style = TokenDefaultTypography.titleSmall,
+                color = Theme.colors.textPrimary,
+                style = Theme.typography.bodyLarge,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -89,8 +90,8 @@ fun SmallCard(
 
             Text(
                 text = fipe,
-                color = TokenColors.Subtitle,
-                style = TokenDefaultTypography.labelMedium,
+                color = Theme.colors.textSecondary,
+                style = Theme.typography.priceMedium,
                 modifier =
                     Modifier
                         .fillMaxWidth(),
@@ -120,19 +121,19 @@ fun SmallCard(
                 .clearAndSetSemantics { this.contentDescription = contentDescription },
         colors =
             CardDefaults.cardColors(
-                containerColor = TokenColors.White
+                containerColor = Theme.colors.surface
             ),
         elevation =
             CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             ),
-        shape = RoundedCornerShape(0.dp),
+        shape = TokenShapes.Card,
         onClick = onClick
     ) {
         Column(
-            modifier = Modifier.padding(top = 6.dp)
+            modifier = Modifier.padding(top = TokenSpacing.Item)
         ) {
-            Box(modifier = Modifier.padding(bottom = 6.dp)) {
+            Box(modifier = Modifier.padding(bottom = TokenSpacing.Item)) {
                 Image(
                     modifier =
                         Modifier
@@ -154,8 +155,8 @@ fun SmallCard(
 
             Text(
                 text = title,
-                color = TokenColors.Title,
-                style = TokenDefaultTypography.titleSmall,
+                color = Theme.colors.textPrimary,
+                style = Theme.typography.bodyLarge,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -163,8 +164,8 @@ fun SmallCard(
 
             Text(
                 text = fipe,
-                color = TokenColors.Subtitle,
-                style = TokenDefaultTypography.labelMedium,
+                color = Theme.colors.textSecondary,
+                style = Theme.typography.priceMedium,
                 modifier =
                     Modifier
                         .fillMaxWidth(),
@@ -178,25 +179,27 @@ fun SmallCard(
 @Preview
 @Composable
 fun SmallCardPreview() {
-    Row {
-        SmallCard(
-            image = painterResource(id = R.drawable.ic_launcher_background),
-            selected = true,
-            onSelect = { true },
-            onClick = {},
-            title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
-            fipe = "R$30.000,00"
-        )
+    Theme {
+        Row {
+            SmallCard(
+                image = painterResource(id = R.drawable.ic_launcher_background),
+                selected = true,
+                onSelect = { true },
+                onClick = {},
+                title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
+                fipe = "R$30.000,00"
+            )
 
-        Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(TokenSpacing.Item))
 
-        SmallCard(
-            image = painterResource(id = R.drawable.ic_launcher_background),
-            selected = false,
-            onClick = {},
-            onSelect = { true },
-            title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
-            fipe = "R$30.000,00"
-        )
+            SmallCard(
+                image = painterResource(id = R.drawable.ic_launcher_background),
+                selected = false,
+                onClick = {},
+                onSelect = { true },
+                title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
+                fipe = "R$30.000,00"
+            )
+        }
     }
 }
