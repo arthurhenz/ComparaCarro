@@ -3,7 +3,6 @@ package com.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -16,7 +15,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
 import com.theme.Theme
-import com.theme.TokenColors
 
 @Composable
 fun HomeScreen(
@@ -51,7 +49,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = TokenColors.Primary)
+                CircularProgressIndicator(color = Theme.colors.accentTertiary)
             }
         }
 
@@ -62,8 +60,8 @@ fun HomeScreen(
             ) {
                 Text(
                     text = state.error ?: "Unknown error",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error
+                    style = Theme.typography.bodyLarge,
+                    color = Theme.colors.error
                 )
             }
         }
