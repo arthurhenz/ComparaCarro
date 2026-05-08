@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -26,14 +24,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.theme.Theme
-import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
 import com.theme.TokenIconSize
+import com.theme.TokenShapes
+import com.theme.TokenSpacing
 
 @Composable
 fun Header(
@@ -80,71 +75,26 @@ fun Header(
                 Icon(
                     imageVector = Icons.Filled.Menu,
                     contentDescription = "Menu",
-                    tint = TokenColors.Icon,
+                    tint = Theme.colors.textPrimary,
                     modifier = Modifier.size(TokenIconSize.Medium)
                 )
             }
 
             Text(
                 text = title,
-                style = TokenDefaultTypography.titleLarge,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TokenColors.Primary,
+                style = Theme.typography.headlineLarge,
+                color = Theme.colors.accentPrimary,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
 
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = onSearchQueryChange,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { focusState ->
-                        onSearchFocusChanged(focusState.isFocused)
-                    },
-            placeholder = {
-                Text(
-                    text = "Buscar por modelo...",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TokenColors.Subtitle
-                )
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search",
-                    tint = TokenColors.Subtitle
-                )
-            },
-            trailingIcon = {
-                if (isSearchFocused) {
-                    IconButton(
-                        onClick = {
-                            onSearchQueryChange("")
-                            focusManager.clearFocus()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "Clear and unfocus",
-                            tint = TokenColors.Subtitle
-                        )
-                    }
-                }
-            },
-            shape = RoundedCornerShape(8.dp),
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = TokenColors.White,
-                    unfocusedContainerColor = TokenColors.White,
-                    focusedIndicatorColor = TokenColors.Primary,
-                    unfocusedIndicatorColor = TokenColors.Subtitle.copy(alpha = 0.3f)
-                ),
-            singleLine = true
+        SearchField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = onSearchQueryChange,
+            onSearchFocusChanged = onSearchFocusChanged,
+            isSearchFocused = isSearchFocused,
+            focusRequester = focusRequester,
+            focusManager = focusManager
         )
     }
 }
@@ -165,58 +115,84 @@ fun Header(
             modifier
                 .fillMaxWidth()
     ) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = onSearchQueryChange,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { focusState ->
-                        onSearchFocusChanged(focusState.isFocused)
-                    },
-            placeholder = {
-                Text(
-                    text = "Buscar por modelo...",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TokenColors.Subtitle
-                )
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search",
-                    tint = TokenColors.Subtitle
-                )
-            },
-            trailingIcon = {
-                if (isSearchFocused) {
-                    IconButton(
-                        onClick = {
-                            onSearchQueryChange("")
-                            focusManager.clearFocus()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "Clear and unfocus",
-                            tint = TokenColors.Subtitle
-                        )
-                    }
-                }
-            },
-            shape = RoundedCornerShape(8.dp),
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = TokenColors.White,
-                    unfocusedContainerColor = TokenColors.White,
-                    focusedIndicatorColor = TokenColors.Primary,
-                    unfocusedIndicatorColor = TokenColors.Subtitle.copy(alpha = 0.3f)
-                ),
-            singleLine = true
+        SearchField(
+            searchQuery = searchQuery,
+            onSearchQueryChange = onSearchQueryChange,
+            onSearchFocusChanged = onSearchFocusChanged,
+            isSearchFocused = isSearchFocused,
+            focusRequester = focusRequester,
+            focusManager = focusManager
         )
     }
+}
+
+@Composable
+private fun SearchField(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchFocusChanged: (Boolean) -> Unit,
+    isSearchFocused: Boolean,
+    focusRequester: FocusRequester,
+    focusManager: androidx.compose.ui.focus.FocusManager
+) {
+    OutlinedTextField(
+        value = searchQuery,
+        onValueChange = onSearchQueryChange,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = TokenSpacing.Block,
+                    end = TokenSpacing.Block,
+                    top = TokenSpacing.Item,
+                    bottom = TokenSpacing.Block
+                )
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    onSearchFocusChanged(focusState.isFocused)
+                },
+        placeholder = {
+            Text(
+                text = "Buscar por modelo...",
+                style = Theme.typography.bodyMedium,
+                color = Theme.colors.textSecondary
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Search",
+                tint = Theme.colors.textSecondary
+            )
+        },
+        trailingIcon = {
+            if (isSearchFocused) {
+                IconButton(
+                    onClick = {
+                        onSearchQueryChange("")
+                        focusManager.clearFocus()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Clear and unfocus",
+                        tint = Theme.colors.textSecondary
+                    )
+                }
+            }
+        },
+        shape = TokenShapes.Sm,
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Theme.colors.surfaceInput,
+                unfocusedContainerColor = Theme.colors.surfaceInput,
+                focusedIndicatorColor = Theme.colors.accentPrimary,
+                unfocusedIndicatorColor = Theme.colors.outlineGhost,
+                focusedTextColor = Theme.colors.textPrimary,
+                unfocusedTextColor = Theme.colors.textPrimary
+            ),
+        singleLine = true
+    )
 }
 
 @Preview(showBackground = true)
