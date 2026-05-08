@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
@@ -37,8 +38,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.theme.Theme
 import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
+import com.theme.TokenShapes
+import com.theme.TokenSpacing
 
 private const val CARD_HEIGHT = 180
 private const val CARD_WIDTH = 280
@@ -56,10 +59,9 @@ fun LargeCard(
             modifier
                 .height(CARD_HEIGHT.dp)
                 .width(CARD_WIDTH.dp)
-                // drawWithContent
                 .clearAndSetSemantics { this.contentDescription = contentDescription },
-        shape = RoundedCornerShape(0.dp),
-        colors = CardDefaults.cardColors(containerColor = TokenColors.Transparent)
+        shape = TokenShapes.Card,
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -69,7 +71,7 @@ fun LargeCard(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(start = 16.dp, top = 16.dp)
+                        .padding(start = TokenSpacing.Block, top = TokenSpacing.Block)
                         .clip(RoundedCornerShape(10.dp))
             ) {
                 Image(
@@ -82,13 +84,13 @@ fun LargeCard(
                 )
                 Text(
                     text = title,
-                    color = TokenColors.White,
-                    style = TokenDefaultTypography.titleSmall,
+                    color = Theme.colors.textPrimary,
+                    style = Theme.typography.titleLarge,
                     modifier =
                         Modifier
                             .align(Alignment.BottomStart)
                             .fillMaxWidth()
-                            .padding(start = 12.dp, end = 12.dp, bottom = 4.dp),
+                            .padding(horizontal = TokenSpacing.Inline, vertical = TokenSpacing.Item / 2),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -110,8 +112,8 @@ fun LargeCard(
             )
             Text(
                 text = "Recente",
-                color = TokenColors.White,
-                style = TokenDefaultTypography.titleLarge,
+                color = Theme.colors.textPrimary,
+                style = Theme.typography.titleLarge,
                 modifier =
                     Modifier
                         .align(Alignment.TopStart)
@@ -149,6 +151,8 @@ private fun DiagonalLine(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 40.dp
 ) {
+    val accent = Theme.colors.accentPrimary
+
     Canvas(
         modifier =
             modifier
@@ -161,7 +165,7 @@ private fun DiagonalLine(
         val rightIntersection = leftIntersection + slope * size.width
 
         drawLine(
-            color = TokenColors.Primary,
+            color = accent,
             start = Offset(0F, leftIntersection),
             end = Offset(size.width, rightIntersection),
             cap = StrokeCap.Square,
@@ -170,11 +174,13 @@ private fun DiagonalLine(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun LargeCardPreview() {
-    LargeCard(
-        background = painterResource(id = R.drawable.ic_launcher_background),
-        title = "Subaru Impreza Twin Turbo Forged"
-    )
+    Theme {
+        LargeCard(
+            background = painterResource(id = R.drawable.ic_launcher_background),
+            title = "Subaru Impreza Twin Turbo Forged"
+        )
+    }
 }
