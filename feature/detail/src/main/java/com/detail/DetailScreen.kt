@@ -33,8 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.data.R
 import com.data.model.CarDetailData
 import com.theme.Theme
-import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
+import com.theme.TokenSpacing
 import com.ui.CarDetailOptional
 import com.ui.CarDetailOptionalsList
 import com.ui.PrimaryButton
@@ -79,7 +78,7 @@ fun DetailScreen(
                             .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = TokenColors.Primary)
+                    CircularProgressIndicator(color = Theme.colors.accentTertiary)
                 }
             }
 
@@ -93,8 +92,8 @@ fun DetailScreen(
                 ) {
                     Text(
                         text = state.error ?: "Unknown error",
-                        style = TokenDefaultTypography.bodyLarge,
-                        color = TokenColors.Error
+                        style = Theme.typography.bodyLarge,
+                        color = Theme.colors.error
                     )
                 }
             }
@@ -123,7 +122,7 @@ private fun CardDetailContent(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = TokenSpacing.Section)
                     .padding(bottom = 80.dp)
         ) {
             Image(
@@ -139,19 +138,20 @@ private fun CardDetailContent(
 
             Text(
                 text = car.title,
-                style = TokenDefaultTypography.headlineMedium,
-                modifier = Modifier.padding(top = 24.dp)
+                style = Theme.typography.headlineLarge,
+                color = Theme.colors.textPrimary,
+                modifier = Modifier.padding(top = TokenSpacing.Section)
             )
             Text(
                 text = car.price,
-                style = TokenDefaultTypography.titleMedium,
-                color = TokenColors.Subtitle,
+                style = Theme.typography.priceLarge,
+                color = Theme.colors.accentPrimary,
                 modifier = Modifier.padding(top = 2.dp)
             )
             if (car.optionals.isNotEmpty()) {
                 val optionals = car.optionals
                 CarDetailOptionalsList(
-                    modifier = Modifier.padding(vertical = 12.dp)
+                    modifier = Modifier.padding(vertical = TokenSpacing.Inline)
                 ) {
                     items(optionals) { optional ->
                         CarDetailOptional(
@@ -169,7 +169,7 @@ private fun CardDetailContent(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp)
+                    .padding(bottom = TokenSpacing.Section)
         )
     }
 }
