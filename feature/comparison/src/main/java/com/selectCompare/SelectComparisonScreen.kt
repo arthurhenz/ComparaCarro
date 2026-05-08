@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.data.model.SmallCardData
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
@@ -136,7 +136,7 @@ fun SelectComparisonScreen(
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    ComparaCarrosTheme {
+    Theme {
         val previewCards =
             listOf(
                 SmallCardData(id = "1", title = "Honda Civic", fipe = "R$ 45.000,00", selected = true),

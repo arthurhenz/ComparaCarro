@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.data.R
 import com.data.model.CarDetailData
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 import com.ui.CarDetailOptional
@@ -177,7 +177,7 @@ private fun CardDetailContent(
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    ComparaCarrosTheme {
+    Theme {
         CardDetailContent(
             car =
                 CarDetailData(

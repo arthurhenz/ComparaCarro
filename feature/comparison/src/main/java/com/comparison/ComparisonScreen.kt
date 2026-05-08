@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.data.R
 import com.data.model.CarDetailData
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
@@ -298,7 +298,7 @@ private fun ComparisonRow(
 @Preview(showBackground = true)
 @Composable
 fun ComparisonScreenPreview() {
-    ComparaCarrosTheme {
+    Theme {
         ComparisonContent(
             firstCar =
                 CarDetailData(

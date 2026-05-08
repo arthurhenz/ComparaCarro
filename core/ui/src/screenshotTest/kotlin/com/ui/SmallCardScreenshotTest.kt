@@ -9,13 +9,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 
 @PreviewTest
 @Preview(showBackground = true)
 @Composable
 fun SmallCardSelectedScreenshot() {
-    ComparaCarrosTheme {
+    Theme {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             selected = true,
@@ -31,7 +31,7 @@ fun SmallCardSelectedScreenshot() {
 @Preview(showBackground = true)
 @Composable
 fun SmallCardUnselectedScreenshot() {
-    ComparaCarrosTheme {
+    Theme {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             selected = false,
@@ -47,7 +47,7 @@ fun SmallCardUnselectedScreenshot() {
 @Preview(showBackground = true)
 @Composable
 fun SmallCardSimpleScreenshot() {
-    ComparaCarrosTheme {
+    Theme {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             onClick = {},
@@ -61,7 +61,7 @@ fun SmallCardSimpleScreenshot() {
 @Preview(showBackground = true)
 @Composable
 fun SmallCardLongTextScreenshot() {
-    ComparaCarrosTheme {
+    Theme {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             selected = true,
@@ -77,7 +77,7 @@ fun SmallCardLongTextScreenshot() {
 @Preview(showBackground = true)
 @Composable
 fun SmallCardRowScreenshot() {
-    ComparaCarrosTheme {
+    Theme {
         Row {
             SmallCard(
                 image = painterResource(id = R.drawable.ic_launcher_background),

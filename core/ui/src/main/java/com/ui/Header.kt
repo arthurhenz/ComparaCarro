@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 import com.theme.TokenIconSize
@@ -222,7 +222,7 @@ fun Header(
 @Preview(showBackground = true)
 @Composable
 fun HeaderPreview() {
-    ComparaCarrosTheme {
+    Theme {
         Header(
             onMenuClick = {},
             searchQuery = "",
