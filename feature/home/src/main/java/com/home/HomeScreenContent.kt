@@ -20,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
-import com.theme.TokenColors
+import com.theme.Theme
+import com.theme.TokenSpacing
 import com.ui.Header
 import com.ui.LargeCard
 import com.ui.LargeCardCarousel
@@ -98,7 +98,7 @@ fun HomeScreenContent(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 24.dp)
+                                    .padding(bottom = TokenSpacing.Section)
                         ) {
                             recentlyViewedCards.forEach { cardData ->
                                 item {
@@ -119,8 +119,8 @@ fun HomeScreenContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                                .padding(bottom = 24.dp),
+                                .padding(horizontal = TokenSpacing.Section)
+                                .padding(bottom = TokenSpacing.Section),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -130,13 +130,14 @@ fun HomeScreenContent(
                                     SortType.MOST_POPULAR -> "Mais populares"
                                     SortType.ALPHABETIC -> "Alfabética"
                                 },
-                            style = MaterialTheme.typography.titleLarge
+                            style = Theme.typography.titleLarge,
+                            color = Theme.colors.textPrimary
                         )
                         Box {
                             Text(
                                 text = "Ordenar",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = TokenColors.Subtitle,
+                                style = Theme.typography.bodyMedium,
+                                color = Theme.colors.textSecondary,
                                 modifier = Modifier.clickable { dropdownExpanded = true }
                             )
 
@@ -164,14 +165,14 @@ fun HomeScreenContent(
                 }
 
                 val cardHeight = 230.dp
-                val verticalSpacing = 24.dp
+                val verticalSpacing = TokenSpacing.Section
                 val numberOfRows = (smallCards.size + 1) / 2
                 val totalHeight = (cardHeight * numberOfRows) + (verticalSpacing * (numberOfRows - 1))
 
                 SmallCardList(
                     modifier =
                         Modifier
-                            .padding(horizontal = 24.dp)
+                            .padding(horizontal = TokenSpacing.Section)
                             .height(totalHeight)
                 ) {
                     items(smallCards) { cardData ->
@@ -197,7 +198,7 @@ fun HomeScreenContent(
                 modifier =
                     Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 24.dp)
+                        .padding(bottom = TokenSpacing.Section)
             )
         }
     }
