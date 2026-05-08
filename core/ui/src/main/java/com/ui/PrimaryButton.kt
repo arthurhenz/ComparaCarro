@@ -6,21 +6,22 @@
 
 package com.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.theme.TokenColors
-import com.theme.TokenColors.Primary
-import com.theme.TokenDefaultTypography
+import com.theme.Theme
+import com.theme.TokenShapes
+import com.theme.TokenSpacing
 
 @Composable
 fun PrimaryButton(
@@ -29,34 +30,36 @@ fun PrimaryButton(
     onClick: () -> Unit,
     enabled: Boolean = true
 ) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = Primary,
-                disabledContainerColor = TokenColors.Subtitle.copy(alpha = 0.3f),
-                disabledContentColor = TokenColors.White
-            ),
+    val backgroundModifier =
+        if (enabled) {
+            Modifier.background(brush = Theme.colors.interactivePrimary, shape = TokenShapes.Button)
+        } else {
+            Modifier.background(color = Theme.colors.surfaceRaised, shape = TokenShapes.Button)
+        }
+
+    Box(
         modifier =
             modifier
                 .fillMaxWidth()
+                .padding(horizontal = TokenSpacing.Block)
                 .height(54.dp)
-                .padding(horizontal = 18.dp),
-        shape = RoundedCornerShape(8.dp)
+                .clip(TokenShapes.Button)
+                .then(backgroundModifier)
+                .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            color = TokenColors.White,
-            style = TokenDefaultTypography.bodyLarge
+            color = if (enabled) Theme.colors.textInteractive else Theme.colors.textSecondary,
+            style = Theme.typography.bodyLarge
         )
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PrimaryButtonPreview() {
-    MaterialTheme {
+    Theme {
         PrimaryButton(
             text = "Compara",
             onClick = {}
