@@ -15,9 +15,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
+import com.theme.Theme
+import com.theme.TokenIconSize
+import com.theme.TokenSpacing
 
 @Composable
 fun CarDetailOptional(
@@ -27,12 +27,12 @@ fun CarDetailOptional(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
     ) {
         Image(
             modifier =
                 Modifier
-                    .size(20.dp),
+                    .size(TokenIconSize.Medium),
             painter = icon,
             contentDescription = title,
             contentScale = ContentScale.Crop
@@ -40,8 +40,8 @@ fun CarDetailOptional(
 
         Text(
             text = title,
-            color = TokenColors.Title,
-            style = TokenDefaultTypography.titleSmall
+            color = Theme.colors.textPrimary,
+            style = Theme.typography.labelMedium
         )
     }
 }
@@ -59,8 +59,8 @@ fun CarDetailOptionalsList(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
         userScrollEnabled = false,
         content = content
     )
@@ -69,10 +69,12 @@ fun CarDetailOptionalsList(
 @Preview(showBackground = true)
 @Composable
 fun CarDetailOptionalPreview() {
-    CarDetailOptional(
-        icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-        title = "Banco de Couro"
-    )
+    Theme {
+        CarDetailOptional(
+            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+            title = "Banco de Couro"
+        )
+    }
 }
 
 @Preview(showBackground = true)
@@ -98,12 +100,14 @@ fun CarDetailOptionalsListPreview() {
             )
         )
 
-    CarDetailOptionalsList {
-        items(optionals) { optional ->
-            CarDetailOptional(
-                icon = optional.icon,
-                title = optional.title
-            )
+    Theme {
+        CarDetailOptionalsList {
+            items(optionals) { optional ->
+                CarDetailOptional(
+                    icon = optional.icon,
+                    title = optional.title
+                )
+            }
         }
     }
 }
