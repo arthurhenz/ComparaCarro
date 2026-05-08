@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.theme.TokenSpacing
 
 @Composable
 fun SmallCardList(
@@ -16,8 +16,8 @@ fun SmallCardList(
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
         content = content,
         userScrollEnabled = false
     )
