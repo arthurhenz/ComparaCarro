@@ -15,7 +15,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import com.theme.TokenColors
 
 @Composable
@@ -88,7 +88,7 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    ComparaCarrosTheme {
+    Theme {
         HomeScreenContent(
             smallCards =
                 listOf(

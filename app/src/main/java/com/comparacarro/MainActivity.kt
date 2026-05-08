@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.comparacarro.navigation.AppNavigation
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     // startDestination: String = Screen.Home.route
-    ComparaCarrosTheme {
+    Theme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

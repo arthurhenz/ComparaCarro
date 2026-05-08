@@ -31,7 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenDefaultTypography
 
@@ -91,7 +91,7 @@ fun ToggleSelectButton(
 @Preview(showBackground = true)
 @Composable
 fun AnimatedToggleButtonPreview() {
-    ComparaCarrosTheme {
+    Theme {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)

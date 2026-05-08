@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.theme.ComparaCarrosTheme
+import com.theme.Theme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -20,7 +20,7 @@ class SmallCardTest {
     @Test
     fun smallCard_displaysTitle() {
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     onClick = {},
@@ -36,7 +36,7 @@ class SmallCardTest {
     @Test
     fun smallCard_displaysFipeValue() {
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     onClick = {},
@@ -53,7 +53,7 @@ class SmallCardTest {
     fun smallCard_clickTriggersCallback() {
         var clicked = false
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     onClick = { clicked = true },
@@ -71,7 +71,7 @@ class SmallCardTest {
     @Test
     fun smallCardWithSelect_displaysTitle() {
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     selected = false,
@@ -91,7 +91,7 @@ class SmallCardTest {
     fun smallCardWithSelect_clickTriggersCallback() {
         var clicked = false
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     selected = false,
@@ -112,7 +112,7 @@ class SmallCardTest {
     fun smallCardWithSelect_togglesSelection() {
         var selectedState = false
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     selected = selectedState,
@@ -131,7 +131,7 @@ class SmallCardTest {
     @Test
     fun smallCardWithSelect_showsComparandoWhenSelected() {
         composeTestRule.setContent {
-            ComparaCarrosTheme {
+            Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     selected = true,
