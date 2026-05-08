@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.theme.TokenSpacing
 
 @Composable
 fun LargeCardCarousel(
@@ -16,8 +16,8 @@ fun LargeCardCarousel(
 ) {
     LazyRow(
         modifier = modifier,
-        contentPadding = PaddingValues(start = 18.dp, end = 18.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
+        contentPadding = PaddingValues(horizontal = TokenSpacing.Block),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item, Alignment.Start)
     ) {
         content()
     }
