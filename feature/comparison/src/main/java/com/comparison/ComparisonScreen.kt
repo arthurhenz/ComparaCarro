@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import com.data.R
 import com.data.model.CarDetailData
 import com.theme.Theme
-import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
+import com.theme.TokenShapes
+import com.theme.TokenSpacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +55,8 @@ fun ComparisonScreen(
                 title = {
                     Text(
                         text = "Comparação",
-                        style = TokenDefaultTypography.titleLarge
+                        style = Theme.typography.titleLarge,
+                        color = Theme.colors.textPrimary
                     )
                 },
                 navigationIcon = {
@@ -88,7 +88,7 @@ fun ComparisonScreen(
                             .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = TokenColors.Primary)
+                    CircularProgressIndicator(color = Theme.colors.accentTertiary)
                 }
             }
 
@@ -102,8 +102,8 @@ fun ComparisonScreen(
                 ) {
                     Text(
                         text = currentState.error ?: "Unknown error",
-                        style = TokenDefaultTypography.bodyLarge,
-                        color = TokenColors.Error
+                        style = Theme.typography.bodyLarge,
+                        color = Theme.colors.error
                     )
                 }
             }
@@ -130,11 +130,11 @@ private fun ComparisonContent(
             modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
         ) {
             Image(
                 modifier =
@@ -159,34 +159,38 @@ private fun ComparisonContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(TokenSpacing.Block))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
         ) {
             Text(
                 text = firstCar.title,
-                style = TokenDefaultTypography.titleMedium,
+                style = Theme.typography.titleLarge,
+                color = Theme.colors.textPrimary,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
             Text(
                 text = secondCar.title,
-                style = TokenDefaultTypography.titleMedium,
+                style = Theme.typography.titleLarge,
+                color = Theme.colors.textPrimary,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = TokenColors.Primary)
+            shape = TokenShapes.Card,
+            colors = CardDefaults.cardColors(containerColor = Theme.colors.surfaceLow)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(TokenSpacing.Block),
+                verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section)
             ) {
                 ComparisonRow(
                     label = "Preço",
@@ -194,15 +198,11 @@ private fun ComparisonContent(
                     secondValue = secondCar.price
                 )
 
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
-
                 ComparisonRow(
                     label = "Categoria",
                     firstValue = firstCar.category,
                     secondValue = secondCar.category
                 )
-
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
 
                 ComparisonRow(
                     label = "Visualizações",
@@ -210,54 +210,53 @@ private fun ComparisonContent(
                     secondValue = secondCar.views.toString()
                 )
 
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
+                Column {
+                    Text(
+                        text = "Opcionais",
+                        style = Theme.typography.titleLarge,
+                        color = Theme.colors.textPrimary,
+                        modifier = Modifier.padding(bottom = TokenSpacing.Item)
+                    )
 
-                Text(
-                    text = "Opcionais",
-                    style = TokenDefaultTypography.titleSmall,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        if (firstCar.optionals.isEmpty()) {
-                            Text(
-                                text = "Nenhum opcional",
-                                style = TokenDefaultTypography.bodySmall,
-                                color = TokenColors.Subtitle
-                            )
-                        } else {
-                            firstCar.optionals.forEach { optional ->
-                                Text(
-                                    text = "• $optional",
-                                    style = TokenDefaultTypography.bodySmall,
-                                    modifier = Modifier.padding(vertical = 2.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Column(modifier = Modifier.weight(1f)) {
-                        if (secondCar.optionals.isEmpty()) {
-                            Text(
-                                text = "Nenhum opcional",
-                                style = TokenDefaultTypography.bodySmall,
-                                color = TokenColors.Subtitle
-                            )
-                        } else {
-                            secondCar.optionals.forEach { optional ->
-                                Text(
-                                    text = "• $optional",
-                                    style = TokenDefaultTypography.bodySmall,
-                                    modifier = Modifier.padding(vertical = 2.dp)
-                                )
-                            }
-                        }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
+                    ) {
+                        OptionalsColumn(
+                            optionals = firstCar.optionals,
+                            modifier = Modifier.weight(1f)
+                        )
+                        OptionalsColumn(
+                            optionals = secondCar.optionals,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OptionalsColumn(
+    optionals: List<String>,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        if (optionals.isEmpty()) {
+            Text(
+                text = "Nenhum opcional",
+                style = Theme.typography.bodyMedium,
+                color = Theme.colors.textSecondary
+            )
+        } else {
+            optionals.forEach { optional ->
+                Text(
+                    text = "• $optional",
+                    style = Theme.typography.bodyMedium,
+                    color = Theme.colors.textPrimary,
+                    modifier = Modifier.padding(vertical = 2.dp)
+                )
             }
         }
     }
@@ -272,22 +271,25 @@ private fun ComparisonRow(
     Column {
         Text(
             text = label,
-            style = TokenDefaultTypography.titleSmall,
-            modifier = Modifier.padding(bottom = 8.dp)
+            style = Theme.typography.titleLarge,
+            color = Theme.colors.textPrimary,
+            modifier = Modifier.padding(bottom = TokenSpacing.Item)
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
         ) {
             Text(
                 text = firstValue,
-                style = TokenDefaultTypography.bodyMedium,
+                style = Theme.typography.priceMedium,
+                color = Theme.colors.textPrimary,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
             Text(
                 text = secondValue,
-                style = TokenDefaultTypography.bodyMedium,
+                style = Theme.typography.priceMedium,
+                color = Theme.colors.textPrimary,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )

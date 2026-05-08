@@ -10,12 +10,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.theme.Theme
+import com.theme.TokenSpacing
 import com.ui.Header
 import com.ui.PrimaryButton
 import com.ui.SmallCard
@@ -41,7 +44,7 @@ fun SelectComparisonContent(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(bottom = 80.dp) // Add padding for floating button
+                    .padding(bottom = 80.dp)
         ) {
             Header(
                 searchQuery = state.searchQuery,
@@ -58,12 +61,12 @@ fun SelectComparisonContent(
             LazyVerticalGrid(
                 modifier =
                     Modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = TokenSpacing.Section)
                         .fillMaxSize(),
                 columns = GridCells.Fixed(2),
                 state = gridState,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+                verticalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
                 content = {
                     items(state.smallCards.size) { index ->
                         val cardData = state.smallCards[index]
@@ -83,10 +86,10 @@ fun SelectComparisonContent(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
+                                        .padding(vertical = TokenSpacing.Block),
                                 contentAlignment = Alignment.Center
                             ) {
-                                androidx.compose.material3.CircularProgressIndicator()
+                                CircularProgressIndicator(color = Theme.colors.accentTertiary)
                             }
                         }
                     }
@@ -105,7 +108,7 @@ fun SelectComparisonContent(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp)
+                    .padding(bottom = TokenSpacing.Section)
         )
     }
 }

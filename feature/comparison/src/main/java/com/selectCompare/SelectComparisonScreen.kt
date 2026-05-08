@@ -22,15 +22,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.data.model.SmallCardData
 import com.theme.Theme
-import com.theme.TokenColors
-import com.theme.TokenDefaultTypography
+import com.theme.TokenSpacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,10 +46,8 @@ fun SelectComparisonScreen(
                 title = {
                     Text(
                         text = "Selecione",
-                        style = TokenDefaultTypography.titleLarge,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TokenColors.Title,
+                        style = Theme.typography.headlineLarge,
+                        color = Theme.colors.textPrimary,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -68,7 +62,7 @@ fun SelectComparisonScreen(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) { onBackClick() }
-                                .padding(12.dp)
+                                .padding(TokenSpacing.Inline)
                     )
                 },
                 actions = {
@@ -81,7 +75,7 @@ fun SelectComparisonScreen(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) { /* No function */ }
-                                .padding(12.dp)
+                                .padding(TokenSpacing.Inline)
                     )
                 },
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
@@ -97,7 +91,7 @@ fun SelectComparisonScreen(
                             .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = TokenColors.Primary)
+                    CircularProgressIndicator(color = Theme.colors.accentTertiary)
                 }
             }
 
@@ -111,8 +105,8 @@ fun SelectComparisonScreen(
                 ) {
                     Text(
                         text = state.error ?: "Unknown error",
-                        style = TokenDefaultTypography.bodyLarge,
-                        color = TokenColors.Error
+                        style = Theme.typography.bodyLarge,
+                        color = Theme.colors.error
                     )
                 }
             }
