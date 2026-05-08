@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.theme.TokenColors
+import com.theme.Theme
 import com.theme.TokenIconSize
 
 @Composable
@@ -49,23 +49,14 @@ fun FavoriteButton(
             modifier =
                 Modifier
                     .size(28.dp)
-                    .background(TokenColors.HeartButtonBackground, shape = CircleShape)
+                    .background(Theme.colors.surfaceGlass, shape = CircleShape)
         ) {
-            if (selected) {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = null,
-                    tint = TokenColors.HeartSelected,
-                    modifier = Modifier.size(TokenIconSize.Medium)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Outlined.Favorite,
-                    contentDescription = null,
-                    modifier = Modifier.size(TokenIconSize.Medium),
-                    tint = TokenColors.HeartUnselected
-                )
-            }
+            Icon(
+                imageVector = if (selected) Icons.Filled.Favorite else Icons.Outlined.Favorite,
+                contentDescription = null,
+                tint = if (selected) Theme.colors.accentPrimary else Theme.colors.textSecondary,
+                modifier = Modifier.size(TokenIconSize.Medium)
+            )
         }
     }
 }
@@ -73,17 +64,21 @@ fun FavoriteButton(
 @Preview(name = "Heart Button - Unselected")
 @Composable
 fun HeartToggleButtonUnselectedPreview() {
-    FavoriteButton(
-        selected = false,
-        onToggle = {}
-    )
+    Theme {
+        FavoriteButton(
+            selected = false,
+            onToggle = {}
+        )
+    }
 }
 
 @Preview(name = "Heart Button - Selected")
 @Composable
 fun HeartToggleButtonSelectedPreview() {
-    FavoriteButton(
-        selected = true,
-        onToggle = {}
-    )
+    Theme {
+        FavoriteButton(
+            selected = true,
+            onToggle = {}
+        )
+    }
 }
