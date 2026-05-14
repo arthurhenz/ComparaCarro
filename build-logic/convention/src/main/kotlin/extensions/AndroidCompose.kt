@@ -21,6 +21,7 @@ internal fun Project.configureAndroidCompose(
         implementation(library("androidx-ui-graphics"))
         implementation(library("androidx-ui-tooling-preview"))
         implementation(library("androidx-material3"))
+        implementation(library("androidx-material-icons-extended"))
         implementation(library("androidx-lifecycle-runtime-ktx"))
         implementation(library("androidx-activity-compose"))
         implementation(library("androidx-navigation3-ui"))
