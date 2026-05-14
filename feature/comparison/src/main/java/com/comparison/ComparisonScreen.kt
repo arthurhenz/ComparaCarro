@@ -1,6 +1,8 @@
 package com.comparison
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,16 +13,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.data.R
 import com.data.model.CarDetailData
 import com.theme.Theme
+import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
 
@@ -50,11 +54,12 @@ fun ComparisonScreen(
     onBackClick: () -> Unit = {}
 ) {
     Scaffold(
+        containerColor = Theme.colors.background,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Comparação",
+                        text = "Comparar Veículos",
                         style = Theme.typography.titleLarge,
                         color = Theme.colors.textPrimary
                     )
@@ -63,18 +68,25 @@ fun ComparisonScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = "Voltar",
+                            tint = Theme.colors.textPrimary
                         )
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* No function */ }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Filled.Share,
-                            contentDescription = "Compartilhar"
+                            contentDescription = "Compartilhar",
+                            tint = Theme.colors.textPrimary
                         )
                     }
                 },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Theme.colors.background,
+                        scrolledContainerColor = Theme.colors.background
+                    ),
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
             )
         }
@@ -109,7 +121,7 @@ fun ComparisonScreen(
             }
 
             is ComparisonScreenState.Success -> {
-                ComparisonContent(
+                AlignedComparisonContent(
                     modifier = Modifier.padding(paddingValues),
                     firstCar = currentState.firstCar,
                     secondCar = currentState.secondCar
@@ -120,7 +132,7 @@ fun ComparisonScreen(
 }
 
 @Composable
-private fun ComparisonContent(
+private fun AlignedComparisonContent(
     modifier: Modifier = Modifier,
     firstCar: CarDetailData,
     secondCar: CarDetailData
@@ -132,107 +144,145 @@ private fun ComparisonContent(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
-        ) {
-            Image(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = firstCar.title,
-                contentScale = ContentScale.Crop
-            )
-
-            Image(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = secondCar.title,
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Block))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
-        ) {
-            Text(
-                text = firstCar.title,
-                style = Theme.typography.titleLarge,
-                color = Theme.colors.textPrimary,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = secondCar.title,
-                style = Theme.typography.titleLarge,
-                color = Theme.colors.textPrimary,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-        }
+        CarColumns(firstCar = firstCar, secondCar = secondCar)
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
-        Card(
+        SpecGroup(label = "Combustível", firstValue = "Flex", secondValue = "Turbo Flex")
+        SpecGroup(label = "Motor", firstValue = firstCar.category, secondValue = secondCar.category)
+        SpecGroup(label = "Portas", firstValue = "4 Portas", secondValue = "4 Portas")
+        SpecGroup(
+            label = "Tabela Fipe",
+            firstValue = firstCar.price,
+            secondValue = secondCar.price,
+            valueColor = Theme.colors.accentPrimary
+        )
+        SpecGroup(
+            label = "Visualizações",
+            firstValue = firstCar.views.toString(),
+            secondValue = secondCar.views.toString()
+        )
+
+        Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+        OptionalsBlock(firstCar = firstCar, secondCar = secondCar)
+
+        Spacer(modifier = Modifier.height(TokenSpacing.Section * 2))
+
+        TestDriveCta(onReserve = { })
+
+        Spacer(modifier = Modifier.height(TokenSpacing.Section))
+    }
+}
+
+@Composable
+private fun CarColumns(firstCar: CarDetailData, secondCar: CarDetailData) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
+    ) {
+        CarColumn(car = firstCar, modifier = Modifier.weight(1f))
+        CarColumn(car = secondCar, modifier = Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun CarColumn(
+    car: CarDetailData,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    .clip(TokenShapes.Md),
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = car.title,
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Text(
+            text = car.category,
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = car.title,
+            style = Theme.typography.titleLarge,
+            color = Theme.colors.textPrimary,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
+    }
+}
+
+@Composable
+private fun SpecGroup(
+    label: String,
+    firstValue: String,
+    secondValue: String,
+    valueColor: androidx.compose.ui.graphics.Color = Theme.colors.textPrimary
+) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = TokenSpacing.Inline)
+    ) {
+        Text(
+            text = label,
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Item / 2))
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            shape = TokenShapes.Card,
-            colors = CardDefaults.cardColors(containerColor = Theme.colors.surfaceLow)
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
         ) {
-            Column(
-                modifier = Modifier.padding(TokenSpacing.Block),
-                verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section)
-            ) {
-                ComparisonRow(
-                    label = "Preço",
-                    firstValue = firstCar.price,
-                    secondValue = secondCar.price
-                )
+            Text(
+                text = firstValue,
+                style = Theme.typography.priceMedium,
+                color = valueColor,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = secondValue,
+                style = Theme.typography.priceMedium,
+                color = valueColor,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
-                ComparisonRow(
-                    label = "Categoria",
-                    firstValue = firstCar.category,
-                    secondValue = secondCar.category
-                )
-
-                ComparisonRow(
-                    label = "Visualizações",
-                    firstValue = firstCar.views.toString(),
-                    secondValue = secondCar.views.toString()
-                )
-
-                Column {
-                    Text(
-                        text = "Opcionais",
-                        style = Theme.typography.titleLarge,
-                        color = Theme.colors.textPrimary,
-                        modifier = Modifier.padding(bottom = TokenSpacing.Item)
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
-                    ) {
-                        OptionalsColumn(
-                            optionals = firstCar.optionals,
-                            modifier = Modifier.weight(1f)
-                        )
-                        OptionalsColumn(
-                            optionals = secondCar.optionals,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
+@Composable
+private fun OptionalsBlock(firstCar: CarDetailData, secondCar: CarDetailData) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = TokenSpacing.Inline)
+    ) {
+        Text(
+            text = "Opcionais",
+            style = Theme.typography.titleLarge,
+            color = Theme.colors.textPrimary
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Block))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
+        ) {
+            OptionalsColumn(optionals = firstCar.optionals, modifier = Modifier.weight(1f))
+            OptionalsColumn(optionals = secondCar.optionals, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -242,7 +292,10 @@ private fun OptionalsColumn(
     optionals: List<String>,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
+    ) {
         if (optionals.isEmpty()) {
             Text(
                 text = "Nenhum opcional",
@@ -254,8 +307,7 @@ private fun OptionalsColumn(
                 Text(
                     text = "• $optional",
                     style = Theme.typography.bodyMedium,
-                    color = Theme.colors.textPrimary,
-                    modifier = Modifier.padding(vertical = 2.dp)
+                    color = Theme.colors.textPrimary
                 )
             }
         }
@@ -263,36 +315,56 @@ private fun OptionalsColumn(
 }
 
 @Composable
-private fun ComparisonRow(
-    label: String,
-    firstValue: String,
-    secondValue: String
-) {
-    Column {
+private fun TestDriveCta(onReserve: () -> Unit) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(TokenShapes.Card)
+                .background(Theme.colors.surfaceLow, shape = TokenShapes.Card)
+                .padding(TokenSpacing.Block),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text = label,
+            text = "Pronto para acelerar?",
             style = Theme.typography.titleLarge,
-            color = Theme.colors.textPrimary,
-            modifier = Modifier.padding(bottom = TokenSpacing.Item)
+            color = Theme.colors.textPrimary
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline)
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Text(
+            text = "Reserve um test drive e sinta a diferença no asfalto.",
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.textSecondary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Block))
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(54.dp)
+                    .clip(TokenShapes.Button)
+                    .background(brush = Theme.colors.interactivePrimary, shape = TokenShapes.Button)
+                    .clickable(onClick = onReserve),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = firstValue,
-                style = Theme.typography.priceMedium,
-                color = Theme.colors.textPrimary,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = secondValue,
-                style = Theme.typography.priceMedium,
-                color = Theme.colors.textPrimary,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Reservar Test Drive",
+                    style = Theme.typography.bodyLarge,
+                    color = Theme.colors.textInteractive
+                )
+                Spacer(modifier = Modifier.width(TokenSpacing.Item))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = Theme.colors.textInteractive,
+                    modifier = Modifier.size(TokenIconSize.Medium)
+                )
+            }
         }
     }
 }
@@ -301,24 +373,24 @@ private fun ComparisonRow(
 @Composable
 fun ComparisonScreenPreview() {
     Theme {
-        ComparisonContent(
+        AlignedComparisonContent(
             firstCar =
                 CarDetailData(
                     id = "1",
-                    title = "Honda Civic",
-                    price = "R$ 45.000,00",
-                    category = "SEDAN",
+                    title = "Polo GTS",
+                    price = "R$ 145.900",
+                    category = "Volkswagen",
                     views = 150,
-                    optionals = listOf("BANCO_COURO", "TETO_SOLAR", "SENSOR_RE")
+                    optionals = listOf("Banco de couro", "Teto solar", "Sensor de ré")
                 ),
             secondCar =
                 CarDetailData(
                     id = "2",
-                    title = "Toyota Corolla",
-                    price = "R$ 50.000,00",
-                    category = "SEDAN",
+                    title = "Pulse Abarth",
+                    price = "R$ 138.500",
+                    category = "Fiat",
                     views = 200,
-                    optionals = listOf("BANCO_COURO", "ALARME")
+                    optionals = listOf("Banco esportivo", "Som premium")
                 )
         )
     }
