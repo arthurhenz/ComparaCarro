@@ -266,7 +266,7 @@ private fun CategoryChip(
     onClick: () -> Unit
 ) {
     val containerColor =
-        if (selected) Theme.colors.accentPrimary else Theme.colors.surfaceRaised
+        if (selected) Theme.colors.surfaceRaised else Theme.colors.surfaceRaised
     val contentColor =
         if (selected) Theme.colors.textInteractive else Theme.colors.textSecondary
 
