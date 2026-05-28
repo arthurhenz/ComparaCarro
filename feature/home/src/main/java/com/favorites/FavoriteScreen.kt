@@ -3,12 +3,14 @@ package com.favorites
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,35 +22,42 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalGasStation
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.data.R
 import com.theme.Theme
+import com.theme.TokenColors
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.BottomNavBar
 import com.ui.BottomNavTab
-import com.ui.FavoriteButton
+import com.ui.Header
+import com.ui.PrimaryButton
 
 data class FavoriteCarItem(
     val id: String,
@@ -57,113 +66,121 @@ data class FavoriteCarItem(
     val price: String,
     val powertrain: String,
     val range: String,
-    val backgroundRes: Int = R.drawable.ic_launcher_background
+    val backgroundRes: Int = R.drawable.ic_launcher_background,
 )
 
-private val suggestionCategories = listOf("Performance", "Utilitários", "Híbridos", "Premium")
+private data class SuggestionCategory(
+    val title: String,
+    val description: String,
+    val highlighted: Boolean,
+)
 
+private val suggestionCategories = listOf(
+    SuggestionCategory("Performance", "Modelos esportivos em destaque", highlighted = true),
+    SuggestionCategory("Utilitários", "SUVs com tração integral", highlighted = false),
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     initialFavorites: List<FavoriteCarItem> = sampleFavorites(),
     onCardClick: (String) -> Unit = {},
     onCompareClick: () -> Unit = {},
-    onNavigate: (BottomNavTab) -> Unit = {}
+    onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     val favorites = remember { mutableStateListOf<FavoriteCarItem>().apply { addAll(initialFavorites) } }
-    var selectedCategory by rememberSaveable { mutableStateOf(suggestionCategories.first()) }
-    var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Favoritos) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var isSearchFocused by rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Theme.colors.background)
-                .windowInsetsPadding(WindowInsets.statusBars)
-    ) {
-        FavoriteHeader()
+    Scaffold(
+        containerColor = Theme.colors.background,
+        topBar = {
+            Header(
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+                searchQuery = searchQuery,
+                onSearchQueryChange = { searchQuery = it },
+                onSearchFocusChanged = { isSearchFocused = it },
+                isSearchFocused = isSearchFocused,
+                title = "compara carros"
+            )
+        },
+        bottomBar = {
+            BottomNavBar(
+                selected = BottomNavTab.Favoritos,
+                onSelect = onNavigate
+            )
+        },
+    ) { paddingValues ->
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = TokenSpacing.Section),
+        ) {
+            FavoritesTitleSection(modifier = Modifier.padding(top = TokenSpacing.Section))
 
-        Box(modifier = Modifier.weight(1f)) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(bottom = TokenSpacing.Section)
-            ) {
-                if (favorites.isEmpty()) {
-                    EmptyFavoritesState(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = TokenSpacing.Section * 2)
-                    )
-                } else {
-                    Column(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = TokenSpacing.Section),
-                        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
-                    ) {
-                        favorites.forEach { car ->
-                            FavoriteCard(
-                                car = car,
-                                onClick = { onCardClick(car.id) },
-                                onRemove = { favorites.remove(car) },
-                                onCompare = onCompareClick
-                            )
-                        }
+            if (favorites.isEmpty()) {
+                EmptyFavoritesState(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = TokenSpacing.Section * 2),
+                )
+            } else {
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = TokenSpacing.Section),
+                    verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section),
+                ) {
+                    favorites.forEach { car ->
+                        FavoriteCard(
+                            car = car,
+                            onClick = { onCardClick(car.id) },
+                            onRemove = { favorites.remove(car) },
+                            onCompare = onCompareClick,
+                        )
                     }
-
-                    Spacer(modifier = Modifier.height(TokenSpacing.Section))
-
-                    Text(
-                        text = "Sugestões baseadas no seu perfil",
-                        style = Theme.typography.headlineLarge,
-                        color = Theme.colors.textPrimary,
-                        modifier =
-                            Modifier
-                                .padding(horizontal = TokenSpacing.Section)
-                                .padding(bottom = TokenSpacing.Block)
-                    )
-
-                    SuggestionChips(
-                        categories = suggestionCategories,
-                        selected = selectedCategory,
-                        onSelect = { selectedCategory = it }
-                    )
                 }
+
+                SuggestionsSection(
+                    categories = suggestionCategories,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = TokenSpacing.Section * 2, bottom = TokenSpacing.Section),
+                )
             }
         }
-
-        BottomNavBar(
-            selected = selectedTab,
-            onSelect = { tab ->
-                selectedTab = tab
-                onNavigate(tab)
-            }
-        )
     }
 }
 
 @Composable
-private fun FavoriteHeader() {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block)
-    ) {
+private fun FavoritesTitleSection(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         Text(
-            text = "ComparaCarros",
-            style = Theme.typography.titleLarge,
-            color = Theme.colors.accentPrimary
-        )
-        Spacer(modifier = Modifier.height(TokenSpacing.Item))
-        Text(
-            text = "FAVORITOS",
+            text = "Favoritos".uppercase(),
             style = Theme.typography.headlineLarge,
-            color = Theme.colors.textPrimary
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Black,
+            color = Theme.colors.textPrimary,
+        )
+        Spacer(
+            modifier =
+                Modifier
+                    .padding(top = TokenSpacing.Item)
+                    .height(4.dp)
+                    .width(96.dp)
+                    .background(Theme.colors.accentPrimary),
+        )
+        Text(
+            text = "Sua garagem particular aguarda".uppercase(),
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary,
+            modifier = Modifier.padding(top = TokenSpacing.Block),
         )
     }
 }
@@ -173,161 +190,186 @@ private fun FavoriteCard(
     car: FavoriteCarItem,
     onClick: () -> Unit,
     onRemove: () -> Unit,
-    onCompare: () -> Unit
+    onCompare: () -> Unit,
 ) {
-    Box(
+    Row(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clip(TokenShapes.Card)
-                .background(Theme.colors.surfaceLow, shape = TokenShapes.Card)
+                .clip(TokenShapes.Sm)
+                .background(Theme.colors.surfaceLow, shape = TokenShapes.Sm)
                 .clickable(onClick = onClick)
+                .padding(TokenSpacing.Item),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    painter = painterResource(id = car.backgroundRes),
-                    contentDescription = car.title,
-                    contentScale = ContentScale.Crop,
+        Image(
+            painter = painterResource(id = car.backgroundRes),
+            contentDescription = car.title,
+            contentScale = ContentScale.Crop,
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.33f)
+                    .aspectRatio(16f / 9f)
+                    .clip(TokenShapes.Sm)
+                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Sm),
+        )
+        Spacer(modifier = Modifier.width(TokenSpacing.Block))
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = car.brand.uppercase(),
+                        style = Theme.typography.labelMedium,
+                        color = Theme.colors.accentPrimary,
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = car.title.uppercase(),
+                        style = Theme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Theme.colors.textPrimary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "Remover dos favoritos",
+                    tint = Theme.colors.accentPrimary,
                     modifier =
                         Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                )
-                FavoriteButton(
-                    selected = true,
-                    onToggle = { onRemove() },
-                    modifier =
-                        Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(TokenSpacing.Item)
+                            .size(TokenIconSize.Large)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                            ) { onRemove() },
                 )
             }
-
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(TokenSpacing.Block)
+            Spacer(modifier = Modifier.height(TokenSpacing.Item))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SpecInline(icon = Icons.Filled.Speed, label = car.range)
+                SpecInline(icon = powertrainIcon(car.powertrain), label = car.powertrain)
+            }
+            Spacer(modifier = Modifier.height(TokenSpacing.Item))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = car.brand,
-                    style = Theme.typography.labelMedium,
-                    color = Theme.colors.textSecondary
-                )
-                Spacer(modifier = Modifier.height(TokenSpacing.Item / 2))
-                Text(
-                    text = car.title,
-                    style = Theme.typography.titleLarge,
+                    text = car.price,
+                    style = Theme.typography.priceMedium,
+                    fontWeight = FontWeight.Bold,
                     color = Theme.colors.textPrimary,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    modifier = Modifier.weight(1f)
                 )
+                Spacer(modifier = Modifier.width(TokenSpacing.Item))
+                PrimaryButton(
+                    text = "Ver Detalhes",
+                    onClick = onCompare,
+                    expanded = false
+                )
+            }
+        }
+    }
+}
 
-                Spacer(modifier = Modifier.height(TokenSpacing.Item))
+private fun powertrainIcon(label: String): ImageVector {
+    val lower = label.lowercase()
+    return when {
+        "turbo" in lower -> Icons.Filled.Bolt
+        "esport" in lower || "sport" in lower -> Icons.Filled.Bolt
+        "elétric" in lower || "eletric" in lower -> Icons.Filled.Bolt
+        else -> Icons.Filled.LocalGasStation
+    }
+}
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SpecBadge(icon = Icons.Filled.LocalGasStation, label = car.powertrain)
-                    SpecBadge(icon = Icons.Filled.Speed, label = car.range)
-                }
+@Composable
+private fun SpecInline(icon: ImageVector, label: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Theme.colors.textSecondary,
+            modifier = Modifier.size(TokenIconSize.Small),
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = label.uppercase(),
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary,
+        )
+    }
+}
 
-                Spacer(modifier = Modifier.height(TokenSpacing.Block))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Tabela Fipe",
-                            style = Theme.typography.labelMedium,
-                            color = Theme.colors.textSecondary
-                        )
-                        Text(
-                            text = car.price,
-                            style = Theme.typography.priceLarge,
-                            color = Theme.colors.accentPrimary
-                        )
-                    }
-                    DetailLinkButton(onClick = onCompare)
-                }
+@Composable
+private fun SuggestionsSection(
+    categories: List<SuggestionCategory>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Sugestões baseadas no seu perfil".uppercase(),
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary,
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Block))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+        ) {
+            categories.forEach { category ->
+                SuggestionCard(
+                    category = category,
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }
 }
 
 @Composable
-private fun SpecBadge(icon: ImageVector, label: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Theme.colors.textSecondary,
-            modifier = Modifier.size(TokenIconSize.Small)
-        )
-        Spacer(modifier = Modifier.width(TokenSpacing.Item / 2))
-        Text(
-            text = label,
-            style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
-        )
-    }
-}
-
-@Composable
-private fun DetailLinkButton(onClick: () -> Unit) {
-    Box(
-        modifier =
-            Modifier
-                .clip(TokenShapes.Button)
-                .background(Theme.colors.surfaceRaised, shape = TokenShapes.Button)
-                .clickable(onClick = onClick)
-                .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item)
-    ) {
-        Text(
-            text = "Ver Detalhes",
-            style = Theme.typography.labelMedium,
-            color = Theme.colors.accentPrimary
-        )
-    }
-}
-
-@Composable
-private fun SuggestionChips(
-    categories: List<String>,
-    selected: String,
-    onSelect: (String) -> Unit
+private fun SuggestionCard(
+    category: SuggestionCategory,
+    modifier: Modifier = Modifier,
 ) {
+    val borderColor =
+        if (category.highlighted) Theme.colors.accentPrimary else TokenColors.Outline
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = TokenSpacing.Section),
-        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
+            modifier
+                .clip(TokenShapes.Sm)
+                .background(Theme.colors.surface, shape = TokenShapes.Sm),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        categories.forEach { category ->
-            val isSelected = category == selected
-            Box(
-                modifier =
-                    Modifier
-                        .clip(TokenShapes.Pill)
-                        .background(
-                            if (isSelected) Theme.colors.accentPrimary else Theme.colors.surfaceRaised,
-                            shape = TokenShapes.Pill
-                        )
-                        .clickable { onSelect(category) }
-                        .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item)
-            ) {
-                Text(
-                    text = category,
-                    style = Theme.typography.labelMedium,
-                    color = if (isSelected) Theme.colors.textInteractive else Theme.colors.textSecondary
-                )
-            }
+        Box(
+            modifier =
+                Modifier
+                    .width(2.dp)
+                    .height(48.dp)
+                    .background(borderColor),
+        )
+        Column(
+            modifier = Modifier.padding(TokenSpacing.Block),
+        ) {
+            Text(
+                text = category.title.uppercase(),
+                style = Theme.typography.titleLarge,
+                fontWeight = FontWeight.Black,
+                color = Theme.colors.textPrimary,
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = category.description.uppercase(),
+                style = Theme.typography.labelMedium,
+                color = Theme.colors.textSecondary,
+            )
         }
     }
 }
@@ -337,20 +379,25 @@ private fun EmptyFavoritesState(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
-        FavoriteButton(selected = false, onToggle = {})
+        Icon(
+            imageVector = Icons.Filled.Favorite,
+            contentDescription = null,
+            tint = Theme.colors.textSecondary,
+            modifier = Modifier.size(TokenIconSize.ExtraLarge),
+        )
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
         Text(
             text = "Você ainda não favoritou nenhum carro",
             style = Theme.typography.titleLarge,
-            color = Theme.colors.textPrimary
+            color = Theme.colors.textPrimary,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Text(
             text = "Toque no coração de um modelo para salvá-lo aqui.",
             style = Theme.typography.bodyMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
     }
 }
@@ -359,27 +406,27 @@ internal fun sampleFavorites(): List<FavoriteCarItem> = listOf(
     FavoriteCarItem(
         id = "fav_1",
         brand = "Toyota",
-        title = "Corolla Altis Híbrido",
+        title = "Corolla Altis",
         price = "R$ 187.990",
-        powertrain = "Híbrido / Flex",
-        range = "1.200 km"
+        powertrain = "Hybrid",
+        range = "0 km",
     ),
     FavoriteCarItem(
         id = "fav_2",
         brand = "Fiat",
-        title = "Pulse Abarth Turbo",
+        title = "Pulse Abarth",
         price = "R$ 149.900",
-        powertrain = "Flex-Fuel Turbo",
-        range = "780 km"
+        powertrain = "Turbo",
+        range = "1.200 km",
     ),
     FavoriteCarItem(
         id = "fav_3",
         brand = "Porsche",
-        title = "911 Carrera Sport",
+        title = "911 Carrera",
         price = "R$ 845.000",
-        powertrain = "Gasolina Sport",
-        range = "650 km"
-    )
+        powertrain = "Sport",
+        range = "5.500 km",
+    ),
 )
 
 @Preview(showBackground = true)

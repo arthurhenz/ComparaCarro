@@ -6,6 +6,7 @@ import com.comparacarro.navigation.AppNavigator
 import com.comparacarro.navigation.utils.EntriesProviderAggregator
 import com.comparison.CompareScreenScreenProvider
 import com.detail.CardDetailScreenProvider
+import com.favorites.FavoriteScreenProvider
 import com.home.HomeScreenProvider
 import com.navigation.EntryProvider
 import com.selectCompare.SelectComparisonScreenProvider
@@ -37,4 +38,5 @@ private val navigationModule =
         single { CardDetailScreenProvider() } bind EntryProvider::class
         single { CompareScreenScreenProvider() } bind EntryProvider::class
         single { SelectComparisonScreenProvider() } bind EntryProvider::class
+        single { FavoriteScreenProvider() } bind EntryProvider::class
     }
