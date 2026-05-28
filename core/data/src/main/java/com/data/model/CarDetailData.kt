@@ -6,7 +6,9 @@ data class CarDetailData(
     val price: String,
     val category: String,
     val views: Int,
-    val optionals: List<String>
+    val optionals: List<String>,
+    val year: Int = 0,
+    val fipeCode: String = "",
 )
 
 

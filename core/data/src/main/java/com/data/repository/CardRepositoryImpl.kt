@@ -41,7 +41,9 @@ class CardRepositoryImpl(
                     price = formatPrice(car.valor.toFloat()),
                     category = car.marca,
                     views = 0,
-                    optionals = emptyList()
+                    optionals = emptyList(),
+                    year = car.anoModelo,
+                    fipeCode = car.codigoFipe,
                 )
             }
             is NetworkResult.Error -> {
