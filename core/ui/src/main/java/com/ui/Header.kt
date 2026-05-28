@@ -1,15 +1,15 @@
 package com.ui
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +25,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
@@ -33,7 +36,6 @@ import com.theme.TokenSpacing
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
-    onMenuClick: () -> Unit,
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
@@ -42,60 +44,60 @@ fun Header(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    val interactionSource = remember { MutableInteractionSource() }
+
+    LaunchedEffect(isSearchFocused) {
+        if (isSearchFocused) focusRequester.requestFocus()
+    }
 
     Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Theme.colors.surfaceHeader)
+
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        indication = null,
-                        interactionSource = interactionSource
-                    ) {
-                        if (isSearchFocused) {
-                            focusManager.clearFocus()
-                        }
-                    }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Text(
+                text = title.uppercase(),
+                style = Theme.typography.headlineLarge,
+                fontStyle = FontStyle.Italic,
+                color = Theme.colors.accentPrimary,
+                modifier = Modifier.padding(start = TokenSpacing.Block)
+            )
+
             IconButton(
                 onClick = {
                     if (isSearchFocused) {
+                        onSearchQueryChange("")
                         focusManager.clearFocus()
+                        onSearchFocusChanged(false)
                     } else {
-                        onMenuClick()
+                        onSearchFocusChanged(true)
                     }
-                },
-                modifier = Modifier.align(Alignment.CenterStart)
+                }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu",
-                    tint = Theme.colors.textPrimary,
-                    modifier = Modifier.size(TokenIconSize.Medium)
+                    imageVector = if (isSearchFocused) Icons.Filled.Close else Icons.Filled.Search,
+                    contentDescription = if (isSearchFocused) "Fechar busca" else "Buscar",
+                    tint = Theme.colors.accentPrimary,
+                    modifier = Modifier.size(TokenIconSize.Large)
                 )
             }
-
-            Text(
-                text = title,
-                style = Theme.typography.headlineLarge,
-                color = Theme.colors.accentPrimary,
-                modifier = Modifier.align(Alignment.Center)
-            )
         }
 
-        SearchField(
-            searchQuery = searchQuery,
-            onSearchQueryChange = onSearchQueryChange,
-            onSearchFocusChanged = onSearchFocusChanged,
-            isSearchFocused = isSearchFocused,
-            focusRequester = focusRequester,
-            focusManager = focusManager
-        )
+        AnimatedVisibility(visible = isSearchFocused) {
+            SearchField(
+                searchQuery = searchQuery,
+                onSearchQueryChange = onSearchQueryChange,
+                onSearchFocusChanged = onSearchFocusChanged,
+                isSearchFocused = isSearchFocused,
+                focusRequester = focusRequester,
+                focusManager = focusManager
+            )
+        }
     }
 }
 
@@ -111,9 +113,9 @@ fun Header(
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Theme.colors.surfaceHeader)
     ) {
         SearchField(
             searchQuery = searchQuery,
@@ -200,11 +202,25 @@ private fun SearchField(
 fun HeaderPreview() {
     Theme {
         Header(
-            onMenuClick = {},
             searchQuery = "",
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
-            isSearchFocused = false
+            isSearchFocused = false,
+            title = "COMPARA CARROS"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HeaderSearchActivePreview() {
+    Theme {
+        Header(
+            searchQuery = "Civic",
+            onSearchQueryChange = {},
+            onSearchFocusChanged = {},
+            isSearchFocused = true,
+            title = "COMPARA CARROS"
         )
     }
 }
