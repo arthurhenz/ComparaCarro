@@ -143,6 +143,22 @@ private fun CardDetailContent(
                 color = Theme.colors.textPrimary,
                 modifier = Modifier.padding(top = TokenSpacing.Section)
             )
+            if (car.year > 0) {
+                Text(
+                    text = "Ano ${car.year}",
+                    style = Theme.typography.labelMedium,
+                    color = Theme.colors.textSecondary,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+            if (car.fipeCode.isNotBlank()) {
+                Text(
+                    text = "FIPE ${car.fipeCode}",
+                    style = Theme.typography.labelMedium,
+                    color = Theme.colors.textSecondary,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
             Text(
                 text = car.price,
                 style = Theme.typography.priceLarge,
