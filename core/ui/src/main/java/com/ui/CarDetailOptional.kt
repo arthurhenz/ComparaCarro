@@ -1,6 +1,5 @@
 package com.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -8,12 +7,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AirlineSeatReclineNormal
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.theme.Theme
 import com.theme.TokenIconSize
@@ -22,20 +23,18 @@ import com.theme.TokenSpacing
 @Composable
 fun CarDetailOptional(
     modifier: Modifier = Modifier,
-    icon: Painter,
+    icon: ImageVector,
     title: String
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
     ) {
-        Image(
-            modifier =
-                Modifier
-                    .size(TokenIconSize.Medium),
-            painter = icon,
+        Icon(
+            modifier = Modifier.size(TokenIconSize.Medium),
+            imageVector = icon,
             contentDescription = title,
-            contentScale = ContentScale.Crop
+            tint = Theme.colors.textPrimary
         )
 
         Text(
@@ -47,7 +46,7 @@ fun CarDetailOptional(
 }
 
 data class OptionalItem(
-    val icon: Painter,
+    val icon: ImageVector,
     val title: String
 )
 
@@ -71,7 +70,7 @@ fun CarDetailOptionalsList(
 fun CarDetailOptionalPreview() {
     Theme {
         CarDetailOptional(
-            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+            icon = Icons.Filled.AirlineSeatReclineNormal,
             title = "Banco de Couro"
         )
     }
@@ -82,22 +81,10 @@ fun CarDetailOptionalPreview() {
 fun CarDetailOptionalsListPreview() {
     val optionals =
         listOf(
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_info_details),
-                title = "Banco de Couro"
-            ),
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_camera),
-                title = "Câmera de Ré"
-            ),
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_compass),
-                title = "GPS"
-            ),
-            OptionalItem(
-                icon = painterResource(id = android.R.drawable.ic_menu_gallery),
-                title = "Teto Solar"
-            )
+            OptionalItem(icon = optionalIcon("Banco de Couro"), title = "Banco de Couro"),
+            OptionalItem(icon = optionalIcon("Câmera de Ré"), title = "Câmera de Ré"),
+            OptionalItem(icon = optionalIcon("GPS"), title = "GPS"),
+            OptionalItem(icon = Icons.Filled.WbSunny, title = "Teto Solar")
         )
 
     Theme {
