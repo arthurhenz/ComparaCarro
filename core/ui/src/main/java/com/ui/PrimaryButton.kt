@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.theme.Theme
@@ -28,7 +30,8 @@ fun PrimaryButton(
     text: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    expanded: Boolean = true
 ) {
     val backgroundModifier =
         if (enabled) {
@@ -40,7 +43,7 @@ fun PrimaryButton(
     Box(
         modifier =
             modifier
-                .fillMaxWidth()
+                .then(if (expanded) Modifier.fillMaxWidth() else Modifier)
                 .padding(horizontal = TokenSpacing.Block)
                 .height(54.dp)
                 .clip(TokenShapes.Button)
@@ -49,9 +52,12 @@ fun PrimaryButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = text,
+            text = text.uppercase(),
             color = if (enabled) Theme.colors.textInteractive else Theme.colors.textSecondary,
-            style = Theme.typography.bodyLarge
+            style = Theme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+
         )
     }
 }
