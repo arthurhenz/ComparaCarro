@@ -37,6 +37,7 @@ import com.theme.TokenSpacing
 import com.ui.CarDetailOptional
 import com.ui.CarDetailOptionalsList
 import com.ui.PrimaryButton
+import com.ui.optionalIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -155,7 +156,7 @@ private fun CardDetailContent(
                 ) {
                     items(optionals) { optional ->
                         CarDetailOptional(
-                            icon = painterResource(id = android.R.drawable.ic_menu_info_details),
+                            icon = optionalIcon(optional),
                             title = optional
                         )
                     }
