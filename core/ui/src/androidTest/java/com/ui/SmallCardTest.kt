@@ -18,19 +18,21 @@ class SmallCardTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun smallCard_displaysTitle() {
+    fun smallCard_displaysBrandAndModel() {
         composeTestRule.setContent {
             Theme {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     onClick = {},
-                    title = "Honda Civic 2020",
+                    brand = "Honda",
+                    model = "Civic 2020",
                     fipe = "R$120.000,00"
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("Honda Civic 2020").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Honda").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Civic 2020").assertIsDisplayed()
     }
 
     @Test
@@ -40,7 +42,8 @@ class SmallCardTest {
                 SmallCard(
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     onClick = {},
-                    title = "Honda Civic 2020",
+                    brand = "Honda",
+                    model = "Civic 2020",
                     fipe = "R$120.000,00"
                 )
             }
@@ -58,7 +61,8 @@ class SmallCardTest {
                     image = painterResource(id = R.drawable.ic_launcher_background),
                     onClick = { clicked = true },
                     contentDescription = "card-civic",
-                    title = "Honda Civic 2020",
+                    brand = "Honda",
+                    model = "Civic 2020",
                     fipe = "R$120.000,00"
                 )
             }
@@ -69,7 +73,7 @@ class SmallCardTest {
     }
 
     @Test
-    fun smallCardWithSelect_displaysTitle() {
+    fun smallCardWithSelect_displaysBrandAndModel() {
         composeTestRule.setContent {
             Theme {
                 SmallCard(
@@ -77,12 +81,14 @@ class SmallCardTest {
                     selected = false,
                     onSelect = {},
                     onClick = {},
-                    title = "Saveiro 2021",
+                    brand = "Volkswagen",
+                    model = "Saveiro 2021",
                     fipe = "R$30.000,00"
                 )
             }
         }
 
+        composeTestRule.onNodeWithText("Volkswagen").assertIsDisplayed()
         composeTestRule.onNodeWithText("Saveiro 2021").assertIsDisplayed()
         composeTestRule.onNodeWithText("R$30.000,00").assertIsDisplayed()
     }
@@ -98,7 +104,8 @@ class SmallCardTest {
                     onSelect = {},
                     onClick = { clicked = true },
                     contentDescription = "card-saveiro",
-                    title = "Saveiro 2021",
+                    brand = "Volkswagen",
+                    model = "Saveiro 2021",
                     fipe = "R$30.000,00"
                 )
             }
@@ -118,7 +125,8 @@ class SmallCardTest {
                     selected = selectedState,
                     onSelect = { selectedState = it },
                     onClick = {},
-                    title = "Saveiro 2021",
+                    brand = "Volkswagen",
+                    model = "Saveiro 2021",
                     fipe = "R$30.000,00"
                 )
             }
@@ -137,7 +145,8 @@ class SmallCardTest {
                     selected = true,
                     onSelect = {},
                     onClick = {},
-                    title = "Saveiro 2021",
+                    brand = "Volkswagen",
+                    model = "Saveiro 2021",
                     fipe = "R$30.000,00"
                 )
             }
