@@ -90,7 +90,6 @@ fun HomeScreenContent(
                 .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         Header(
-            onMenuClick = {},
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
             onSearchFocusChanged = onSearchFocusChanged,
