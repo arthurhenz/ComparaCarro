@@ -21,7 +21,8 @@ fun SmallCardSelectedScreenshot() {
             selected = true,
             onSelect = {},
             onClick = {},
-            title = "Saveiro Pega no Breu",
+            brand = "Volkswagen",
+            model = "Saveiro 2021",
             fipe = "R$30.000,00"
         )
     }
@@ -37,7 +38,8 @@ fun SmallCardUnselectedScreenshot() {
             selected = false,
             onSelect = {},
             onClick = {},
-            title = "Audi A4 Sedan 2019",
+            brand = "Audi",
+            model = "A4 Sedan 2019",
             fipe = "R$150.000,00"
         )
     }
@@ -51,7 +53,8 @@ fun SmallCardSimpleScreenshot() {
         SmallCard(
             image = painterResource(id = R.drawable.ic_launcher_background),
             onClick = {},
-            title = "Honda Civic 2020",
+            brand = "Honda",
+            model = "Civic 2020",
             fipe = "R$120.000,00"
         )
     }
@@ -67,7 +70,8 @@ fun SmallCardLongTextScreenshot() {
             selected = true,
             onSelect = {},
             onClick = {},
-            title = "Saveiro Pega no Breu Audi A4 Sedan 2019",
+            brand = "Volkswagen",
+            model = "Saveiro Pega no Breu Audi A4 Sedan 2019",
             fipe = "R$30.000,00 - Valor médio da tabela FIPE para este modelo"
         )
     }
@@ -84,7 +88,8 @@ fun SmallCardRowScreenshot() {
                 selected = true,
                 onSelect = {},
                 onClick = {},
-                title = "Saveiro 2021",
+                brand = "Volkswagen",
+                model = "Saveiro 2021",
                 fipe = "R$30.000,00"
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -93,7 +98,8 @@ fun SmallCardRowScreenshot() {
                 selected = false,
                 onSelect = {},
                 onClick = {},
-                title = "Civic 2020",
+                brand = "Honda",
+                model = "Civic 2020",
                 fipe = "R$120.000,00"
             )
         }
