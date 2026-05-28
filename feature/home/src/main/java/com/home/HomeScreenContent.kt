@@ -7,6 +7,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -18,7 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -41,11 +43,18 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.data.model.LargeCardData
 import com.data.model.SmallCardData
+import com.theme.SpaceGroteskFamily
 import com.theme.Theme
+import com.theme.TokenColors
+import com.theme.TokenFontSizes
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
@@ -53,15 +62,20 @@ import com.ui.BottomNavBar
 import com.ui.BottomNavTab
 import com.ui.FavoriteButton
 import com.ui.Header
-import com.ui.LargeCard
-import com.ui.LargeCardCarousel
-import com.ui.PrimaryButton
+import com.ui.LargeCardList
+import com.ui.R as UiR
 import com.ui.SmallCard
 import com.ui.SmallCardList
 
 private enum class HomeViewMode { Grid, List }
 
 private val homeCategories = listOf("Todos os Modelos", "SUV", "Sedan", "Hatchback")
+
+private val hardcodedCarImages = listOf(
+    UiR.drawable.car1,
+    UiR.drawable.car2,
+    UiR.drawable.car3jpg,
+)
 
 @Composable
 fun HomeScreenContent(
@@ -74,27 +88,28 @@ fun HomeScreenContent(
     sortType: SortType = SortType.MOST_POPULAR,
     onSortTypeChange: (SortType) -> Unit = {},
     onCardClick: (String) -> Unit,
-    onCompareClick: () -> Unit = {}
+    onCompareClick: () -> Unit = {},
+    onFavoritesClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     var viewMode by rememberSaveable { mutableStateOf(HomeViewMode.Grid) }
     var selectedCategory by rememberSaveable { mutableStateOf(homeCategories.first()) }
-    var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Garagem) }
 
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .background(Theme.colors.background)
-                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.statusBars),
     ) {
         Header(
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
             onSearchFocusChanged = onSearchFocusChanged,
             isSearchFocused = isSearchFocused,
-            title = "ComparaCarros"
+            title = "Compara Carros",
         )
 
         Box(modifier = Modifier.weight(1f)) {
@@ -103,51 +118,65 @@ fun HomeScreenContent(
                     Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(bottom = 96.dp)
                         .clickable(
                             indication = null,
-                            interactionSource = interactionSource
+                            interactionSource = interactionSource,
                         ) {
                             if (isSearchFocused) {
                                 focusManager.clearFocus()
                             }
-                        }
+                        },
             ) {
-                if (searchQuery.isEmpty() && recentlyViewedCards.isNotEmpty()) {
-                    LargeCardCarousel(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = TokenSpacing.Section)
-                    ) {
-                        recentlyViewedCards.forEach { cardData ->
-                            item {
-                                LargeCard(
-                                    modifier = Modifier.clickable { onCardClick(cardData.id) },
-                                    background = painterResource(id = cardData.backgroundRes),
-                                    title = cardData.title
-                                )
-                            }
-                        }
-                    }
-                }
+//                if (searchQuery.isEmpty() && recentlyViewedCards.isNotEmpty()) {
+//                    LargeCardCarousel(
+//                        modifier =
+//                            Modifier
+//                                .fillMaxWidth()
+//                                .padding(bottom = TokenSpacing.Section),
+//                    ) {
+//                        recentlyViewedCards.forEach { cardData ->
+//                            item {
+//                                LargeCard(
+//                                    modifier = Modifier.clickable { onCardClick(cardData.id) },
+//                                    background = painterResource(id = cardData.backgroundRes),
+//                                    title = cardData.title,
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
 
                 if (searchQuery.isEmpty()) {
-                    Text(
-                        text = "Frota Disponível",
-                        style = Theme.typography.headlineLarge,
-                        color = Theme.colors.textPrimary,
-                        modifier =
-                            Modifier
-                                .padding(horizontal = TokenSpacing.Section)
-                                .padding(bottom = TokenSpacing.Item)
-                    )
+                    Column(modifier = Modifier.padding(start = TokenSpacing.Block, top = 48.dp)) {
+                        Text(
+                            text = "Frota Disponível".uppercase(),
+                            style = TextStyle(
+                                fontFamily = SpaceGroteskFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = TokenFontSizes.Medium,
+                            ),
+                            color = Theme.colors.accentPrimary,
+                            modifier =
+                                Modifier.padding(bottom = 4.dp)
+
+                        )
+
+                        Text(
+                            text = "Máquinas".uppercase(),
+                            style = Theme.typography.headlineLarge,
+                            fontStyle = FontStyle.Italic,
+                            fontSize = 56.sp,
+                            color = Theme.colors.textPrimary,
+                        )
+
+                        Spacer(Modifier.height(4.dp).width(156.dp).background(color = TokenColors.PrimaryAccent))
+                    }
 
                     CategoryChipRow(
                         categories = homeCategories,
                         selected = selectedCategory,
                         onSelect = { selectedCategory = it },
-                        modifier = Modifier.padding(bottom = TokenSpacing.Block)
+                        modifier = Modifier.padding(bottom = TokenSpacing.Block).padding(top = 40.dp),
                     )
 
                     SortAndViewToggleRow(
@@ -158,32 +187,35 @@ fun HomeScreenContent(
                         modifier =
                             Modifier
                                 .padding(horizontal = TokenSpacing.Section)
-                                .padding(bottom = TokenSpacing.Block)
+                                .padding(bottom = TokenSpacing.Block),
                     )
                 }
 
                 when (viewMode) {
                     HomeViewMode.Grid -> {
                         val cardHeight = 230.dp
-                        val verticalSpacing = TokenSpacing.Section
+                        val verticalSpacing = TokenSpacing.Item
                         val numberOfRows = (smallCards.size + 1) / 2
                         val totalHeight =
                             (cardHeight * numberOfRows) +
-                                (verticalSpacing * (numberOfRows - 1).coerceAtLeast(0))
+                                    (verticalSpacing * (numberOfRows - 1).coerceAtLeast(0))
 
                         SmallCardList(
                             modifier =
                                 Modifier
-                                    .padding(horizontal = TokenSpacing.Section)
-                                    .height(totalHeight)
+                                    .padding(horizontal = TokenSpacing.Item)
+                                    .height(totalHeight),
                         ) {
-                            items(smallCards) { cardData ->
+                            itemsIndexed(smallCards) { index, cardData ->
                                 SmallCard(
                                     modifier = Modifier.clickable { onCardClick(cardData.id) },
-                                    image = painterResource(id = cardData.backgroundRes),
-                                    title = cardData.title,
+                                    image = painterResource(
+                                        id = hardcodedCarImages[index % hardcodedCarImages.size],
+                                    ),
+                                    brand = cardData.title.substringBefore(" "),
+                                    model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                                     fipe = cardData.fipe,
-                                    onClick = { onCardClick(cardData.id) }
+                                    onClick = { onCardClick(cardData.id) },
                                 )
                             }
                         }
@@ -194,15 +226,18 @@ fun HomeScreenContent(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = TokenSpacing.Section),
-                            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
+                                    .padding(horizontal = TokenSpacing.Item),
+                            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
                         ) {
-                            smallCards.forEach { cardData ->
-                                HomeListItem(
-                                    image = painterResource(id = cardData.backgroundRes),
-                                    title = cardData.title,
+                            smallCards.forEachIndexed { index, cardData ->
+                                LargeCardList(
+                                    image = painterResource(
+                                        id = hardcodedCarImages[index % hardcodedCarImages.size],
+                                    ),
+                                    brand = cardData.title.substringBefore(" "),
+                                    model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                                     fipe = cardData.fipe,
-                                    onClick = { onCardClick(cardData.id) }
+                                    onClick = { onCardClick(cardData.id) },
                                 )
                             }
                         }
@@ -213,46 +248,43 @@ fun HomeScreenContent(
                     Spacer(modifier = Modifier.height(TokenSpacing.Section))
                 }
             }
-
-            PrimaryButton(
-                text = "Comparar",
-                onClick = onCompareClick,
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = TokenSpacing.Block)
-            )
         }
 
         BottomNavBar(
-            selected = selectedTab,
+            selected = BottomNavTab.Garagem,
             onSelect = { tab ->
-                selectedTab = tab
-                if (tab == BottomNavTab.Comparar) onCompareClick()
-            }
+                when (tab) {
+                    BottomNavTab.Garagem -> Unit
+                    BottomNavTab.Comparar -> onCompareClick()
+                    BottomNavTab.Favoritos -> onFavoritesClick()
+                    BottomNavTab.Perfil -> onProfileClick()
+                }
+            },
         )
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategoryChipRow(
     categories: List<String>,
     selected: String,
     onSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Row(
+    FlowRow(
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(horizontal = TokenSpacing.Section),
-        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
+        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
     ) {
         categories.forEach { category ->
             CategoryChip(
                 label = category,
                 selected = category == selected,
-                onClick = { onSelect(category) }
+                onClick = { onSelect(category) },
             )
         }
     }
@@ -262,12 +294,12 @@ private fun CategoryChipRow(
 private fun CategoryChip(
     label: String,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val containerColor =
         if (selected) Theme.colors.surfaceRaised else Theme.colors.surfaceRaised
     val contentColor =
-        if (selected) Theme.colors.textInteractive else Theme.colors.textSecondary
+        if (selected) Theme.colors.textPrimary else Theme.colors.textSecondary
 
     Box(
         modifier =
@@ -275,13 +307,15 @@ private fun CategoryChip(
                 .clip(TokenShapes.Pill)
                 .background(containerColor, shape = TokenShapes.Pill)
                 .clickable(onClick = onClick)
-                .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item),
-        contentAlignment = Alignment.Center
+                .padding(horizontal = TokenSpacing.Block).height(TokenSpacing.Section),
+        contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = label,
+            text = label.uppercase(),
             style = Theme.typography.labelMedium,
-            color = contentColor
+            maxLines = 1,
+            color = contentColor,
+
         )
     }
 }
@@ -292,14 +326,14 @@ private fun SortAndViewToggleRow(
     onSortTypeChange: (SortType) -> Unit,
     viewMode: HomeViewMode,
     onViewModeChange: (HomeViewMode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var dropdownExpanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box {
             Text(
@@ -310,25 +344,25 @@ private fun SortAndViewToggleRow(
                     },
                 style = Theme.typography.titleLarge,
                 color = Theme.colors.textPrimary,
-                modifier = Modifier.clickable { dropdownExpanded = true }
+                modifier = Modifier.clickable { dropdownExpanded = true },
             )
             DropdownMenu(
                 expanded = dropdownExpanded,
-                onDismissRequest = { dropdownExpanded = false }
+                onDismissRequest = { dropdownExpanded = false },
             ) {
                 DropdownMenuItem(
                     text = { Text("Mais populares") },
                     onClick = {
                         onSortTypeChange(SortType.MOST_POPULAR)
                         dropdownExpanded = false
-                    }
+                    },
                 )
                 DropdownMenuItem(
                     text = { Text("Alfabética") },
                     onClick = {
                         onSortTypeChange(SortType.ALPHABETIC)
                         dropdownExpanded = false
-                    }
+                    },
                 )
             }
         }
@@ -338,13 +372,13 @@ private fun SortAndViewToggleRow(
                 icon = Icons.Filled.GridView,
                 contentDescription = "Visualização em grade",
                 selected = viewMode == HomeViewMode.Grid,
-                onClick = { onViewModeChange(HomeViewMode.Grid) }
+                onClick = { onViewModeChange(HomeViewMode.Grid) },
             )
             ViewToggleButton(
                 icon = Icons.Filled.ViewAgenda,
                 contentDescription = "Visualização em lista",
                 selected = viewMode == HomeViewMode.List,
-                onClick = { onViewModeChange(HomeViewMode.List) }
+                onClick = { onViewModeChange(HomeViewMode.List) },
             )
         }
     }
@@ -355,7 +389,7 @@ private fun ViewToggleButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     contentDescription: String,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val tint = if (selected) Theme.colors.accentPrimary else Theme.colors.textSecondary
     Box(
@@ -364,76 +398,13 @@ private fun ViewToggleButton(
                 .size(36.dp)
                 .clip(TokenShapes.Sm)
                 .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = tint,
-            modifier = Modifier.size(TokenIconSize.Medium)
-        )
-    }
-}
-
-@Composable
-private fun HomeListItem(
-    image: Painter,
-    title: String,
-    fipe: String,
-    onClick: () -> Unit
-) {
-    var favorited by remember { mutableStateOf(false) }
-
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .clip(TokenShapes.Card)
-                .background(Theme.colors.surfaceLow, shape = TokenShapes.Card)
-                .clickable(onClick = onClick)
-                .padding(TokenSpacing.Inline),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier =
-                Modifier
-                    .size(width = 120.dp, height = 90.dp)
-                    .clip(TokenShapes.Sm)
-        ) {
-            Image(
-                painter = image,
-                contentDescription = title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Spacer(modifier = Modifier.width(TokenSpacing.Block))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = Theme.typography.titleLarge,
-                color = Theme.colors.textPrimary,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(TokenSpacing.Item / 2))
-            Text(
-                text = "Tabela Fipe",
-                style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary
-            )
-            Text(
-                text = fipe,
-                style = Theme.typography.priceMedium,
-                color = Theme.colors.accentPrimary
-            )
-        }
-
-        FavoriteButton(
-            selected = favorited,
-            onToggle = { favorited = it }
+            modifier = Modifier.size(TokenIconSize.Medium),
         )
     }
 }

@@ -24,6 +24,8 @@ fun HomeScreen(
     sortType: SortType,
     onCardClick: (String) -> Unit = {},
     onCompareFromHome: () -> Unit = {},
+    onFavoritesClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onSortTypeChange: (SortType) -> Unit = {},
@@ -77,7 +79,9 @@ fun HomeScreen(
                 sortType = sortType,
                 onSortTypeChange = onSortTypeChange,
                 onCardClick = onCardClick,
-                onCompareClick = onCompareFromHome
+                onCompareClick = onCompareFromHome,
+                onFavoritesClick = onFavoritesClick,
+                onProfileClick = onProfileClick
             )
         }
     }

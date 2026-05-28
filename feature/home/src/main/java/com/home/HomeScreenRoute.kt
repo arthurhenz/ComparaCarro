@@ -25,6 +25,8 @@ fun EntryProviderScope<NavKey>.homeScreenRoute() {
             sortType = sortType,
             onCardClick = viewModel::navigateToDetail,
             onCompareFromHome = viewModel::navigateToSelectComparison,
+            onFavoritesClick = viewModel::navigateToFavorites,
+            onProfileClick = viewModel::navigateToProfile,
             onSearchQueryChange = viewModel::updateSearchQuery,
             onSearchFocusChanged = viewModel::updateSearchFocus,
             onSortTypeChange = viewModel::updateSortType,
