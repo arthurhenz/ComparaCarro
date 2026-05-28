@@ -37,7 +37,7 @@ class AppNavigator : Navigator {
             backStack.removeLast()
         }
 
-        if (options.singleTop && backStack.lastOrNull()?.let { it::class == navRoute::class } == true) {
+        if (options.singleTop && backStack.lastOrNull() == navRoute) {
             return
         }
 
