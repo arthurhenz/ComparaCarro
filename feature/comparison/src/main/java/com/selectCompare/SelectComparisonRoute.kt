@@ -30,7 +30,8 @@ fun EntryProviderScope<NavKey>.selectComparisonRoute() {
             onSearchQueryChange = viewModel::updateSearchQuery,
             onSearchFocusChanged = viewModel::updateSearchFocus,
             onToggleSelect = viewModel::toggleSelection,
-            onLoadMore = viewModel::loadNextPageIfNeeded
+            onLoadMore = viewModel::loadNextPageIfNeeded,
+            onNavigateToTab = viewModel::navigateToBottomTab
         )
     }
 }

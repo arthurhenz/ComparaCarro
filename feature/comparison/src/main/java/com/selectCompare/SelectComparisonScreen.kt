@@ -5,28 +5,30 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.data.model.SmallCardData
 import com.theme.Theme
 import com.theme.TokenSpacing
+import com.ui.BottomNavBar
+import com.ui.BottomNavTab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,24 +40,27 @@ fun SelectComparisonScreen(
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onToggleSelect: (String) -> Unit = {},
-    onLoadMore: (Int) -> Unit = {}
+    onLoadMore: (Int) -> Unit = {},
+    onNavigateToTab: (BottomNavTab) -> Unit = {}
 ) {
     Scaffold(
+        containerColor = Theme.colors.background,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Selecione",
+                        text = "DUELO DE MÁQUINAS",
                         style = Theme.typography.headlineLarge,
-                        color = Theme.colors.textPrimary,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Black,
+                        color = Theme.colors.textPrimary
                     )
                 },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
+                        tint = Theme.colors.accentPrimary,
                         modifier =
                             Modifier
                                 .clickable(
@@ -67,8 +72,9 @@ fun SelectComparisonScreen(
                 },
                 actions = {
                     Icon(
-                        imageVector = Icons.Filled.Share,
-                        contentDescription = "Compartilhar",
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Buscar",
+                        tint = Theme.colors.accentPrimary,
                         modifier =
                             Modifier
                                 .clickable(
@@ -78,7 +84,18 @@ fun SelectComparisonScreen(
                                 .padding(TokenSpacing.Inline)
                     )
                 },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Theme.colors.surfaceGlass,
+                        scrolledContainerColor = Theme.colors.surfaceGlass
+                    ),
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+            )
+        },
+        bottomBar = {
+            BottomNavBar(
+                selected = BottomNavTab.Comparar,
+                onSelect = onNavigateToTab
             )
         }
     ) { paddingValues ->
@@ -127,9 +144,9 @@ fun SelectComparisonScreen(
     }
 }
 
-@Preview(showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable
-fun DetailScreenPreview() {
+fun SelectComparisonScreenPreview() {
     Theme {
         val previewCards =
             listOf(
