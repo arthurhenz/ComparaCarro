@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 class ComparaCarroColors(
     background: Color,
     surface: Color,
+    surfaceHeader: Color,
     surfaceLow: Color,
     surfaceRaised: Color,
     surfaceInset: Color,
@@ -36,6 +37,8 @@ class ComparaCarroColors(
     var background by mutableStateOf(background, structuralEqualityPolicy())
         private set
     var surface by mutableStateOf(surface, structuralEqualityPolicy())
+        private set
+    var surfaceHeader by mutableStateOf(surfaceHeader, structuralEqualityPolicy())
         private set
     var surfaceLow by mutableStateOf(surfaceLow, structuralEqualityPolicy())
         private set
@@ -71,6 +74,7 @@ class ComparaCarroColors(
     fun update(other: ComparaCarroColors) {
         background = other.background
         surface = other.surface
+        surfaceHeader = other.surfaceHeader
         surfaceLow = other.surfaceLow
         surfaceRaised = other.surfaceRaised
         surfaceInset = other.surfaceInset
@@ -106,6 +110,7 @@ fun darkColors(): ComparaCarroColors {
     return ComparaCarroColors(
         background = TokenColors.Surface,
         surface = TokenColors.SurfaceContainer,
+        surfaceHeader = TokenColors.SurfaceHeader,
         surfaceLow = TokenColors.SurfaceContainerLow,
         surfaceRaised = TokenColors.SurfaceContainerHigh,
         surfaceInset = TokenColors.SurfaceContainerLowest,
