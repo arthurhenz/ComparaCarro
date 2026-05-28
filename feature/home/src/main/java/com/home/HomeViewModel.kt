@@ -10,6 +10,8 @@ import com.data.usecase.GetRecentlyViewedCarsUseCase
 import com.data.usecase.GetSmallCardsUseCase
 import com.data.usecase.SaveRecentlyViewedCarUseCase
 import com.navigation.routes.CardDetailRoute
+import com.navigation.routes.FavoritesRoute
+import com.navigation.routes.ProfileRoute
 import com.navigation.routes.SelectComparisonRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -132,6 +134,14 @@ class HomeViewModel(
 
     fun navigateToSelectComparison() {
         navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
+    }
+
+    fun navigateToFavorites() {
+        navigate(FavoritesRoute, NavOptions(singleTop = true))
+    }
+
+    fun navigateToProfile() {
+        navigate(ProfileRoute, NavOptions(singleTop = true))
     }
 
     fun onEvent(event: HomeScreenEvent) {
