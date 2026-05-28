@@ -19,6 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.SwapHorizontalCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,10 +34,10 @@ import com.theme.TokenIconSize
 import com.theme.TokenSpacing
 
 enum class BottomNavTab(val label: String, val icon: ImageVector) {
-    Garagem("Garagem", Icons.Filled.DirectionsCar),
-    Comparar("Comparar", Icons.AutoMirrored.Filled.CompareArrows),
-    Favoritos("Favoritos", Icons.Filled.Favorite),
-    Perfil("Perfil", Icons.Filled.Person)
+    Garagem("Garagem".uppercase(), Icons.Filled.DirectionsCar),
+    Comparar("Comparar".uppercase(), Icons.Outlined.SwapHorizontalCircle),
+    Favoritos("Favoritos".uppercase(), Icons.Filled.Favorite),
+    Perfil("Perfil".uppercase(), Icons.Filled.Person)
 }
 
 @Composable
