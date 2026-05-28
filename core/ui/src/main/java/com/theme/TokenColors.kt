@@ -7,6 +7,7 @@ object TokenColors {
 
     // Surface ramp
     val SurfaceContainerLowest = Color(0xFF000000)
+    val SurfaceHeader = Color(0xFF0D0D0D)
     val Surface = Color(0xFF0E0E0E)
     val SurfaceContainerLow = Color(0xFF131313)
     val SurfaceContainer = Color(0xFF1A1A1A)
@@ -22,9 +23,9 @@ object TokenColors {
     val OutlineVariant = Color(0xFF484847)
 
     // Accent (primary orange ramp)
-    val PrimaryAccent = Color(0xFFFF9064)
+    val PrimaryAccent = Color(0xFFFF5C00)
     val PrimaryDim = Color(0xFFFF7439)
-    val PrimaryContainer = Color(0xFFFF7941)
+    val PrimaryContainer = Color(0xFFFF5C00)
     val PrimaryFixedDim = Color(0xFFFF5E07)
     val OnPrimaryFixed = Color(0xFF000000)
 
@@ -36,20 +37,6 @@ object TokenColors {
     val Error = Color(0xFFFF716C)
     val ErrorContainer = Color(0xFF9F0519)
 
-    // --- Legacy tokens (still referenced by com.ui.* composables) ---
-    // Removed branch-by-branch as components migrate to Theme.colors.
-
-    val Primary = Color(0xFFFF5C00)
-    val White = Color(0xFFFFFFFF)
+    // --- Legacy tokens still referenced by com.ui.* composables ---
     val TapeBackground = Color(0xFF7B330A)
-    val Title = Color(0xFF000000)
-    val OptionalsIcon = Color(0xFF000000)
-    val Icon = Color(0xFF000000)
-    val Subtitle = Color(0x80000000)
-    val Background = Color(0xFFFFFFFF)
-    val HeartSelected = Color(0xFFFF5C00)
-    val HeartUnselected = Color.Gray.copy(alpha = 0.6f)
-    val HeartButtonBorder = Color.Gray.copy(alpha = 0.6f)
-    val HeartButtonBackground = Color.White.copy(alpha = 0.7f)
-    val Transparent = Color(0x00000000)
 }

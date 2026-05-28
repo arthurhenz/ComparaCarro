@@ -20,7 +20,7 @@ data class ComparaCarroTypography(
 )
 
 private val InterFamily = FontFamily.SansSerif
-private val SpaceGroteskFamily = FontFamily.Monospace
+val SpaceGroteskFamily = FontFamily.Monospace
 
 fun defaultTypography(): ComparaCarroTypography = ComparaCarroTypography(
     headlineLarge = TextStyle(
