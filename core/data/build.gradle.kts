@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.app.library)
-    id("comparacarro.koin")
+    alias(libs.plugins.comparacarro.koin)
 }
 
 android {
@@ -11,8 +11,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    implementation(project(":core:common"))
-    implementation(project(":network"))
+    implementation(projects.core.common)
+    implementation(projects.network)
 
     implementation(libs.androidx.datastore.preferences)
 }

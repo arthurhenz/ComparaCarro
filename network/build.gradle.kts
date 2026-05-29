@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.app.library)
-    id("comparacarro.koin")
+    alias(libs.plugins.comparacarro.koin)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -11,7 +11,6 @@ android {
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.content.negotiation)

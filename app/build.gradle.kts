@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.app.application)
-    id("comparacarro.android.compose")
-    id("comparacarro.koin")
+    alias(libs.plugins.comparacarro.android.compose)
+    alias(libs.plugins.comparacarro.koin)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
 }
@@ -29,14 +29,14 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:home"))
-    implementation(project(":feature:detail"))
-    implementation(project(":feature:comparison"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:data"))
-    implementation(project(":core:common"))
-    implementation(project(":core:navigation"))
-    implementation(project(":network"))
+    implementation(projects.feature.home)
+    implementation(projects.feature.detail)
+    implementation(projects.feature.comparison)
+    implementation(projects.core.ui)
+    implementation(projects.core.data)
+    implementation(projects.core.common)
+    implementation(projects.core.navigation)
+    implementation(projects.network)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

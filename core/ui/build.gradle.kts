@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.app.library)
-    id("comparacarro.android.compose")
-    id("comparacarro.koin")
+    alias(libs.plugins.comparacarro.android.compose)
+    alias(libs.plugins.comparacarro.koin)
 }
 
 android {

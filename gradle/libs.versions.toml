@@ -101,6 +101,7 @@ screenshot = { id = "com.android.compose.screenshot", version.ref = "screenshot"
 ## Plugins defined by this project
 app-application = { id = "app.application" }
 app-library = { id = "app.library" }
-
+comparacarro-android-compose = { id = "comparacarro.android.compose" }
+comparacarro-koin = { id = "comparacarro.koin" }
 
 # Colocar app para ficar generico e facil de passar para outros projetos
