@@ -20,9 +20,14 @@ object Theme {
 }
 
 @Composable
-fun Theme(content: @Composable () -> Unit) {
-    val colors = remember { darkColors() }
+
+fun Theme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = remember { if (darkTheme) darkColors() else lightColors() }
     val typography = remember { defaultTypography() }
+
 
     CompositionLocalProvider(
         LocalComparaCarroColors provides colors,
