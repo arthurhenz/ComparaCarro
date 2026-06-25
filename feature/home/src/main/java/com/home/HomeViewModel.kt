@@ -13,6 +13,7 @@ import com.navigation.routes.CardDetailRoute
 import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.ProfileRoute
 import com.navigation.routes.SelectComparisonRoute
+import com.navigation.routes.parseVehicleSpec
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +22,7 @@ import org.koin.android.annotation.KoinViewModel
 
 enum class SortType {
     MOST_POPULAR,
-    ALPHABETIC
+    ALPHABETIC,
 }
 
 @KoinViewModel
@@ -29,7 +30,7 @@ class HomeViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
     private val getRecentlyViewedCarsUseCase: GetRecentlyViewedCarsUseCase,
     private val saveRecentlyViewedCarUseCase: SaveRecentlyViewedCarUseCase,
-    navigator: Navigator
+    navigator: Navigator,
 ) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
@@ -93,13 +94,13 @@ class HomeViewModel(
                 val recentlyViewedCards = getRecentlyViewedCarsUseCase()
                 android.util.Log.d(
                     "HomeViewModel",
-                    "Loaded small=" + smallCards.size + " recent=" + recentlyViewedCards.size
+                    "Loaded small=" + smallCards.size + " recent=" + recentlyViewedCards.size,
                 )
                 _state.value =
                     HomeScreenState.Success(
                         smallCards = smallCards,
                         allSmallCards = smallCards,
-                        recentlyViewedCards = recentlyViewedCards
+                        recentlyViewedCards = recentlyViewedCards,
                     )
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Failed to load cards: " + (e.message ?: "unknown"), e)
@@ -129,7 +130,8 @@ class HomeViewModel(
                 Log.e("HomeViewModel", "Failed to save recently viewed car: ${e.message}")
             }
         }
-        navigate(CardDetailRoute(cardId), NavOptions(singleTop = true))
+        val (modelSlug, fuelAcronym, year) = parseVehicleSpec(cardId)
+        navigate(CardDetailRoute(modelSlug, fuelAcronym, year), NavOptions(singleTop = true))
     }
 
     fun navigateToSelectComparison() {

@@ -7,14 +7,12 @@ import org.koin.core.annotation.Single
 
 @Single
 class GetSmallCardsPageUseCase(
-    private val cardRepository: CardRepository
+    private val cardRepository: CardRepository,
 ) {
     suspend operator fun invoke(
         page: Int,
-        pageSize: Int
+        pageSize: Int,
     ): PaginationResult<SmallCardData> {
         return cardRepository.getSmallCardsPage(page, pageSize)
     }
 }
-
-

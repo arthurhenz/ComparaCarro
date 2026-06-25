@@ -17,9 +17,8 @@ private val RECENTLY_VIEWED_KEY = stringPreferencesKey("recently_viewed_car_ids"
 
 @Single
 class RecentlyViewedRepository(
-    private val context: Context
+    private val context: Context,
 ) {
-
     suspend fun addRecentlyViewedCarId(carId: String) {
         context.dataStore.edit { preferences ->
             val currentList = preferences[RECENTLY_VIEWED_KEY]?.split(",")?.filter { it.isNotEmpty() } ?: emptyList()

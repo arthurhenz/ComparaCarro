@@ -11,7 +11,10 @@ import org.koin.core.parameter.parametersOf
 
 fun EntryProviderScope<NavKey>.compareScreenRoute() {
     entry<CompareScreenRoute> { key ->
-        val viewModel: ComparisonViewModel = koinViewModel { parametersOf(ComparisonParams(key.firstId, key.secondId)) }
+        val firstSpec = "${key.firstModelSlug},${key.firstFuelAcronym},${key.firstYear}"
+        val secondSpec = "${key.secondModelSlug},${key.secondFuelAcronym},${key.secondYear}"
+        val viewModel: ComparisonViewModel =
+            koinViewModel { parametersOf(ComparisonParams(firstSpec, secondSpec)) }
 
         val state by viewModel.state.collectAsState()
 

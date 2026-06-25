@@ -10,6 +10,7 @@ import com.navigation.routes.CompareScreenRoute
 import com.navigation.routes.HomeScreenRoute
 import com.navigation.routes.SelectComparisonRoute
 import com.navigation.routes.navigateToDetail
+import com.navigation.routes.parseVehicleSpec
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -23,20 +24,29 @@ fun EntryProviderScope<NavKey>.selectComparisonRoute() {
             state = state,
             onBackClick = viewModel::goBack,
             onCardClick = viewModel::navigateToDetail,
-            onCompareClick = { viewModel.navigate(
-                CompareScreenRoute(it.first, it.second),
-                NavOptions(popUpTo = HomeScreenRoute)
-            ) }, // USAR  EXTENSION FUNCTION
+            onCompareClick = { pair ->
+                val (firstSlug, firstFuel, firstYear) = parseVehicleSpec(pair.first)
+                val (secondSlug, secondFuel, secondYear) = parseVehicleSpec(pair.second)
+                viewModel.navigate(
+                    CompareScreenRoute(
+                        firstModelSlug = firstSlug,
+                        firstFuelAcronym = firstFuel,
+                        firstYear = firstYear,
+                        secondModelSlug = secondSlug,
+                        secondFuelAcronym = secondFuel,
+                        secondYear = secondYear,
+                    ),
+                    NavOptions(popUpTo = HomeScreenRoute),
+                )
+            },
             onSearchQueryChange = viewModel::updateSearchQuery,
             onSearchFocusChanged = viewModel::updateSearchFocus,
             onToggleSelect = viewModel::toggleSelection,
             onLoadMore = viewModel::loadNextPageIfNeeded,
-            onNavigateToTab = viewModel::navigateToBottomTab
+            onNavigateToTab = viewModel::navigateToBottomTab,
         )
     }
 }
-
-
 
 class SelectComparisonScreenProvider : EntryProvider {
     override fun entryProvider(): EntryProviderScope<NavKey>.() -> Unit = { selectComparisonRoute() }

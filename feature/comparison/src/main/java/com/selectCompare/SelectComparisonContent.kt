@@ -1,19 +1,19 @@
 package com.selectCompare
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -62,7 +62,7 @@ fun SelectComparisonContent(
     onToggleSelect: (String) -> Unit,
     onCardClick: (String) -> Unit,
     onCompareClick: (Pair<String, String>) -> Unit,
-    onLoadMore: (Int) -> Unit
+    onLoadMore: (Int) -> Unit,
 ) {
     val selectedIds = state.allSmallCards.filter { it.selected }.map { it.id }
     val isCompareEnabled = selectedIds.size == 2
@@ -83,9 +83,9 @@ fun SelectComparisonContent(
             contentPadding =
                 PaddingValues(
                     top = TokenSpacing.Section,
-                    bottom = 100.dp
+                    bottom = 100.dp,
                 ),
-            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
+            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
         ) {
             item { SelectionHeader() }
 
@@ -96,7 +96,7 @@ fun SelectComparisonContent(
                     card = card,
                     imageRes = hardcodedCarImages[index % hardcodedCarImages.size],
                     onToggleSelect = { onToggleSelect(card.id) },
-                    onClick = { onCardClick(card.id) }
+                    onClick = { onCardClick(card.id) },
                 )
             }
 
@@ -107,7 +107,7 @@ fun SelectComparisonContent(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = TokenSpacing.Block),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator(color = Theme.colors.accentTertiary)
                     }
@@ -125,7 +125,7 @@ fun SelectComparisonContent(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block)
+                    .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
         )
     }
 }
@@ -136,7 +136,7 @@ private fun SelectionHeader() {
         Text(
             text = "Comparação Técnica".uppercase(),
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Text(
@@ -144,7 +144,7 @@ private fun SelectionHeader() {
             style = Theme.typography.headlineLarge,
             fontStyle = FontStyle.Italic,
             fontWeight = FontWeight.ExtraBold,
-            color = Theme.colors.textPrimary
+            color = Theme.colors.textPrimary,
         )
     }
 }
@@ -160,7 +160,7 @@ private fun SelectionCounter(selectedCount: Int) {
                 .background(Theme.colors.surfaceGlass)
                 .padding(TokenSpacing.Block),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -168,13 +168,13 @@ private fun SelectionCounter(selectedCount: Int) {
                 style = Theme.typography.titleLarge,
                 fontFamily = SpaceGroteskFamily,
                 fontWeight = FontWeight.Bold,
-                color = Theme.colors.accentPrimary
+                color = Theme.colors.accentPrimary,
             )
             Spacer(modifier = Modifier.width(TokenSpacing.Item))
             Text(
                 text = "Selecionados".uppercase(),
                 style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary
+                color = Theme.colors.textSecondary,
             )
         }
         Box(
@@ -182,7 +182,7 @@ private fun SelectionCounter(selectedCount: Int) {
                 Modifier
                     .size(8.dp)
                     .clip(CircleShape)
-                    .background(statusColor)
+                    .background(statusColor),
         )
     }
 }
@@ -192,7 +192,7 @@ private fun CarSelectItem(
     card: SmallCardData,
     imageRes: Int,
     onToggleSelect: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val background =
         if (card.selected) Theme.colors.surface else Theme.colors.surfaceLow
@@ -204,7 +204,7 @@ private fun CarSelectItem(
                 .background(background, shape = TokenShapes.Sm)
                 .clickable(onClick = onClick)
                 .padding(TokenSpacing.Block),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (card.selected) {
             Box(
@@ -212,7 +212,7 @@ private fun CarSelectItem(
                     Modifier
                         .width(4.dp)
                         .height(64.dp)
-                        .background(Theme.colors.accentPrimary)
+                        .background(Theme.colors.accentPrimary),
             )
             Spacer(modifier = Modifier.width(TokenSpacing.Inline))
         }
@@ -224,7 +224,7 @@ private fun CarSelectItem(
                 Modifier
                     .size(width = 96.dp, height = 64.dp)
                     .clip(TokenShapes.Sm)
-                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Sm)
+                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Sm),
         )
         Spacer(modifier = Modifier.width(TokenSpacing.Block))
         Column(modifier = Modifier.weight(1f)) {
@@ -235,19 +235,19 @@ private fun CarSelectItem(
                 fontWeight = FontWeight.Black,
                 color =
                     if (card.selected) Theme.colors.accentPrimary else Theme.colors.textPrimary,
-                maxLines = 1
+                maxLines = 1,
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = card.fipe,
                 style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary
+                color = Theme.colors.textSecondary,
             )
         }
         Spacer(modifier = Modifier.width(TokenSpacing.Inline))
         SelectionCheckbox(
             selected = card.selected,
-            onClick = onToggleSelect
+            onClick = onToggleSelect,
         )
     }
 }
@@ -266,14 +266,14 @@ private fun SelectionCheckbox(selected: Boolean, onClick: () -> Unit) {
                 .background(fillColor, shape = TokenShapes.Sm)
                 .border(width = 2.dp, color = borderColor, shape = TokenShapes.Sm)
                 .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         if (selected) {
             Icon(
                 imageVector = Icons.Filled.Check,
                 contentDescription = "Selecionado",
                 tint = TokenColors.OnPrimaryFixed,
-                modifier = Modifier.size(TokenIconSize.Small)
+                modifier = Modifier.size(TokenIconSize.Small),
             )
         }
     }
@@ -283,7 +283,7 @@ private fun SelectionCheckbox(selected: Boolean, onClick: () -> Unit) {
 private fun CompareNowButton(
     enabled: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val backgroundColor =
         if (enabled) Theme.colors.accentPrimary else TokenColors.Outline
@@ -297,13 +297,13 @@ private fun CompareNowButton(
                 .background(backgroundColor, shape = TokenShapes.Sm)
                 .clickable(enabled = enabled, onClick = onClick)
                 .padding(vertical = TokenSpacing.Block),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = "Comparar agora".uppercase(),
             style = Theme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            color = textColor
+            color = textColor,
         )
     }
 }

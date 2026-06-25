@@ -41,7 +41,7 @@ fun SelectComparisonScreen(
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onToggleSelect: (String) -> Unit = {},
     onLoadMore: (Int) -> Unit = {},
-    onNavigateToTab: (BottomNavTab) -> Unit = {}
+    onNavigateToTab: (BottomNavTab) -> Unit = {},
 ) {
     Scaffold(
         containerColor = Theme.colors.background,
@@ -53,7 +53,7 @@ fun SelectComparisonScreen(
                         style = Theme.typography.headlineLarge,
                         fontStyle = FontStyle.Italic,
                         fontWeight = FontWeight.Black,
-                        color = Theme.colors.textPrimary
+                        color = Theme.colors.textPrimary,
                     )
                 },
                 navigationIcon = {
@@ -65,9 +65,9 @@ fun SelectComparisonScreen(
                             Modifier
                                 .clickable(
                                     indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
+                                    interactionSource = remember { MutableInteractionSource() },
                                 ) { onBackClick() }
-                                .padding(TokenSpacing.Inline)
+                                .padding(TokenSpacing.Inline),
                     )
                 },
                 actions = {
@@ -79,25 +79,25 @@ fun SelectComparisonScreen(
                             Modifier
                                 .clickable(
                                     indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
+                                    interactionSource = remember { MutableInteractionSource() },
                                 ) { /* No function */ }
-                                .padding(TokenSpacing.Inline)
+                                .padding(TokenSpacing.Inline),
                     )
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = Theme.colors.surfaceGlass,
-                        scrolledContainerColor = Theme.colors.surfaceGlass
+                        scrolledContainerColor = Theme.colors.surfaceGlass,
                     ),
-                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             )
         },
         bottomBar = {
             BottomNavBar(
                 selected = BottomNavTab.Comparar,
-                onSelect = onNavigateToTab
+                onSelect = onNavigateToTab,
             )
-        }
+        },
     ) { paddingValues ->
         when (state) {
             is SelectComparisonScreenState.Loading -> {
@@ -106,7 +106,7 @@ fun SelectComparisonScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator(color = Theme.colors.accentTertiary)
                 }
@@ -118,12 +118,12 @@ fun SelectComparisonScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = state.error ?: "Unknown error",
                         style = Theme.typography.bodyLarge,
-                        color = Theme.colors.error
+                        color = Theme.colors.error,
                     )
                 }
             }
@@ -137,7 +137,7 @@ fun SelectComparisonScreen(
                     onSearchFocusChanged = onSearchFocusChanged,
                     onToggleSelect = onToggleSelect,
                     onCompareClick = onCompareClick,
-                    onLoadMore = onLoadMore
+                    onLoadMore = onLoadMore,
                 )
             }
         }
@@ -152,7 +152,7 @@ fun SelectComparisonScreenPreview() {
             listOf(
                 SmallCardData(id = "1", title = "Honda Civic", fipe = "R$ 45.000,00", selected = true),
                 SmallCardData(id = "2", title = "Toyota Corolla", fipe = "R$ 50.000,00", selected = true),
-                SmallCardData(id = "3", title = "Fiat Argo", fipe = "R$ 35.000,00")
+                SmallCardData(id = "3", title = "Fiat Argo", fipe = "R$ 35.000,00"),
             )
         SelectComparisonContent(
             state =
@@ -161,14 +161,14 @@ fun SelectComparisonScreenPreview() {
                     smallCards = previewCards,
                     allSmallCards = previewCards,
                     searchQuery = "",
-                    isSearchFocused = false
+                    isSearchFocused = false,
                 ),
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
             onToggleSelect = {},
             onCompareClick = {},
             onCardClick = {},
-            onLoadMore = {}
+            onLoadMore = {},
         )
     }
 }

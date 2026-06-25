@@ -14,6 +14,6 @@ sealed class SelectComparisonScreenState {
         val isLoadingMore: Boolean = false,
         val nextPage: Int? = null,
         val pageSize: Int = 30,
-        val hasNext: Boolean = false
+        val hasNext: Boolean = false,
     ) : SelectComparisonScreenState()
 }

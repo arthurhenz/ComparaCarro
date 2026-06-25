@@ -1,112 +1,184 @@
 package com.data.repository
 
+import com.data.model.CarAnalytics
 import com.data.model.CarDetailData
+import com.data.model.CarPricePoint
 import com.data.model.LargeCardData
 import com.data.model.PaginationResult
 import com.data.model.SmallCardData
 import comparacarro.network.api.CarsApi
+import comparacarro.network.model.PriceAnalytics
+import comparacarro.network.model.SearchItem
 import comparacarro.network.result.NetworkResult
 import org.koin.core.annotation.Single
 
 @Single
 class CardRepositoryImpl(
-    private val carsApi: CarsApi
+    private val carsApi: CarsApi,
 ) : CardRepository {
+    // The "carro" vehicle-type UUID is resolved once from /v1/vehicle-types and reused
+    // to constrain every search to cars only. Resolving it twice on a startup race is harmless.
+    @Volatile
+    private var carTypeId: String? = null
+
     override suspend fun getLargeCards(): List<LargeCardData> {
-        return when (val result = carsApi.getCars(page = 1, pageSize = 15)) {
+        return when (val result = searchCars(query = null, page = 1, limit = 15)) {
             is NetworkResult.Success ->
-                result.data.data.take(2).map { car ->
+                result.data.data.take(2).map { item ->
                     LargeCardData(
-                        id = car.id.toString(),
-                        title = "${car.marca} ${car.modelo}"
+                        id = item.toSpec(),
+                        title = item.toTitle(),
                     )
                 }
             is NetworkResult.Error -> {
-                android.util.Log.e(
-                    "CardRepositoryImpl",
-                    "getLargeCards error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
-                )
+                logError("getLargeCards", result)
                 emptyList()
             }
         }
     }
 
-    override suspend fun getCarById(id: Int): CarDetailData {
-        return when (val result = carsApi.getCarById(id)) {
+    override suspend fun getCar(
+        modelSlug: String,
+        fuelAcronym: String,
+        year: String,
+    ): CarDetailData {
+        return when (val result = carsApi.getExpandedPrice(modelSlug, fuelAcronym, year)) {
             is NetworkResult.Success -> {
-                val car = result.data
+                val expanded = result.data.data
+                val price = expanded.price
                 CarDetailData(
-                    id = car.id.toString(),
-                    title = "${car.marca} ${car.modelo}",
-                    price = formatPrice(car.valor.toFloat()),
-                    category = car.marca,
+                    id = spec(price.model?.slug ?: modelSlug, price.fuel?.acronym ?: fuelAcronym, price.modelYear),
+                    title = listOfNotNull(price.make?.name, price.model?.name).joinToString(" ").trim(),
+                    price = price.formattedPrice,
+                    category = price.make?.name.orEmpty(),
                     views = 0,
                     optionals = emptyList(),
-                    year = car.anoModelo,
-                    fipeCode = car.codigoFipe,
+                    year = price.modelYear,
+                    fipeCode = "",
+                    makeName = price.make?.name.orEmpty(),
+                    modelName = price.model?.name.orEmpty(),
+                    fuelName = price.fuel?.name.orEmpty(),
+                    fuelAcronym = price.fuel?.acronym.orEmpty(),
+                    vehicleType = price.type?.name.orEmpty(),
+                    referenceLabel = price.reference?.let { "${it.monthName}/${it.year}" }.orEmpty(),
+                    analytics = expanded.analytics?.toDomain(),
+                    availableYears = expanded.availableYears.map { it.modelYear },
+                    priceHistory = expanded.history.map { CarPricePoint(it.year, it.month, it.formattedPrice) },
                 )
             }
             is NetworkResult.Error -> {
-                android.util.Log.e(
-                    "CardRepositoryImpl",
-                    "getCarById error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
-                )
+                logError("getCar", result)
                 throw IllegalStateException(result.message ?: "Unknown error")
             }
         }
     }
 
-    override suspend fun getSmallCards(): List<SmallCardData> {
-        val firstPage = getSmallCardsPage(page = 1, pageSize = 30)
-        return firstPage.data
-    }
+    override suspend fun getSmallCards(): List<SmallCardData> = getSmallCardsPage(page = 1, pageSize = 30).data
 
     override suspend fun getSmallCardsPage(
         page: Int,
-        pageSize: Int
+        pageSize: Int,
     ): PaginationResult<SmallCardData> {
-        return when (val result = carsApi.getCars(page = page, pageSize = pageSize)) {
+        // fipeX caps the page size at 50.
+        val limit = pageSize.coerceIn(1, MAX_PAGE_SIZE)
+        return when (val result = searchCars(query = null, page = page, limit = limit)) {
             is NetworkResult.Success -> {
-                val pageData = result.data
+                val response = result.data
+                val total = response.estimatedTotalHits
+                val totalPages = if (total <= 0) page else (total + limit - 1) / limit
                 PaginationResult(
-                    data =
-                        pageData.data.map { car ->
-                            SmallCardData(
-                                id = car.id.toString(),
-                                title = "${car.marca} ${car.modelo}",
-                                fipe = formatPrice(car.valor.toFloat()),
-                                selected = false
-                            )
-                        },
-                    page = pageData.page,
-                    pageSize = pageData.pageSize,
-                    totalItems = pageData.totalItems,
-                    totalPages = pageData.totalPages,
-                    hasNext = pageData.hasNext,
-                    hasPrevious = pageData.hasPrevious
+                    data = response.data.map { item -> item.toSmallCard() },
+                    page = page,
+                    pageSize = limit,
+                    totalItems = total,
+                    totalPages = totalPages,
+                    hasNext = response.data.size == limit && page < totalPages,
+                    hasPrevious = page > 1,
                 )
             }
             is NetworkResult.Error -> {
-                android.util.Log.e(
-                    "CardRepositoryImpl",
-                    "getSmallCardsPage error code=" + (result.code ?: -1) + " message=" + (result.message ?: "unknown")
-                )
+                logError("getSmallCardsPage", result)
                 PaginationResult(
                     data = emptyList(),
                     page = page,
-                    pageSize = pageSize,
+                    pageSize = limit,
                     totalItems = 0,
                     totalPages = 0,
                     hasNext = false,
-                    hasPrevious = page > 1
+                    hasPrevious = page > 1,
                 )
             }
         }
     }
 
-    private fun formatPrice(fipe: Float): String {
-        // Simple BRL formatting placeholder without locale deps
-        val value = String.format("%.2f", fipe)
-        return "R$ $value"
+    private suspend fun searchCars(
+        query: String?,
+        page: Int,
+        limit: Int,
+    ) = carsApi.searchCars(query = query, page = page, limit = limit, typeId = carTypeId())
+
+    /** Resolves and caches the "carro" vehicle-type UUID. Returns null if it can't be determined. */
+    private suspend fun carTypeId(): String? {
+        carTypeId?.let { return it }
+        return when (val result = carsApi.getVehicleTypes()) {
+            is NetworkResult.Success -> {
+                // The "carro" slug ("C") collides with "caminhão", so match by name instead.
+                val id = result.data.data.firstOrNull { it.name.equals("carro", ignoreCase = true) }?.id
+                carTypeId = id
+                id
+            }
+            is NetworkResult.Error -> {
+                logError("getVehicleTypes", result)
+                null
+            }
+        }
+    }
+
+    private fun SearchItem.toSmallCard() =
+        SmallCardData(
+            id = toSpec(),
+            title = toTitle(),
+            fipe = formatCents(latestMarketPriceCents),
+            selected = false,
+        )
+
+    private fun SearchItem.toSpec() = spec(modelSlug, fuelAcronym, modelYear)
+
+    private fun SearchItem.toTitle() = listOf(makeName, modelName, modelYear.toString()).joinToString(" ").trim()
+
+    private fun PriceAnalytics.toDomain() =
+        CarAnalytics(
+            changeFromPreviousMonthPct = changeFromPreviousMonthPct,
+            changeFromLaunchPct = changeFromLaunchPct,
+            peakToNowPctChange = peakToNowPctChange,
+            priceVolatility = priceVolatility,
+            priceRank = priceRank,
+            priceRankTotalInCategory = priceRankTotalInCategory,
+            valueRetentionPct = valueRetentionPct,
+            annualDepreciationRate = annualDepreciationRate,
+            lifecycleStatus = lifecycleStatus,
+            anomalyStatus = anomalyStatus,
+            anomalyZScore = anomalyZScore,
+        )
+
+    private fun logError(operation: String, error: NetworkResult.Error) {
+        android.util.Log.e(
+            "CardRepositoryImpl",
+            "$operation error code=" + (error.code ?: -1) + " message=" + (error.message ?: "unknown"),
+        )
+    }
+
+    private companion object {
+        const val MAX_PAGE_SIZE = 50
+
+        fun spec(modelSlug: String, fuelAcronym: String, year: Int) = "$modelSlug,$fuelAcronym,$year"
+
+        /** Formats integer cents to a BRL string (e.g. 710300 -> "R$ 7.103,00") without locale dependencies. */
+        fun formatCents(cents: Long): String {
+            val reais = cents / 100
+            val centavos = (cents % 100).toInt()
+            val grouped = reais.toString().reversed().chunked(3).joinToString(".").reversed()
+            return "R$ %s,%02d".format(grouped, centavos)
+        }
     }
 }

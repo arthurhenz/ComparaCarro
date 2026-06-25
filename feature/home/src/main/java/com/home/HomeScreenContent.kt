@@ -1,6 +1,5 @@
 package com.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,14 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.data.model.LargeCardData
@@ -60,7 +56,6 @@ import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.BottomNavBar
 import com.ui.BottomNavTab
-import com.ui.FavoriteButton
 import com.ui.Header
 import com.ui.LargeCardList
 import com.ui.R as UiR
@@ -150,15 +145,15 @@ fun HomeScreenContent(
                     Column(modifier = Modifier.padding(start = TokenSpacing.Block, top = 48.dp)) {
                         Text(
                             text = "Frota Disponível".uppercase(),
-                            style = TextStyle(
-                                fontFamily = SpaceGroteskFamily,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = TokenFontSizes.Medium,
-                            ),
+                            style =
+                                TextStyle(
+                                    fontFamily = SpaceGroteskFamily,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = TokenFontSizes.Medium,
+                                ),
                             color = Theme.colors.accentPrimary,
                             modifier =
-                                Modifier.padding(bottom = 4.dp)
-
+                                Modifier.padding(bottom = 4.dp),
                         )
 
                         Text(
@@ -198,7 +193,7 @@ fun HomeScreenContent(
                         val numberOfRows = (smallCards.size + 1) / 2
                         val totalHeight =
                             (cardHeight * numberOfRows) +
-                                    (verticalSpacing * (numberOfRows - 1).coerceAtLeast(0))
+                                (verticalSpacing * (numberOfRows - 1).coerceAtLeast(0))
 
                         SmallCardList(
                             modifier =
@@ -315,7 +310,6 @@ private fun CategoryChip(
             style = Theme.typography.labelMedium,
             maxLines = 1,
             color = contentColor,
-
         )
     }
 }

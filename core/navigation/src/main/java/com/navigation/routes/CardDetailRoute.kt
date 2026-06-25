@@ -6,8 +6,14 @@ import com.common.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CardDetailRoute(val cardId: String) : NavKey
+data class CardDetailRoute(
+    val modelSlug: String,
+    val fuelAcronym: String,
+    val year: String,
+) : NavKey
 
-fun Navigator.navigateToDetail(cardId:String) {
-    navigate(CardDetailRoute(cardId), NavOptions(singleTop = true))
-} // REPLICA PARA OS OUTROS
+/** Navigates to the detail screen from a `model-slug,fuel-acronym,year` spec. */
+fun Navigator.navigateToDetail(spec: String) {
+    val (modelSlug, fuelAcronym, year) = parseVehicleSpec(spec)
+    navigate(CardDetailRoute(modelSlug, fuelAcronym, year), NavOptions(singleTop = true))
+}

@@ -7,6 +7,6 @@ sealed class ComparisonScreenState {
     data class Error(val error: String?) : ComparisonScreenState()
     data class Success(
         val firstCar: CarDetailData,
-        val secondCar: CarDetailData
+        val secondCar: CarDetailData,
     ) : ComparisonScreenState()
 }
