@@ -6,7 +6,7 @@ import org.koin.core.annotation.Single
 
 @Single
 class GetSmallCardsUseCase(
-    private val cardRepository: CardRepository
+    private val cardRepository: CardRepository,
 ) {
     suspend operator fun invoke(): List<SmallCardData> {
         return cardRepository.getSmallCards()

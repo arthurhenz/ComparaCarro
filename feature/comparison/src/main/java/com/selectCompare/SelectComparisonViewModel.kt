@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.data.usecase.GetSmallCardsPageUseCase
-import com.navigation.routes.CardDetailRoute
-import com.navigation.routes.CompareScreenRoute
 import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.HomeScreenRoute
 import com.navigation.routes.ProfileRoute
@@ -23,7 +21,7 @@ import org.koin.core.annotation.InjectedParam
 class SelectComparisonViewModel(
     private val getSmallCardsPageUseCase: GetSmallCardsPageUseCase,
     @InjectedParam private val cardId: String,
-    navigator: Navigator
+    navigator: Navigator,
 ) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<SelectComparisonScreenState>(SelectComparisonScreenState.Loading)
     val state: StateFlow<SelectComparisonScreenState> = _state.asStateFlow()
@@ -53,7 +51,7 @@ class SelectComparisonViewModel(
                         isLoadingMore = false,
                         nextPage = if (firstPage.hasNext) 2 else null,
                         pageSize = firstPage.pageSize,
-                        hasNext = firstPage.hasNext
+                        hasNext = firstPage.hasNext,
                     )
             } catch (e: Exception) {
                 _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
@@ -96,7 +94,7 @@ class SelectComparisonViewModel(
             _state.value =
                 current.copy(
                     smallCards = filtered,
-                    searchQuery = query
+                    searchQuery = query,
                 )
         }
     }
@@ -126,7 +124,7 @@ class SelectComparisonViewModel(
             _state.value =
                 current.copy(
                     allSmallCards = updatedAll,
-                    smallCards = updatedFiltered
+                    smallCards = updatedFiltered,
                 )
         }
     }
@@ -147,7 +145,9 @@ class SelectComparisonViewModel(
                                 if (current.searchQuery.isBlank()) {
                                     appendedAll
                                 } else {
-                                    appendedAll.filter { it.title.contains(current.searchQuery.trim(), ignoreCase = true) }
+                                    appendedAll.filter {
+                                        it.title.contains(current.searchQuery.trim(), ignoreCase = true)
+                                    }
                                 }
                             _state.value =
                                 current.copy(
@@ -155,7 +155,7 @@ class SelectComparisonViewModel(
                                     smallCards = appendedFiltered,
                                     isLoadingMore = false,
                                     nextPage = if (page.hasNext) nextPageNumber + 1 else null,
-                                    hasNext = page.hasNext
+                                    hasNext = page.hasNext,
                                 )
                         }
                     } catch (e: Exception) {

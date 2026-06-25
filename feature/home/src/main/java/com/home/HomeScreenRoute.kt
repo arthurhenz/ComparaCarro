@@ -30,7 +30,7 @@ fun EntryProviderScope<NavKey>.homeScreenRoute() {
             onSearchQueryChange = viewModel::updateSearchQuery,
             onSearchFocusChanged = viewModel::updateSearchFocus,
             onSortTypeChange = viewModel::updateSortType,
-            onRefreshRecentlyViewed = viewModel::refreshRecentlyViewed
+            onRefreshRecentlyViewed = viewModel::refreshRecentlyViewed,
         )
     }
 }

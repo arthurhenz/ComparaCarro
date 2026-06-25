@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
-import com.data.usecase.GetCarByIdUseCase
+import com.data.usecase.GetCarUseCase
 import com.navigation.routes.SelectComparisonRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,9 +16,11 @@ import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
 class DetailViewModel(
-    private val getCarByIdUseCase: GetCarByIdUseCase,
-    @InjectedParam private val cardId: String,
-    navigator: Navigator
+    private val getCarUseCase: GetCarUseCase,
+    @InjectedParam private val modelSlug: String,
+    @InjectedParam private val fuelAcronym: String,
+    @InjectedParam private val year: String,
+    navigator: Navigator,
 ) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<DetailScreenState>(DetailScreenState.Loading)
     val state: StateFlow<DetailScreenState> = _state.asStateFlow()
@@ -30,11 +32,8 @@ class DetailViewModel(
     private fun loadCardDetails() =
         viewModelScope.launch {
             try {
-                Log.d("DetailViewModel", "Received cardId='$cardId'")
-                val id =
-                    cardId.toIntOrNull()
-                        ?: throw IllegalArgumentException("Invalid id: $cardId")
-                val car = getCarByIdUseCase(id)
+                Log.d("DetailViewModel", "Loading detail for $modelSlug,$fuelAcronym,$year")
+                val car = getCarUseCase(modelSlug, fuelAcronym, year)
                 _state.value = DetailScreenState.Success(car = car)
             } catch (e: Exception) {
                 _state.value = DetailScreenState.Error(e.message ?: "Failed to load card details")

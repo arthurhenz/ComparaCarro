@@ -9,6 +9,6 @@ sealed class HomeScreenState {
     data class Success(
         val smallCards: List<SmallCardData>,
         val allSmallCards: List<SmallCardData>,
-        val recentlyViewedCards: List<LargeCardData> = emptyList()
+        val recentlyViewedCards: List<LargeCardData> = emptyList(),
     ) : HomeScreenState()
 }

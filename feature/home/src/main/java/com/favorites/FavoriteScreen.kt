@@ -31,12 +31,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,10 +75,11 @@ private data class SuggestionCategory(
     val highlighted: Boolean,
 )
 
-private val suggestionCategories = listOf(
-    SuggestionCategory("Performance", "Modelos esportivos em destaque", highlighted = true),
-    SuggestionCategory("Utilitários", "SUVs com tração integral", highlighted = false),
-)
+private val suggestionCategories =
+    listOf(
+        SuggestionCategory("Performance", "Modelos esportivos em destaque", highlighted = true),
+        SuggestionCategory("Utilitários", "SUVs com tração integral", highlighted = false),
+    )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,13 +102,13 @@ fun FavoriteScreen(
                 onSearchQueryChange = { searchQuery = it },
                 onSearchFocusChanged = { isSearchFocused = it },
                 isSearchFocused = isSearchFocused,
-                title = "compara carros"
+                title = "compara carros",
             )
         },
         bottomBar = {
             BottomNavBar(
                 selected = BottomNavTab.Favoritos,
-                onSelect = onNavigate
+                onSelect = onNavigate,
             )
         },
     ) { paddingValues ->
@@ -260,20 +261,20 @@ private fun FavoriteCard(
             Spacer(modifier = Modifier.height(TokenSpacing.Item))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = car.price,
                     style = Theme.typography.priceMedium,
                     fontWeight = FontWeight.Bold,
                     color = Theme.colors.textPrimary,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(TokenSpacing.Item))
                 PrimaryButton(
                     text = "Ver Detalhes",
                     onClick = onCompare,
-                    expanded = false
+                    expanded = false,
                 )
             }
         }
@@ -402,32 +403,33 @@ private fun EmptyFavoritesState(modifier: Modifier = Modifier) {
     }
 }
 
-internal fun sampleFavorites(): List<FavoriteCarItem> = listOf(
-    FavoriteCarItem(
-        id = "fav_1",
-        brand = "Toyota",
-        title = "Corolla Altis",
-        price = "R$ 187.990",
-        powertrain = "Hybrid",
-        range = "0 km",
-    ),
-    FavoriteCarItem(
-        id = "fav_2",
-        brand = "Fiat",
-        title = "Pulse Abarth",
-        price = "R$ 149.900",
-        powertrain = "Turbo",
-        range = "1.200 km",
-    ),
-    FavoriteCarItem(
-        id = "fav_3",
-        brand = "Porsche",
-        title = "911 Carrera",
-        price = "R$ 845.000",
-        powertrain = "Sport",
-        range = "5.500 km",
-    ),
-)
+internal fun sampleFavorites(): List<FavoriteCarItem> =
+    listOf(
+        FavoriteCarItem(
+            id = "fav_1",
+            brand = "Toyota",
+            title = "Corolla Altis",
+            price = "R$ 187.990",
+            powertrain = "Hybrid",
+            range = "0 km",
+        ),
+        FavoriteCarItem(
+            id = "fav_2",
+            brand = "Fiat",
+            title = "Pulse Abarth",
+            price = "R$ 149.900",
+            powertrain = "Turbo",
+            range = "1.200 km",
+        ),
+        FavoriteCarItem(
+            id = "fav_3",
+            brand = "Porsche",
+            title = "911 Carrera",
+            price = "R$ 845.000",
+            powertrain = "Sport",
+            range = "5.500 km",
+        ),
+    )
 
 @Preview(showBackground = true)
 @Composable

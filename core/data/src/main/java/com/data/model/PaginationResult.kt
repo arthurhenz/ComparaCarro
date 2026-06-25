@@ -7,5 +7,5 @@ data class PaginationResult<T>(
     val totalItems: Int,
     val totalPages: Int,
     val hasNext: Boolean,
-    val hasPrevious: Boolean
+    val hasPrevious: Boolean,
 )

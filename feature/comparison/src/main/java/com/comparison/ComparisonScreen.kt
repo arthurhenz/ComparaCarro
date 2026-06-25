@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.data.model.CarAnalytics
 import com.data.model.CarDetailData
 import com.theme.SpaceGroteskFamily
 import com.theme.Theme
@@ -168,15 +169,48 @@ private fun AlignedComparisonContent(
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
-        SpecGroup(label = "Combustível", firstValue = "Flex (Etanol/Gasolina)", secondValue = "Flex (Etanol/Gasolina)")
-        SpecGroup(label = "Modelo do Motor", firstValue = "250 TSI 1.4 Turbo", secondValue = "T270 1.3 Turbo")
-        SpecGroup(label = "Número de Portas", firstValue = "4 Portas", secondValue = "4 Portas")
-        SpecGroup(label = "Ano Fab / Modelo", firstValue = "2023 / 2024", secondValue = "2023 / 2024")
+        SpecGroup(label = "Combustível", firstValue = fuelLabel(firstCar), secondValue = fuelLabel(secondCar))
+        SpecGroup(label = "Ano modelo", firstValue = yearLabel(firstCar), secondValue = yearLabel(secondCar))
+        SpecGroup(
+            label = "Período de referência",
+            firstValue = orDash(firstCar.referenceLabel),
+            secondValue = orDash(secondCar.referenceLabel),
+        )
         SpecGroup(
             label = "Tabela Fipe",
             firstValue = firstCar.price,
             secondValue = secondCar.price,
             valueColor = Theme.colors.accentPrimary,
+        )
+        SpecGroup(
+            label = "Variação no mês",
+            firstValue = formatPct(firstCar.analytics?.changeFromPreviousMonthPct),
+            secondValue = formatPct(secondCar.analytics?.changeFromPreviousMonthPct),
+        )
+        SpecGroup(
+            label = "Variação desde o lançamento",
+            firstValue = formatPct(firstCar.analytics?.changeFromLaunchPct),
+            secondValue = formatPct(secondCar.analytics?.changeFromLaunchPct),
+        )
+        SpecGroup(
+            label = "Volatilidade",
+            firstValue = formatPct(firstCar.analytics?.priceVolatility),
+            secondValue = formatPct(secondCar.analytics?.priceVolatility),
+        )
+        SpecGroup(
+            label = "Ranking de preço",
+            firstValue = priceRankLabel(firstCar.analytics),
+            secondValue = priceRankLabel(secondCar.analytics),
+        )
+        SpecGroup(
+            label = "Depreciação anual",
+            firstValue = formatPct(firstCar.analytics?.annualDepreciationRate),
+            secondValue = formatPct(secondCar.analytics?.annualDepreciationRate),
+        )
+        SpecGroup(
+            label = "Ciclo de vida",
+            firstValue = orDash(firstCar.analytics?.lifecycleStatus),
+            secondValue = orDash(secondCar.analytics?.lifecycleStatus),
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
@@ -289,7 +323,10 @@ private fun SpecGroup(
     firstValue: String,
     secondValue: String,
     valueColor: androidx.compose.ui.graphics.Color = Theme.colors.textPrimary,
+    fromApi: Boolean = true,
 ) {
+    val resolvedLabelColor = if (fromApi) Theme.colors.textSecondary else Theme.colors.error
+    val resolvedValueColor = if (fromApi) valueColor else Theme.colors.error
     Column(
         modifier =
             Modifier
@@ -298,9 +335,10 @@ private fun SpecGroup(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = label,
+            text = if (fromApi) label else "$label (não fornecido pela API)",
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary,
+            color = resolvedLabelColor,
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Row(
@@ -310,20 +348,42 @@ private fun SpecGroup(
             Text(
                 text = firstValue,
                 style = Theme.typography.priceMedium,
-                color = valueColor,
+                color = resolvedValueColor,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
             )
             Text(
                 text = secondValue,
                 style = Theme.typography.priceMedium,
-                color = valueColor,
+                color = resolvedValueColor,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
             )
         }
     }
 }
+
+private fun fuelLabel(car: CarDetailData): String {
+    val name = car.fuelName
+    val acronym = car.fuelAcronym
+    return when {
+        name.isNotBlank() && acronym.isNotBlank() -> "$name ($acronym)"
+        name.isNotBlank() -> name
+        else -> "—"
+    }
+}
+
+private fun yearLabel(car: CarDetailData): String = car.year.takeIf { it > 0 }?.toString() ?: "—"
+
+private fun priceRankLabel(analytics: CarAnalytics?): String {
+    val rank = analytics?.priceRank ?: return "—"
+    val total = analytics.priceRankTotalInCategory
+    return if (total != null) "$rank/$total" else rank.toString()
+}
+
+private fun formatPct(value: Double?): String = value?.let { "%+.2f%%".format(it * 100) } ?: "—"
+
+private fun orDash(value: String?): String = if (value.isNullOrBlank()) "—" else value
 
 @Composable
 private fun TestDriveCta(onReserve: () -> Unit) {
@@ -344,7 +404,9 @@ private fun TestDriveCta(onReserve: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Text(
-            text = "Nossa equipe técnica pode te ajudar a montar uma análise detalhada do carro ideal em nossa concessionária.",
+            text =
+                "Nossa equipe técnica pode te ajudar a montar uma análise detalhada " +
+                    "do carro ideal em nossa concessionária.",
             style = Theme.typography.bodyMedium,
             color = Theme.colors.textSecondary,
         )

@@ -11,14 +11,14 @@ import org.koin.core.parameter.parametersOf
 
 fun EntryProviderScope<NavKey>.cardDetailRoute() {
     entry<CardDetailRoute> { key ->
-        val viewModel: DetailViewModel = koinViewModel { parametersOf(key.cardId) }
+        val viewModel: DetailViewModel = koinViewModel { parametersOf(key.modelSlug, key.fuelAcronym, key.year) }
 
         val state by viewModel.state.collectAsState()
 
         DetailScreen(
             state = state,
             onBackClick = viewModel::goBack,
-            onCompareClick = viewModel::navigateToCompare
+            onCompareClick = viewModel::navigateToCompare,
         )
     }
 }

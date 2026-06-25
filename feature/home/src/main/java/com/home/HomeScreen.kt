@@ -29,7 +29,7 @@ fun HomeScreen(
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onSortTypeChange: (SortType) -> Unit = {},
-    onRefreshRecentlyViewed: () -> Unit = {}
+    onRefreshRecentlyViewed: () -> Unit = {},
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -49,7 +49,7 @@ fun HomeScreen(
         is HomeScreenState.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(color = Theme.colors.accentTertiary)
             }
@@ -58,12 +58,12 @@ fun HomeScreen(
         is HomeScreenState.Error -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = state.error ?: "Unknown error",
                     style = Theme.typography.bodyLarge,
-                    color = Theme.colors.error
+                    color = Theme.colors.error,
                 )
             }
         }
@@ -81,7 +81,7 @@ fun HomeScreen(
                 onCardClick = onCardClick,
                 onCompareClick = onCompareFromHome,
                 onFavoritesClick = onFavoritesClick,
-                onProfileClick = onProfileClick
+                onProfileClick = onProfileClick,
             )
         }
     }
@@ -98,37 +98,37 @@ fun HomeScreenPreview() {
                         id = "preview_small_1",
                         title = "Volkswagen Saveiro 2017",
                         fipe = "R$ 55.900",
-                        selected = true
+                        selected = true,
                     ),
                     SmallCardData(
                         id = "preview_small_2",
                         title = "Audi A4 Quattro Sedan 2019",
                         fipe = "R$ 142.000",
-                        selected = false
+                        selected = false,
                     ),
                     SmallCardData(
                         id = "preview_small_3",
                         title = "Honda Civic Si LX LXS 2020",
                         fipe = "R$ 115.500",
-                        selected = false
+                        selected = false,
                     ),
                     SmallCardData(
                         id = "preview_small_4",
                         title = "Toyota Corolla Xei Guerra Corolla Siria 2021",
                         fipe = "R$ 128.000",
-                        selected = true
-                    )
+                        selected = true,
+                    ),
                 ),
             recentlyViewedCards =
                 listOf(
                     LargeCardData(
                         id = "preview_recent_1",
-                        title = "Honda Civic 2020"
+                        title = "Honda Civic 2020",
                     ),
                     LargeCardData(
                         id = "preview_recent_2",
-                        title = "Toyota Corolla 2021"
-                    )
+                        title = "Toyota Corolla 2021",
+                    ),
                 ),
             searchQuery = "",
             onSearchQueryChange = {},
@@ -136,7 +136,7 @@ fun HomeScreenPreview() {
             isSearchFocused = false,
             sortType = SortType.MOST_POPULAR,
             onSortTypeChange = {},
-            onCardClick = {}
+            onCardClick = {},
         )
     }
 }
