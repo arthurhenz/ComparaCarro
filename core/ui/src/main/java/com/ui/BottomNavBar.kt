@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
@@ -37,14 +36,14 @@ enum class BottomNavTab(val label: String, val icon: ImageVector) {
     Garagem("Garagem".uppercase(), Icons.Filled.DirectionsCar),
     Comparar("Comparar".uppercase(), Icons.Outlined.SwapHorizontalCircle),
     Favoritos("Favoritos".uppercase(), Icons.Filled.Favorite),
-    Perfil("Perfil".uppercase(), Icons.Filled.Person)
+    Perfil("Perfil".uppercase(), Icons.Filled.Person),
 }
 
 @Composable
 fun BottomNavBar(
     selected: BottomNavTab,
     onSelect: (BottomNavTab) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
@@ -55,13 +54,13 @@ fun BottomNavBar(
                 .height(72.dp)
                 .padding(horizontal = TokenSpacing.Block),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         BottomNavTab.entries.forEach { tab ->
             BottomNavItem(
                 tab = tab,
                 isSelected = tab == selected,
-                onClick = { onSelect(tab) }
+                onClick = { onSelect(tab) },
             )
         }
     }
@@ -71,7 +70,7 @@ fun BottomNavBar(
 private fun BottomNavItem(
     tab: BottomNavTab,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val tint = if (isSelected) Theme.colors.accentPrimary else Theme.colors.textSecondary
     Column(
@@ -80,23 +79,23 @@ private fun BottomNavItem(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = onClick
+                    onClick = onClick,
                 )
                 .padding(vertical = TokenSpacing.Item, horizontal = TokenSpacing.Inline),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             imageVector = tab.icon,
             contentDescription = tab.label,
             tint = tint,
-            modifier = Modifier.size(TokenIconSize.Medium)
+            modifier = Modifier.size(TokenIconSize.Medium),
         )
         Box(modifier = Modifier.size(4.dp))
         Text(
             text = tab.label,
             style = Theme.typography.labelMedium,
-            color = tint
+            color = tint,
         )
     }
 }
@@ -107,7 +106,7 @@ fun BottomNavBarPreview() {
     Theme {
         BottomNavBar(
             selected = BottomNavTab.Garagem,
-            onSelect = {}
+            onSelect = {},
         )
     }
 }

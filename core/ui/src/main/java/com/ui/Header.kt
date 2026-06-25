@@ -27,7 +27,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
@@ -40,7 +39,7 @@ fun Header(
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     isSearchFocused: Boolean = false,
-    title: String = ""
+    title: String = "",
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -50,22 +49,22 @@ fun Header(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Theme.colors.surfaceHeader)
-
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(Theme.colors.surfaceHeader),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = title.uppercase(),
                 style = Theme.typography.headlineLarge,
                 fontStyle = FontStyle.Italic,
                 color = Theme.colors.accentPrimary,
-                modifier = Modifier.padding(start = TokenSpacing.Block)
+                modifier = Modifier.padding(start = TokenSpacing.Block),
             )
 
             IconButton(
@@ -77,13 +76,13 @@ fun Header(
                     } else {
                         onSearchFocusChanged(true)
                     }
-                }
+                },
             ) {
                 Icon(
                     imageVector = if (isSearchFocused) Icons.Filled.Close else Icons.Filled.Search,
                     contentDescription = if (isSearchFocused) "Fechar busca" else "Buscar",
                     tint = Theme.colors.accentPrimary,
-                    modifier = Modifier.size(TokenIconSize.Large)
+                    modifier = Modifier.size(TokenIconSize.Large),
                 )
             }
         }
@@ -95,7 +94,7 @@ fun Header(
                 onSearchFocusChanged = onSearchFocusChanged,
                 isSearchFocused = isSearchFocused,
                 focusRequester = focusRequester,
-                focusManager = focusManager
+                focusManager = focusManager,
             )
         }
     }
@@ -107,15 +106,16 @@ fun Header(
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
-    isSearchFocused: Boolean = false
+    isSearchFocused: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Theme.colors.surfaceHeader)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(Theme.colors.surfaceHeader),
     ) {
         SearchField(
             searchQuery = searchQuery,
@@ -123,7 +123,7 @@ fun Header(
             onSearchFocusChanged = onSearchFocusChanged,
             isSearchFocused = isSearchFocused,
             focusRequester = focusRequester,
-            focusManager = focusManager
+            focusManager = focusManager,
         )
     }
 }
@@ -135,7 +135,7 @@ private fun SearchField(
     onSearchFocusChanged: (Boolean) -> Unit,
     isSearchFocused: Boolean,
     focusRequester: FocusRequester,
-    focusManager: androidx.compose.ui.focus.FocusManager
+    focusManager: androidx.compose.ui.focus.FocusManager,
 ) {
     OutlinedTextField(
         value = searchQuery,
@@ -147,7 +147,7 @@ private fun SearchField(
                     start = TokenSpacing.Block,
                     end = TokenSpacing.Block,
                     top = TokenSpacing.Item,
-                    bottom = TokenSpacing.Block
+                    bottom = TokenSpacing.Block,
                 )
                 .focusRequester(focusRequester)
                 .onFocusChanged { focusState ->
@@ -157,14 +157,14 @@ private fun SearchField(
             Text(
                 text = "Buscar por modelo...",
                 style = Theme.typography.bodyMedium,
-                color = Theme.colors.textSecondary
+                color = Theme.colors.textSecondary,
             )
         },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Search,
                 contentDescription = "Search",
-                tint = Theme.colors.textSecondary
+                tint = Theme.colors.textSecondary,
             )
         },
         trailingIcon = {
@@ -173,12 +173,12 @@ private fun SearchField(
                     onClick = {
                         onSearchQueryChange("")
                         focusManager.clearFocus()
-                    }
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Clear and unfocus",
-                        tint = Theme.colors.textSecondary
+                        tint = Theme.colors.textSecondary,
                     )
                 }
             }
@@ -191,9 +191,9 @@ private fun SearchField(
                 focusedIndicatorColor = Theme.colors.accentPrimary,
                 unfocusedIndicatorColor = Theme.colors.outlineGhost,
                 focusedTextColor = Theme.colors.textPrimary,
-                unfocusedTextColor = Theme.colors.textPrimary
+                unfocusedTextColor = Theme.colors.textPrimary,
             ),
-        singleLine = true
+        singleLine = true,
     )
 }
 
@@ -206,7 +206,7 @@ fun HeaderPreview() {
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
             isSearchFocused = false,
-            title = "COMPARA CARROS"
+            title = "COMPARA CARROS",
         )
     }
 }
@@ -220,7 +220,7 @@ fun HeaderSearchActivePreview() {
             onSearchQueryChange = {},
             onSearchFocusChanged = {},
             isSearchFocused = true,
-            title = "COMPARA CARROS"
+            title = "COMPARA CARROS",
         )
     }
 }

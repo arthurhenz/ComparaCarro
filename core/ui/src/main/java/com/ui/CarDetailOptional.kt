@@ -24,36 +24,36 @@ import com.theme.TokenSpacing
 fun CarDetailOptional(
     modifier: Modifier = Modifier,
     icon: ImageVector,
-    title: String
+    title: String,
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item)
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
     ) {
         Icon(
             modifier = Modifier.size(TokenIconSize.Medium),
             imageVector = icon,
             contentDescription = title,
-            tint = Theme.colors.textPrimary
+            tint = Theme.colors.textPrimary,
         )
 
         Text(
             text = title,
             color = Theme.colors.textPrimary,
-            style = Theme.typography.labelMedium
+            style = Theme.typography.labelMedium,
         )
     }
 }
 
 data class OptionalItem(
     val icon: ImageVector,
-    val title: String
+    val title: String,
 )
 
 @Composable
 fun CarDetailOptionalsList(
     modifier: Modifier = Modifier,
-    content: LazyGridScope.() -> Unit
+    content: LazyGridScope.() -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -61,7 +61,7 @@ fun CarDetailOptionalsList(
         horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
         verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
         userScrollEnabled = false,
-        content = content
+        content = content,
     )
 }
 
@@ -71,7 +71,7 @@ fun CarDetailOptionalPreview() {
     Theme {
         CarDetailOptional(
             icon = Icons.Filled.AirlineSeatReclineNormal,
-            title = "Banco de Couro"
+            title = "Banco de Couro",
         )
     }
 }
@@ -84,7 +84,7 @@ fun CarDetailOptionalsListPreview() {
             OptionalItem(icon = optionalIcon("Banco de Couro"), title = "Banco de Couro"),
             OptionalItem(icon = optionalIcon("Câmera de Ré"), title = "Câmera de Ré"),
             OptionalItem(icon = optionalIcon("GPS"), title = "GPS"),
-            OptionalItem(icon = Icons.Filled.WbSunny, title = "Teto Solar")
+            OptionalItem(icon = Icons.Filled.WbSunny, title = "Teto Solar"),
         )
 
     Theme {
@@ -92,7 +92,7 @@ fun CarDetailOptionalsListPreview() {
             items(optionals) { optional ->
                 CarDetailOptional(
                     icon = optional.icon,
-                    title = optional.title
+                    title = optional.title,
                 )
             }
         }

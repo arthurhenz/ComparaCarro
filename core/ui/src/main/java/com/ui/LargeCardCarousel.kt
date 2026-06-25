@@ -12,12 +12,12 @@ import com.theme.TokenSpacing
 @Composable
 fun LargeCardCarousel(
     modifier: Modifier = Modifier,
-    content: LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit,
 ) {
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = TokenSpacing.Block),
-        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item, Alignment.Start)
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item, Alignment.Start),
     ) {
         content()
     }

@@ -1,9 +1,7 @@
 package com.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.StrokeCap.Companion.Square
 import androidx.compose.ui.unit.dp
 
 object TokenShapes {

@@ -36,28 +36,28 @@ import com.theme.TokenSpacing
 fun ToggleSelectButton(
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
             modifier
                 .clip(TokenShapes.Pill)
                 .background(
-                    color = if (selected) Theme.colors.interactivePrimarySolid else Theme.colors.surfaceRaised
+                    color = if (selected) Theme.colors.interactivePrimarySolid else Theme.colors.surfaceRaised,
                 )
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
+                    interactionSource = remember { MutableInteractionSource() },
                 ) { onClick() }
                 .padding(TokenSpacing.Item),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = if (selected) Icons.Filled.CheckCircle else Icons.Filled.AddCircle,
             contentDescription = if (selected) "Comparando" else "Comparar",
             tint = if (selected) Theme.colors.textInteractive else Theme.colors.textSecondary,
-            modifier = Modifier.size(TokenIconSize.Large)
+            modifier = Modifier.size(TokenIconSize.Large),
         )
 
         AnimatedVisibility(
@@ -65,20 +65,20 @@ fun ToggleSelectButton(
             enter =
                 expandHorizontally(
                     animationSpec = tween(durationMillis = 300),
-                    expandFrom = Alignment.Start
+                    expandFrom = Alignment.Start,
                 ) + fadeIn(animationSpec = tween(durationMillis = 300)),
             exit =
                 shrinkHorizontally(
                     animationSpec = tween(durationMillis = 300),
-                    shrinkTowards = Alignment.Start
-                ) + fadeOut(animationSpec = tween(durationMillis = 300))
+                    shrinkTowards = Alignment.Start,
+                ) + fadeOut(animationSpec = tween(durationMillis = 300)),
         ) {
             Row {
                 Spacer(modifier = Modifier.width(TokenSpacing.Item))
                 Text(
                     text = "Comparando",
                     style = Theme.typography.labelMedium,
-                    color = Theme.colors.textInteractive
+                    color = Theme.colors.textInteractive,
                 )
             }
         }
@@ -91,18 +91,18 @@ fun AnimatedToggleButtonPreview() {
     Theme {
         Column(
             modifier = Modifier.padding(TokenSpacing.Block),
-            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
+            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
         ) {
             Text("Unselected state:")
             ToggleSelectButton(
                 selected = false,
-                onClick = {}
+                onClick = {},
             )
 
             Text("Selected state:")
             ToggleSelectButton(
                 selected = true,
-                onClick = {}
+                onClick = {},
             )
         }
     }

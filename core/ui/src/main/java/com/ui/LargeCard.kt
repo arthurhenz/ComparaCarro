@@ -52,7 +52,7 @@ fun LargeCard(
     modifier: Modifier = Modifier,
     background: Painter,
     contentDescription: String = "",
-    title: String
+    title: String,
 ) {
     Card(
         modifier =
@@ -61,18 +61,18 @@ fun LargeCard(
                 .width(CARD_WIDTH.dp)
                 .clearAndSetSemantics { this.contentDescription = contentDescription },
         shape = TokenShapes.Card,
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Box(
                 modifier =
                     Modifier
                         .fillMaxSize()
                         .padding(start = TokenSpacing.Block, top = TokenSpacing.Block)
-                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp)),
             ) {
                 Image(
                     modifier =
@@ -80,7 +80,7 @@ fun LargeCard(
                             .fillMaxSize(),
                     painter = background,
                     contentDescription = title,
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
                 Text(
                     text = title,
@@ -92,7 +92,7 @@ fun LargeCard(
                             .fillMaxWidth()
                             .padding(horizontal = TokenSpacing.Inline, vertical = TokenSpacing.Item / 2),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 
@@ -102,13 +102,13 @@ fun LargeCard(
                 modifier =
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp)
+                        .padding(top = CARD_HEIGHT.dp * 0.5F + 12.dp),
             )
             RectangleTriangle(
                 modifier =
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp)
+                        .padding(start = CARD_HEIGHT.dp * 0.5F + 12.dp),
             )
             Text(
                 text = "Recente",
@@ -118,7 +118,7 @@ fun LargeCard(
                     Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 34.dp, start = 6.dp)
-                        .rotate(-DIAGONAL_ANGLE_DEGREES)
+                        .rotate(-DIAGONAL_ANGLE_DEGREES),
             )
         }
     }
@@ -127,7 +127,7 @@ fun LargeCard(
 @Composable
 fun RectangleTriangle(modifier: Modifier = Modifier) {
     Canvas(
-        modifier = modifier.size(16.dp)
+        modifier = modifier.size(16.dp),
     ) {
         val verticalOffset = size.width
 
@@ -141,7 +141,7 @@ fun RectangleTriangle(modifier: Modifier = Modifier) {
 
         drawPath(
             path = path,
-            color = TokenColors.TapeBackground
+            color = TokenColors.TapeBackground,
         )
     }
 }
@@ -149,7 +149,7 @@ fun RectangleTriangle(modifier: Modifier = Modifier) {
 @Composable
 private fun DiagonalLine(
     modifier: Modifier = Modifier,
-    strokeWidth: Dp = 40.dp
+    strokeWidth: Dp = 40.dp,
 ) {
     val accent = Theme.colors.accentPrimary
 
@@ -157,7 +157,7 @@ private fun DiagonalLine(
         modifier =
             modifier
                 .fillMaxSize()
-                .clip(ShapeDefaults.Small)
+                .clip(ShapeDefaults.Small),
     ) {
         val slope = -1f
 
@@ -169,7 +169,7 @@ private fun DiagonalLine(
             start = Offset(0F, leftIntersection),
             end = Offset(size.width, rightIntersection),
             cap = StrokeCap.Square,
-            strokeWidth = strokeWidth.toPx()
+            strokeWidth = strokeWidth.toPx(),
         )
     }
 }
@@ -180,7 +180,7 @@ fun LargeCardPreview() {
     Theme {
         LargeCard(
             background = painterResource(id = R.drawable.ic_launcher_background),
-            title = "Subaru Impreza Twin Turbo Forged"
+            title = "Subaru Impreza Twin Turbo Forged",
         )
     }
 }

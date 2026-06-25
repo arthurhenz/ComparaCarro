@@ -17,11 +17,11 @@ val TokenDefaultTypography =
         bodyLarge =
             TextStyle(
                 fontSize = TokenFontSizes.Medium,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
             ),
         titleLarge =
             TextStyle(
                 fontSize = TokenFontSizes.Large,
-                fontWeight = FontWeight.Bold
-            )
+                fontWeight = FontWeight.Bold,
+            ),
     )
