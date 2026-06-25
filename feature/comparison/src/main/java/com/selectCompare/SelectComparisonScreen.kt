@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,16 +72,24 @@ fun SelectComparisonScreen(
                     )
                 },
                 actions = {
+                    val isSearchFocused = (state as? SelectComparisonScreenState.Success)?.isSearchFocused == true
                     Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "Buscar",
+                        imageVector = if (isSearchFocused) Icons.Filled.Close else Icons.Filled.Search,
+                        contentDescription = if (isSearchFocused) "Fechar busca" else "Buscar",
                         tint = Theme.colors.accentPrimary,
                         modifier =
                             Modifier
                                 .clickable(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() },
-                                ) { /* No function */ }
+                                ) {
+                                    if (isSearchFocused) {
+                                        onSearchQueryChange("")
+                                        onSearchFocusChanged(false)
+                                    } else {
+                                        onSearchFocusChanged(true)
+                                    }
+                                }
                                 .padding(TokenSpacing.Inline),
                     )
                 },
@@ -159,7 +168,8 @@ fun SelectComparisonScreenPreview() {
                 SelectComparisonScreenState.Success(
                     firstSelectedId = "1",
                     smallCards = previewCards,
-                    allSmallCards = previewCards,
+                    browseCards = previewCards,
+                    selectedCards = previewCards.filter { it.selected },
                     searchQuery = "",
                     isSearchFocused = false,
                 ),

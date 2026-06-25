@@ -10,5 +10,9 @@ sealed class HomeScreenState {
         val smallCards: List<SmallCardData>,
         val allSmallCards: List<SmallCardData>,
         val recentlyViewedCards: List<LargeCardData> = emptyList(),
+        val isSearching: Boolean = false,
+        // Bumped whenever the displayed list is replaced wholesale (search results / browse restore),
+        // so the UI can scroll back to the top. Not bumped on pagination appends.
+        val listResetToken: Int = 0,
     ) : HomeScreenState()
 }

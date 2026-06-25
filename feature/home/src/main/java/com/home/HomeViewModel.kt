@@ -7,6 +7,7 @@ import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.data.model.SmallCardData
 import com.data.usecase.GetRecentlyViewedCarsUseCase
+import com.data.usecase.GetSmallCardsPageUseCase
 import com.data.usecase.GetSmallCardsUseCase
 import com.data.usecase.SaveRecentlyViewedCarUseCase
 import com.navigation.routes.CardDetailRoute
@@ -14,6 +15,8 @@ import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.ProfileRoute
 import com.navigation.routes.SelectComparisonRoute
 import com.navigation.routes.parseVehicleSpec
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +31,7 @@ enum class SortType {
 @KoinViewModel
 class HomeViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
+    private val getSmallCardsPageUseCase: GetSmallCardsPageUseCase,
     private val getRecentlyViewedCarsUseCase: GetRecentlyViewedCarsUseCase,
     private val saveRecentlyViewedCarUseCase: SaveRecentlyViewedCarUseCase,
     navigator: Navigator,
@@ -44,13 +48,30 @@ class HomeViewModel(
     private val _sortType = MutableStateFlow(SortType.MOST_POPULAR)
     val sortType: StateFlow<SortType> = _sortType.asStateFlow()
 
+    // The initial (browse) page cached so we can restore it instantly when the search is cleared.
+    private var browseCards: List<SmallCardData> = emptyList()
+
+    // Debounce handle so each keystroke cancels the previous pending FIPE request.
+    private var searchJob: Job? = null
+
     init {
         loadCards()
     }
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
-        filterCards()
+        searchJob?.cancel()
+        val trimmed = query.trim()
+        if (trimmed.length < MIN_SEARCH_LENGTH) {
+            // Below the threshold (including empty) shows the cached browse list immediately.
+            restoreBrowseCards()
+            return
+        }
+        searchJob =
+            viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_MS)
+                performSearch(trimmed)
+            }
     }
 
     fun updateSearchFocus(isFocused: Boolean) {
@@ -59,23 +80,47 @@ class HomeViewModel(
 
     fun updateSortType(sortType: SortType) {
         _sortType.value = sortType
-        filterCards()
+        val current = _state.value
+        if (current is HomeScreenState.Success) {
+            _state.value = current.copy(smallCards = applySorting(current.allSmallCards))
+        }
     }
 
-    private fun filterCards() {
-        val currentState = _state.value
-        if (currentState is HomeScreenState.Success) {
-            val query = _searchQuery.value.trim()
-            val filteredSmallCards =
-                if (query.isEmpty()) {
-                    currentState.allSmallCards
-                } else {
-                    currentState.allSmallCards.filter { card ->
-                        card.title.contains(query, ignoreCase = true)
-                    }
-                }
-            val sortedCards = applySorting(filteredSmallCards)
-            _state.value = currentState.copy(smallCards = sortedCards)
+    private suspend fun performSearch(query: String) {
+        val current = _state.value
+        if (current !is HomeScreenState.Success) return
+        _state.value = current.copy(isSearching = true)
+        try {
+            val result = getSmallCardsPageUseCase(page = 1, pageSize = SEARCH_PAGE_SIZE, query = query)
+            val latest = _state.value
+            if (latest is HomeScreenState.Success) {
+                _state.value =
+                    latest.copy(
+                        smallCards = applySorting(result.data),
+                        allSmallCards = result.data,
+                        isSearching = false,
+                        listResetToken = latest.listResetToken + 1,
+                    )
+            }
+        } catch (e: Exception) {
+            Log.e("HomeViewModel", "Search failed: " + (e.message ?: "unknown"), e)
+            val latest = _state.value
+            if (latest is HomeScreenState.Success) {
+                _state.value = latest.copy(isSearching = false)
+            }
+        }
+    }
+
+    private fun restoreBrowseCards() {
+        val current = _state.value
+        if (current is HomeScreenState.Success) {
+            _state.value =
+                current.copy(
+                    smallCards = applySorting(browseCards),
+                    allSmallCards = browseCards,
+                    isSearching = false,
+                    listResetToken = current.listResetToken + 1,
+                )
         }
     }
 
@@ -96,9 +141,10 @@ class HomeViewModel(
                     "HomeViewModel",
                     "Loaded small=" + smallCards.size + " recent=" + recentlyViewedCards.size,
                 )
+                browseCards = smallCards
                 _state.value =
                     HomeScreenState.Success(
-                        smallCards = smallCards,
+                        smallCards = applySorting(smallCards),
                         allSmallCards = smallCards,
                         recentlyViewedCards = recentlyViewedCards,
                     )
@@ -153,5 +199,11 @@ class HomeViewModel(
                 loadCards()
             }
         }
+    }
+
+    private companion object {
+        const val MIN_SEARCH_LENGTH = 2
+        const val SEARCH_DEBOUNCE_MS = 2000L
+        const val SEARCH_PAGE_SIZE = 30
     }
 }
