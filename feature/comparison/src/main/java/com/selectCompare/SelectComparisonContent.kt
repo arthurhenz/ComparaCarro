@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.data.model.SmallCardData
 import com.theme.SpaceGroteskFamily
@@ -259,6 +260,7 @@ private fun CarSelectItem(
                 color =
                     if (card.selected) Theme.colors.accentPrimary else Theme.colors.textPrimary,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
