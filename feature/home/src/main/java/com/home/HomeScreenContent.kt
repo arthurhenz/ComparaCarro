@@ -29,8 +29,10 @@ import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +74,8 @@ fun HomeScreenContent(
     smallCards: List<SmallCardData>,
     recentlyViewedCards: List<LargeCardData> = emptyList(),
     searchQuery: String = "",
+    isSearching: Boolean = false,
+    listResetToken: Int = 0,
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     isSearchFocused: Boolean = false,
@@ -86,6 +90,12 @@ fun HomeScreenContent(
     val interactionSource = remember { MutableInteractionSource() }
     var viewMode by rememberSaveable { mutableStateOf(HomeViewMode.Grid) }
     var selectedCategory by rememberSaveable { mutableStateOf(homeCategories.first()) }
+    val scrollState = rememberScrollState()
+
+    // When a new set of results lands (search / browse restore), jump back to the top.
+    LaunchedEffect(listResetToken) {
+        scrollState.animateScrollTo(0)
+    }
 
     Column(
         modifier =
@@ -102,12 +112,19 @@ fun HomeScreenContent(
             title = "Compara Carros",
         )
 
+        if (isSearching) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color = Theme.colors.accentPrimary,
+            )
+        }
+
         Box(modifier = Modifier.weight(1f)) {
             Column(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(scrollState)
                         .clickable(
                             indication = null,
                             interactionSource = interactionSource,

@@ -12,7 +12,8 @@ class GetSmallCardsPageUseCase(
     suspend operator fun invoke(
         page: Int,
         pageSize: Int,
+        query: String? = null,
     ): PaginationResult<SmallCardData> {
-        return cardRepository.getSmallCardsPage(page, pageSize)
+        return cardRepository.getSmallCardsPage(page, pageSize, query)
     }
 }
