@@ -39,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,19 +57,13 @@ import com.ui.BottomNavBar
 import com.ui.BottomNavTab
 import com.ui.Header
 import com.ui.LargeCardList
-import com.ui.R as UiR
 import com.ui.SmallCard
 import com.ui.SmallCardList
+import com.ui.rememberCarImagePainter
 
 private enum class HomeViewMode { Grid, List }
 
 private val homeCategories = listOf("Todos os Modelos", "SUV", "Sedan", "Hatchback")
-
-private val hardcodedCarImages = listOf(
-    UiR.drawable.car1,
-    UiR.drawable.car2,
-    UiR.drawable.car3jpg,
-)
 
 @Composable
 fun HomeScreenContent(
@@ -201,12 +194,10 @@ fun HomeScreenContent(
                                     .padding(horizontal = TokenSpacing.Item)
                                     .height(totalHeight),
                         ) {
-                            itemsIndexed(smallCards) { index, cardData ->
+                            itemsIndexed(smallCards) { _, cardData ->
                                 SmallCard(
                                     modifier = Modifier.clickable { onCardClick(cardData.id) },
-                                    image = painterResource(
-                                        id = hardcodedCarImages[index % hardcodedCarImages.size],
-                                    ),
+                                    image = rememberCarImagePainter(cardData.imageUrl),
                                     brand = cardData.title.substringBefore(" "),
                                     model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                                     fipe = cardData.fipe,
@@ -224,11 +215,9 @@ fun HomeScreenContent(
                                     .padding(horizontal = TokenSpacing.Item),
                             verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
                         ) {
-                            smallCards.forEachIndexed { index, cardData ->
+                            smallCards.forEach { cardData ->
                                 LargeCardList(
-                                    image = painterResource(
-                                        id = hardcodedCarImages[index % hardcodedCarImages.size],
-                                    ),
+                                    image = rememberCarImagePainter(cardData.imageUrl),
                                     brand = cardData.title.substringBefore(" "),
                                     model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                                     fipe = cardData.fipe,

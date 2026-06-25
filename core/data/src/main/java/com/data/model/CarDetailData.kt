@@ -9,6 +9,7 @@ data class CarDetailData(
     val optionals: List<String>,
     val year: Int = 0,
     val fipeCode: String = "",
+    val imageUrl: String? = null,
     // ---- Real fipeX data (from /v1/prices/expanded) ----
     val makeName: String = "",
     val modelName: String = "",

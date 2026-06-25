@@ -27,6 +27,7 @@ googleServices = "4.4.4"
 firebaseBom = "34.6.0"
 navigation3Runtime = "1.0.1"
 foundation = "1.11.2"
+coil = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +69,9 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 
 # Kotlinx Serialization JSON (explicit)
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# Coil (async image loading for Compose)
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 # DataStore
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
