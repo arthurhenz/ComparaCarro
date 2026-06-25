@@ -31,7 +31,7 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     enabled: Boolean = true,
-    expanded: Boolean = true
+    expanded: Boolean = true,
 ) {
     val backgroundModifier =
         if (enabled) {
@@ -49,15 +49,14 @@ fun PrimaryButton(
                 .clip(TokenShapes.Button)
                 .then(backgroundModifier)
                 .clickable(enabled = enabled, onClick = onClick),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text.uppercase(),
             color = if (enabled) Theme.colors.textInteractive else Theme.colors.textSecondary,
             style = Theme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -68,7 +67,7 @@ fun PrimaryButtonPreview() {
     Theme {
         PrimaryButton(
             text = "Compara",
-            onClick = {}
+            onClick = {},
         )
     }
 }

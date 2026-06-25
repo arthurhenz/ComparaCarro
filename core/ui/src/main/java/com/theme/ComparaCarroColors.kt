@@ -32,7 +32,7 @@ class ComparaCarroColors(
     accentPrimary: Color,
     accentTertiary: Color,
     error: Color,
-    isDark: Boolean
+    isDark: Boolean,
 ) {
     var background by mutableStateOf(background, structuralEqualityPolicy())
         private set
@@ -95,18 +95,20 @@ class ComparaCarroColors(
 
 @Immutable
 private data class GradientPrimary(val start: Color, val end: Color) {
-    fun toBrush(): Brush = Brush.linearGradient(
-        colors = listOf(start, end),
-        start = Offset.Zero,
-        end = Offset.Infinite
-    )
+    fun toBrush(): Brush =
+        Brush.linearGradient(
+            colors = listOf(start, end),
+            start = Offset.Zero,
+            end = Offset.Infinite,
+        )
 }
 
 fun darkColors(): ComparaCarroColors {
-    val gradient = GradientPrimary(
-        start = TokenColors.PrimaryDim,
-        end = TokenColors.PrimaryContainer
-    ).toBrush()
+    val gradient =
+        GradientPrimary(
+            start = TokenColors.PrimaryDim,
+            end = TokenColors.PrimaryContainer,
+        ).toBrush()
     return ComparaCarroColors(
         background = TokenColors.Surface,
         surface = TokenColors.SurfaceContainer,
@@ -125,13 +127,42 @@ fun darkColors(): ComparaCarroColors {
         accentPrimary = TokenColors.PrimaryAccent,
         accentTertiary = TokenColors.Tertiary,
         error = TokenColors.Error,
-        isDark = true
+        isDark = true,
     )
 }
 
-internal val LocalComparaCarroColors = compositionLocalOf<ComparaCarroColors> {
-    error("LocalComparaCarroColors not provided. Wrap content in Theme { ... }.")
+fun lightColors(): ComparaCarroColors {
+    val gradient =
+        GradientPrimary(
+            start = TokenColors.PrimaryDim,
+            end = TokenColors.PrimaryContainer,
+        ).toBrush()
+    return ComparaCarroColors(
+        background = Color(0xFFFFFFFF),
+        surface = Color(0xFFF7F7F7),
+        surfaceHeader = Color(0xFFFFFFFF),
+        surfaceLow = Color(0xFFF2F2F2),
+        surfaceRaised = Color(0xFFEAEAEA),
+        surfaceInset = Color(0xFFFFFFFF),
+        surfaceInput = Color(0xFFEDEDED),
+        surfaceGlass = Color(0xFFFFFFFF).copy(alpha = 0.6f),
+        interactivePrimary = gradient,
+        interactivePrimarySolid = TokenColors.PrimaryContainer,
+        outlineGhost = Color(0xFF000000).copy(alpha = 0.12f),
+        textPrimary = Color(0xFF0E0E0E),
+        textSecondary = Color(0xFF5C5959),
+        textInteractive = TokenColors.OnPrimaryFixed,
+        accentPrimary = TokenColors.PrimaryAccent,
+        accentTertiary = TokenColors.Tertiary,
+        error = TokenColors.Error,
+        isDark = false,
+    )
 }
+
+internal val LocalComparaCarroColors =
+    compositionLocalOf<ComparaCarroColors> {
+        error("LocalComparaCarroColors not provided. Wrap content in Theme { ... }.")
+    }
 
 @Composable
 @ReadOnlyComposable

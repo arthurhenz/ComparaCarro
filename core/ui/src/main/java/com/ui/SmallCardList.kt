@@ -11,7 +11,7 @@ import com.theme.TokenSpacing
 @Composable
 fun SmallCardList(
     modifier: Modifier = Modifier,
-    content: LazyGridScope.() -> Unit
+    content: LazyGridScope.() -> Unit,
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -19,6 +19,6 @@ fun SmallCardList(
         horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
         verticalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
         content = content,
-        userScrollEnabled = false
+        userScrollEnabled = false,
     )
 }

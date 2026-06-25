@@ -30,7 +30,7 @@ import com.theme.TokenIconSize
 fun FavoriteButton(
     selected: Boolean,
     onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier =
@@ -39,23 +39,23 @@ fun FavoriteButton(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { onToggle(!selected) }
+                    onClick = { onToggle(!selected) },
                 )
                 .clip(CircleShape),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier =
                 Modifier
                     .size(28.dp)
-                    .background(Theme.colors.surfaceGlass, shape = CircleShape)
+                    .background(Theme.colors.surfaceGlass, shape = CircleShape),
         ) {
             Icon(
                 imageVector = if (selected) Icons.Filled.Favorite else Icons.Outlined.Favorite,
                 contentDescription = null,
                 tint = if (selected) Theme.colors.accentPrimary else Theme.colors.textSecondary,
-                modifier = Modifier.size(TokenIconSize.Medium)
+                modifier = Modifier.size(TokenIconSize.Medium),
             )
         }
     }
@@ -67,7 +67,7 @@ fun HeartToggleButtonUnselectedPreview() {
     Theme {
         FavoriteButton(
             selected = false,
-            onToggle = {}
+            onToggle = {},
         )
     }
 }
@@ -78,7 +78,7 @@ fun HeartToggleButtonSelectedPreview() {
     Theme {
         FavoriteButton(
             selected = true,
-            onToggle = {}
+            onToggle = {},
         )
     }
 }

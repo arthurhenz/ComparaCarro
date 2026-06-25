@@ -65,8 +65,9 @@ fun SmallCard(
         shape = TokenShapes.StraightEdge,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
+            modifier =
+                Modifier
+                    .fillMaxHeight(),
         ) {
             Box(modifier = Modifier.padding(bottom = TokenSpacing.Block)) {
                 Image(
@@ -87,9 +88,10 @@ fun SmallCard(
             PrimaryButton(
                 "ver detalhes",
                 onClick = onClick,
-                modifier = Modifier
-                    .padding(bottom = TokenSpacing.Inline)
-                    .height(32.dp),
+                modifier =
+                    Modifier
+                        .padding(bottom = TokenSpacing.Inline)
+                        .height(32.dp),
             )
         }
     }

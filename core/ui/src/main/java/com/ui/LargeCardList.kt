@@ -79,9 +79,10 @@ fun LargeCardList(
         Spacer(modifier = Modifier.width(TokenSpacing.Inline))
 
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(vertical = TokenSpacing.Inline),
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .padding(vertical = TokenSpacing.Inline),
         ) {
             Row(verticalAlignment = Alignment.Top) {
                 Column(modifier = Modifier.weight(1f)) {
@@ -142,9 +143,8 @@ fun LargeCardList(
                 PrimaryButton(
                     text = "Ver detalhes",
                     onClick = { onDetailsClick?.invoke() ?: onClick() },
-                    modifier = Modifier.height(48.dp)
+                    modifier = Modifier.height(48.dp),
                 )
-
             }
         }
     }
