@@ -11,6 +11,7 @@ interface CardRepository {
     suspend fun getSmallCardsPage(
         page: Int,
         pageSize: Int,
+        query: String? = null,
     ): PaginationResult<SmallCardData>
 
     /** Loads a single vehicle's detail (expanded price) identified by model slug + fuel + year. */

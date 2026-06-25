@@ -1,5 +1,6 @@
 package com.selectCompare
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +45,7 @@ import com.theme.TokenColors
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
+import com.ui.SearchField
 import com.ui.rememberCarImagePainter
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -57,55 +60,80 @@ fun SelectComparisonContent(
     onCompareClick: (Pair<String, String>) -> Unit,
     onLoadMore: (Int) -> Unit,
 ) {
-    val selectedIds = state.allSmallCards.filter { it.selected }.map { it.id }
-    val isCompareEnabled = selectedIds.size == 2
+    val selectedIds = state.selectedCards.map { it.id }
+    val isCompareEnabled = state.selectedCards.size == 2
 
     Box(modifier = modifier.fillMaxSize()) {
-        val listState = rememberLazyListState()
-        LaunchedEffect(listState.firstVisibleItemIndex, state.smallCards.size) {
-            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            onLoadMore(lastVisibleIndex)
-        }
-
-        LazyColumn(
-            state = listState,
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = TokenSpacing.Section),
-            contentPadding =
-                PaddingValues(
-                    top = TokenSpacing.Section,
-                    bottom = 100.dp,
-                ),
-            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
-        ) {
-            item { SelectionHeader() }
-
-            stickyHeader { SelectionCounter(selectedCount = selectedIds.size) }
-
-            // Pair<selected, unselected> so the chosen cars stay pinned at the top of the list.
-            val (selectedCards, unselectedCards) = state.smallCards.partition { it.selected }
-            val orderedCards = selectedCards + unselectedCards
-
-            itemsIndexed(orderedCards, key = { _, card -> card.id }) { _, card ->
-                CarSelectItem(
-                    card = card,
-                    onToggleSelect = { onToggleSelect(card.id) },
-                    onClick = { onCardClick(card.id) },
+        Column(modifier = Modifier.fillMaxSize()) {
+            AnimatedVisibility(visible = state.isSearchFocused) {
+                SearchField(
+                    searchQuery = state.searchQuery,
+                    onSearchQueryChange = onSearchQueryChange,
+                    onSearchFocusChanged = onSearchFocusChanged,
+                    isSearchFocused = state.isSearchFocused,
                 )
             }
 
-            if (state.isLoadingMore) {
-                item {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = TokenSpacing.Block),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator(color = Theme.colors.accentTertiary)
+            if (state.isSearching) {
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = Theme.colors.accentPrimary,
+                )
+            }
+
+            val listState = rememberLazyListState()
+            LaunchedEffect(listState.firstVisibleItemIndex, state.smallCards.size) {
+                val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                onLoadMore(lastVisibleIndex)
+            }
+
+            // When a new set of results lands (search / browse restore), jump back to the top.
+            LaunchedEffect(state.listResetToken) {
+                listState.animateScrollToItem(0)
+            }
+
+            LazyColumn(
+                state = listState,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = TokenSpacing.Section),
+                contentPadding =
+                    PaddingValues(
+                        top = TokenSpacing.Section,
+                        bottom = 100.dp,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
+            ) {
+                item { SelectionHeader() }
+
+                stickyHeader { SelectionCounter(selectedCount = selectedIds.size) }
+
+                // Selected cars stay pinned at the top, even when filtered out of the current results.
+                val selectedIdSet = selectedIds.toSet()
+                val unselectedCards = state.smallCards.filterNot { selectedIdSet.contains(it.id) }
+                val orderedCards = state.selectedCards + unselectedCards
+
+                itemsIndexed(orderedCards, key = { _, card -> card.id }) { _, card ->
+                    CarSelectItem(
+                        card = card,
+                        onToggleSelect = { onToggleSelect(card.id) },
+                        onClick = { onCardClick(card.id) },
+                    )
+                }
+
+                if (state.isLoadingMore) {
+                    item {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = TokenSpacing.Block),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(color = Theme.colors.accentTertiary)
+                        }
                     }
                 }
             }

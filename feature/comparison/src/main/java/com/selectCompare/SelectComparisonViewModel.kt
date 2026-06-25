@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
+import com.data.model.SmallCardData
 import com.data.usecase.GetSmallCardsPageUseCase
 import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.HomeScreenRoute
 import com.navigation.routes.ProfileRoute
 import com.navigation.routes.SelectComparisonRoute
 import com.ui.BottomNavTab
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +29,9 @@ class SelectComparisonViewModel(
     private val _state = MutableStateFlow<SelectComparisonScreenState>(SelectComparisonScreenState.Loading)
     val state: StateFlow<SelectComparisonScreenState> = _state.asStateFlow()
 
+    // Debounce handle so each keystroke cancels the previous pending FIPE request.
+    private var searchJob: Job? = null
+
     init {
         loadCards()
     }
@@ -35,23 +41,25 @@ class SelectComparisonViewModel(
             try {
                 val firstPageSize = 30
                 val firstPage = getSmallCardsPageUseCase(page = 1, pageSize = firstPageSize)
-                val allSmallCards = firstPage.data
                 val initialSelected = cardId.takeIf { it.isNotBlank() }
-                val marked =
-                    allSmallCards.map { card ->
-                        if (card.id == initialSelected) card.copy(selected = true) else card
-                    }
+                val selectedCards =
+                    firstPage.data
+                        .filter { it.id == initialSelected }
+                        .map { it.copy(selected = true) }
+                val selectedIds = selectedCards.map { it.id }.toSet()
+                val browseCards = firstPage.data.markSelected(selectedIds)
                 _state.value =
                     SelectComparisonScreenState.Success(
                         firstSelectedId = initialSelected,
-                        smallCards = marked,
-                        allSmallCards = marked,
+                        smallCards = browseCards,
+                        browseCards = browseCards,
+                        selectedCards = selectedCards,
                         searchQuery = "",
                         isSearchFocused = false,
+                        isSearching = false,
                         isLoadingMore = false,
                         nextPage = if (firstPage.hasNext) 2 else null,
                         pageSize = firstPage.pageSize,
-                        hasNext = firstPage.hasNext,
                     )
             } catch (e: Exception) {
                 _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
@@ -82,19 +90,57 @@ class SelectComparisonViewModel(
 
     fun updateSearchQuery(query: String) {
         val current = _state.value
+        if (current !is SelectComparisonScreenState.Success) return
+        _state.value = current.copy(searchQuery = query)
+        searchJob?.cancel()
+        val trimmed = query.trim()
+        if (trimmed.length < MIN_SEARCH_LENGTH) {
+            // Below the threshold (including empty) restores the cached browse list immediately.
+            restoreBrowseCards()
+            return
+        }
+        searchJob =
+            viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_MS)
+                performSearch(trimmed)
+            }
+    }
+
+    private suspend fun performSearch(query: String) {
+        val current = _state.value
+        if (current !is SelectComparisonScreenState.Success) return
+        _state.value = current.copy(isSearching = true)
+        try {
+            val result = getSmallCardsPageUseCase(page = 1, pageSize = SEARCH_PAGE_SIZE, query = query)
+            val latest = _state.value
+            if (latest is SelectComparisonScreenState.Success) {
+                val selectedIds = latest.selectedCards.map { it.id }.toSet()
+                _state.value =
+                    latest.copy(
+                        smallCards = result.data.markSelected(selectedIds),
+                        isSearching = false,
+                        // Search results are not paginated; pagination resumes on the browse list.
+                        isLoadingMore = false,
+                        listResetToken = latest.listResetToken + 1,
+                    )
+            }
+        } catch (e: Exception) {
+            val latest = _state.value
+            if (latest is SelectComparisonScreenState.Success) {
+                _state.value = latest.copy(isSearching = false)
+            }
+        }
+    }
+
+    private fun restoreBrowseCards() {
+        val current = _state.value
         if (current is SelectComparisonScreenState.Success) {
-            val filtered =
-                if (query.isBlank()) {
-                    current.allSmallCards
-                } else {
-                    current.allSmallCards.filter {
-                        it.title.contains(query.trim(), ignoreCase = true)
-                    }
-                }
+            val selectedIds = current.selectedCards.map { it.id }.toSet()
             _state.value =
                 current.copy(
-                    smallCards = filtered,
-                    searchQuery = query,
+                    smallCards = current.browseCards.markSelected(selectedIds),
+                    isSearching = false,
+                    listResetToken = current.listResetToken + 1,
                 )
         }
     }
@@ -108,61 +154,74 @@ class SelectComparisonViewModel(
 
     fun toggleSelection(cardId: String) {
         val current = _state.value
-        if (current is SelectComparisonScreenState.Success) {
-            val currentSelectedIds = current.allSmallCards.filter { it.selected }.map { it.id }.toMutableList()
-            val isSelected = currentSelectedIds.contains(cardId)
-            if (isSelected) {
-                currentSelectedIds.remove(cardId)
+        if (current !is SelectComparisonScreenState.Success) return
+
+        val alreadySelected = current.selectedCards.any { it.id == cardId }
+        val newSelected =
+            if (alreadySelected) {
+                current.selectedCards.filterNot { it.id == cardId }
             } else {
-                if (currentSelectedIds.size >= 2) return
-                currentSelectedIds.add(cardId)
+                if (current.selectedCards.size >= 2) return
+                val card =
+                    current.smallCards.firstOrNull { it.id == cardId }
+                        ?: current.browseCards.firstOrNull { it.id == cardId }
+                        ?: return
+                current.selectedCards + card.copy(selected = true)
             }
 
-            val updatedAll = current.allSmallCards.map { it.copy(selected = currentSelectedIds.contains(it.id)) }
-            val updatedFiltered = current.smallCards.map { it.copy(selected = currentSelectedIds.contains(it.id)) }
-
-            _state.value =
-                current.copy(
-                    allSmallCards = updatedAll,
-                    smallCards = updatedFiltered,
-                )
-        }
+        val selectedIds = newSelected.map { it.id }.toSet()
+        _state.value =
+            current.copy(
+                selectedCards = newSelected.map { it.copy(selected = true) },
+                smallCards = current.smallCards.markSelected(selectedIds),
+                browseCards = current.browseCards.markSelected(selectedIds),
+            )
     }
 
     fun loadNextPageIfNeeded(lastVisibleIndex: Int) {
         val current = _state.value
-        if (current is SelectComparisonScreenState.Success) {
-            if (current.isLoadingMore || current.nextPage == null) return
-            if (lastVisibleIndex >= current.smallCards.size - 4) {
-                _state.value = current.copy(isLoadingMore = true)
-                viewModelScope.launch {
-                    try {
-                        val nextPageNumber = current.nextPage
-                        if (nextPageNumber != null) {
-                            val page = getSmallCardsPageUseCase(page = nextPageNumber, pageSize = current.pageSize)
-                            val appendedAll = current.allSmallCards + page.data
-                            val appendedFiltered =
-                                if (current.searchQuery.isBlank()) {
-                                    appendedAll
-                                } else {
-                                    appendedAll.filter {
-                                        it.title.contains(current.searchQuery.trim(), ignoreCase = true)
-                                    }
-                                }
-                            _state.value =
-                                current.copy(
-                                    allSmallCards = appendedAll,
-                                    smallCards = appendedFiltered,
-                                    isLoadingMore = false,
-                                    nextPage = if (page.hasNext) nextPageNumber + 1 else null,
-                                    hasNext = page.hasNext,
-                                )
-                        }
-                    } catch (e: Exception) {
-                        _state.value = current.copy(isLoadingMore = false)
+        if (current !is SelectComparisonScreenState.Success) return
+        // Pagination only applies to the browse list; search results are a single page.
+        if (current.searchQuery.trim().length >= MIN_SEARCH_LENGTH) return
+        if (current.isLoadingMore || current.nextPage == null) return
+        if (lastVisibleIndex < current.smallCards.size - 4) return
+
+        _state.value = current.copy(isLoadingMore = true)
+        viewModelScope.launch {
+            try {
+                val nextPageNumber = current.nextPage
+                if (nextPageNumber != null) {
+                    val page = getSmallCardsPageUseCase(page = nextPageNumber, pageSize = current.pageSize)
+                    val latest = _state.value
+                    if (latest is SelectComparisonScreenState.Success) {
+                        val selectedIds = latest.selectedCards.map { it.id }.toSet()
+                        val appendedBrowse = (latest.browseCards + page.data).markSelected(selectedIds)
+                        // Only reflect the new page in the displayed list if the user isn't searching.
+                        val isSearchActive = latest.searchQuery.trim().length >= MIN_SEARCH_LENGTH
+                        _state.value =
+                            latest.copy(
+                                browseCards = appendedBrowse,
+                                smallCards = if (isSearchActive) latest.smallCards else appendedBrowse,
+                                isLoadingMore = false,
+                                nextPage = if (page.hasNext) nextPageNumber + 1 else null,
+                            )
                     }
+                }
+            } catch (e: Exception) {
+                val latest = _state.value
+                if (latest is SelectComparisonScreenState.Success) {
+                    _state.value = latest.copy(isLoadingMore = false)
                 }
             }
         }
+    }
+
+    private fun List<SmallCardData>.markSelected(selectedIds: Set<String>): List<SmallCardData> =
+        map { it.copy(selected = selectedIds.contains(it.id)) }
+
+    private companion object {
+        const val MIN_SEARCH_LENGTH = 2
+        const val SEARCH_DEBOUNCE_MS = 2000L
+        const val SEARCH_PAGE_SIZE = 50
     }
 }

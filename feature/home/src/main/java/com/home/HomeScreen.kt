@@ -73,6 +73,8 @@ fun HomeScreen(
                 smallCards = state.smallCards,
                 recentlyViewedCards = state.recentlyViewedCards,
                 searchQuery = searchQuery,
+                isSearching = state.isSearching,
+                listResetToken = state.listResetToken,
                 onSearchQueryChange = onSearchQueryChange,
                 onSearchFocusChanged = onSearchFocusChanged,
                 isSearchFocused = isSearchFocused,

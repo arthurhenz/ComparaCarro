@@ -97,10 +97,11 @@ class CardRepositoryImpl(
     override suspend fun getSmallCardsPage(
         page: Int,
         pageSize: Int,
+        query: String?,
     ): PaginationResult<SmallCardData> {
         // fipeX caps the page size at 50.
         val limit = pageSize.coerceIn(1, MAX_PAGE_SIZE)
-        return when (val result = searchCars(query = null, page = page, limit = limit)) {
+        return when (val result = searchCars(query = query?.takeIf { it.isNotBlank() }, page = page, limit = limit)) {
             is NetworkResult.Success -> {
                 val response = result.data
                 val total = response.estimatedTotalHits
