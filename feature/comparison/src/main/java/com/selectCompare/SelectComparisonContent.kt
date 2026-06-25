@@ -84,7 +84,11 @@ fun SelectComparisonContent(
 
             stickyHeader { SelectionCounter(selectedCount = selectedIds.size) }
 
-            itemsIndexed(state.smallCards, key = { _, card -> card.id }) { _, card ->
+            // Pair<selected, unselected> so the chosen cars stay pinned at the top of the list.
+            val (selectedCards, unselectedCards) = state.smallCards.partition { it.selected }
+            val orderedCards = selectedCards + unselectedCards
+
+            itemsIndexed(orderedCards, key = { _, card -> card.id }) { _, card ->
                 CarSelectItem(
                     card = card,
                     onToggleSelect = { onToggleSelect(card.id) },
