@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -319,16 +321,34 @@ private fun SortAndViewToggleRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box {
-            Text(
-                text =
-                    when (sortType) {
-                        SortType.MOST_POPULAR -> "Mais populares"
-                        SortType.ALPHABETIC -> "Alfabética"
-                    },
-                style = Theme.typography.titleLarge,
-                color = Theme.colors.textPrimary,
-                modifier = Modifier.clickable { dropdownExpanded = true },
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
+                modifier =
+                    Modifier.clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                    ) { dropdownExpanded = true },
+            ) {
+                Text(
+                    text =
+                        when (sortType) {
+                            SortType.MOST_POPULAR -> "Mais populares"
+                            SortType.ALPHABETIC -> "Alfabética"
+                        },
+                    style = Theme.typography.titleLarge,
+                    color = Theme.colors.textPrimary,
+                )
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowDown,
+                    contentDescription = "Ordenar",
+                    tint = Theme.colors.textPrimary,
+                    modifier =
+                        Modifier
+                            .size(TokenIconSize.Medium)
+                            .rotate(if (dropdownExpanded) 180f else 0f),
+                )
+            }
             DropdownMenu(
                 expanded = dropdownExpanded,
                 onDismissRequest = { dropdownExpanded = false },
