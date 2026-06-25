@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -55,13 +54,7 @@ import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.BottomNavBar
 import com.ui.BottomNavTab
-import com.ui.R as UiR
-
-private val comparisonCarImages = listOf(
-    UiR.drawable.car1,
-    UiR.drawable.car2,
-    UiR.drawable.car3jpg,
-)
+import com.ui.rememberCarImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -268,12 +261,10 @@ private fun CarColumns(firstCar: CarDetailData, secondCar: CarDetailData) {
     ) {
         CarColumn(
             car = firstCar,
-            imageRes = comparisonCarImages[0],
             modifier = Modifier.weight(1f),
         )
         CarColumn(
             car = secondCar,
-            imageRes = comparisonCarImages[1],
             modifier = Modifier.weight(1f),
         )
     }
@@ -282,7 +273,6 @@ private fun CarColumns(firstCar: CarDetailData, secondCar: CarDetailData) {
 @Composable
 private fun CarColumn(
     car: CarDetailData,
-    imageRes: Int,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -295,7 +285,7 @@ private fun CarColumn(
                     .fillMaxWidth()
                     .height(120.dp)
                     .clip(TokenShapes.Md),
-            painter = painterResource(id = imageRes),
+            painter = rememberCarImagePainter(car.imageUrl),
             contentDescription = car.title,
             contentScale = ContentScale.Crop,
         )

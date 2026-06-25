@@ -6,7 +6,9 @@ import com.data.model.CarPricePoint
 import com.data.model.LargeCardData
 import com.data.model.PaginationResult
 import com.data.model.SmallCardData
+import comparacarro.network.api.CarImagesApi
 import comparacarro.network.api.CarsApi
+import comparacarro.network.model.CarImageRequest
 import comparacarro.network.model.PriceAnalytics
 import comparacarro.network.model.SearchItem
 import comparacarro.network.result.NetworkResult
@@ -15,6 +17,7 @@ import org.koin.core.annotation.Single
 @Single
 class CardRepositoryImpl(
     private val carsApi: CarsApi,
+    private val carImagesApi: CarImagesApi,
 ) : CardRepository {
     // The "carro" vehicle-type UUID is resolved once from /v1/vehicle-types and reused
     // to constrain every search to cars only. Resolving it twice on a startup race is harmless.
@@ -23,13 +26,17 @@ class CardRepositoryImpl(
 
     override suspend fun getLargeCards(): List<LargeCardData> {
         return when (val result = searchCars(query = null, page = 1, limit = 15)) {
-            is NetworkResult.Success ->
-                result.data.data.take(2).map { item ->
+            is NetworkResult.Success -> {
+                val items = result.data.data.take(2)
+                val imageUrls = resolveImages(items, LIST_IMAGE_WIDTH)
+                items.mapIndexed { index, item ->
                     LargeCardData(
                         id = item.toSpec(),
                         title = item.toTitle(),
+                        imageUrl = imageUrls.getOrNull(index),
                     )
                 }
+            }
             is NetworkResult.Error -> {
                 logError("getLargeCards", result)
                 emptyList()
@@ -46,6 +53,17 @@ class CardRepositoryImpl(
             is NetworkResult.Success -> {
                 val expanded = result.data.data
                 val price = expanded.price
+                val imageUrl =
+                    carImagesApi.getSignedUrls(
+                        listOf(
+                            CarImageRequest(
+                                make = price.make?.name.orEmpty(),
+                                model = price.model?.name,
+                                year = price.modelYear.takeIf { it > 0 },
+                                width = DETAIL_IMAGE_WIDTH,
+                            ),
+                        ),
+                    ).firstOrNull()
                 CarDetailData(
                     id = spec(price.model?.slug ?: modelSlug, price.fuel?.acronym ?: fuelAcronym, price.modelYear),
                     title = listOfNotNull(price.make?.name, price.model?.name).joinToString(" ").trim(),
@@ -55,6 +73,7 @@ class CardRepositoryImpl(
                     optionals = emptyList(),
                     year = price.modelYear,
                     fipeCode = "",
+                    imageUrl = imageUrl,
                     makeName = price.make?.name.orEmpty(),
                     modelName = price.model?.name.orEmpty(),
                     fuelName = price.fuel?.name.orEmpty(),
@@ -86,8 +105,9 @@ class CardRepositoryImpl(
                 val response = result.data
                 val total = response.estimatedTotalHits
                 val totalPages = if (total <= 0) page else (total + limit - 1) / limit
+                val imageUrls = resolveImages(response.data, LIST_IMAGE_WIDTH)
                 PaginationResult(
-                    data = response.data.map { item -> item.toSmallCard() },
+                    data = response.data.mapIndexed { index, item -> item.toSmallCard(imageUrls.getOrNull(index)) },
                     page = page,
                     pageSize = limit,
                     totalItems = total,
@@ -134,12 +154,26 @@ class CardRepositoryImpl(
         }
     }
 
-    private fun SearchItem.toSmallCard() =
+    /** Batch-resolves signed image URLs for a list of search results (positionally aligned). */
+    private suspend fun resolveImages(items: List<SearchItem>, width: Int): List<String?> =
+        carImagesApi.getSignedUrls(
+            items.map { item ->
+                CarImageRequest(
+                    make = item.makeName,
+                    model = item.modelName,
+                    year = item.modelYear.takeIf { it > 0 },
+                    width = width,
+                )
+            },
+        )
+
+    private fun SearchItem.toSmallCard(imageUrl: String?) =
         SmallCardData(
             id = toSpec(),
             title = toTitle(),
             fipe = formatCents(latestMarketPriceCents),
             selected = false,
+            imageUrl = imageUrl,
         )
 
     private fun SearchItem.toSpec() = spec(modelSlug, fuelAcronym, modelYear)
@@ -170,6 +204,8 @@ class CardRepositoryImpl(
 
     private companion object {
         const val MAX_PAGE_SIZE = 50
+        const val LIST_IMAGE_WIDTH = 400
+        const val DETAIL_IMAGE_WIDTH = 800
 
         fun spec(modelSlug: String, fuelAcronym: String, year: Int) = "$modelSlug,$fuelAcronym,$year"
 

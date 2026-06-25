@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,13 +43,7 @@ import com.theme.TokenColors
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
-import com.ui.R as UiR
-
-private val hardcodedCarImages = listOf(
-    UiR.drawable.car1,
-    UiR.drawable.car2,
-    UiR.drawable.car3jpg,
-)
+import com.ui.rememberCarImagePainter
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -91,10 +84,9 @@ fun SelectComparisonContent(
 
             stickyHeader { SelectionCounter(selectedCount = selectedIds.size) }
 
-            itemsIndexed(state.smallCards, key = { _, card -> card.id }) { index, card ->
+            itemsIndexed(state.smallCards, key = { _, card -> card.id }) { _, card ->
                 CarSelectItem(
                     card = card,
-                    imageRes = hardcodedCarImages[index % hardcodedCarImages.size],
                     onToggleSelect = { onToggleSelect(card.id) },
                     onClick = { onCardClick(card.id) },
                 )
@@ -190,7 +182,6 @@ private fun SelectionCounter(selectedCount: Int) {
 @Composable
 private fun CarSelectItem(
     card: SmallCardData,
-    imageRes: Int,
     onToggleSelect: () -> Unit,
     onClick: () -> Unit,
 ) {
@@ -217,7 +208,7 @@ private fun CarSelectItem(
             Spacer(modifier = Modifier.width(TokenSpacing.Inline))
         }
         Image(
-            painter = painterResource(id = imageRes),
+            painter = rememberCarImagePainter(card.imageUrl),
             contentDescription = card.title,
             contentScale = ContentScale.Crop,
             modifier =

@@ -29,6 +29,7 @@ internal fun Project.configureAndroidCompose(
         implementation(library("androidx-lifecycle-viewmodel-navigation3"))
         implementation(library("koin-compose"))
         implementation(library("koin-compose-viewmodel"))
+        implementation(library("coil-compose"))
 
         androidTestImplementation( this@configureAndroidCompose.platform("androidx-compose-bom"))
         androidTestImplementation( library("androidx-ui-test-junit4"))

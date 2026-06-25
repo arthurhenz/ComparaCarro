@@ -30,16 +30,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.data.R
 import com.data.model.CarAnalytics
 import com.data.model.CarDetailData
 import com.theme.Theme
 import com.theme.TokenSpacing
 import com.ui.PrimaryButton
+import com.ui.rememberCarImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +134,7 @@ private fun CardDetailContent(
                         .fillMaxWidth()
                         .heightIn(max = 360.dp)
                         .clip(RoundedCornerShape(10.dp)),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                painter = rememberCarImagePainter(car.imageUrl),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
             )

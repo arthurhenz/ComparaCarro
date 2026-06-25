@@ -8,4 +8,5 @@ data class SmallCardData(
     val fipe: String,
     val selected: Boolean = false,
     val backgroundRes: Int = R.drawable.ic_launcher_background,
+    val imageUrl: String? = null,
 )
