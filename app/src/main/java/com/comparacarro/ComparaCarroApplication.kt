@@ -25,7 +25,7 @@ class ComparaCarroApplication : Application() {
             androidContext(this@ComparaCarroApplication)
             modules(
                 AppModule().module,
-                navigationModule
+                navigationModule,
             )
         }
     }

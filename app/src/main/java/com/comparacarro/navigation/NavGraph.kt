@@ -30,6 +30,6 @@ fun AppNavigation() {
         entryProvider =
             entryProvider {
                 entryBuilders.forEach { builder -> this.builder() }
-            }
+            },
     )
 }

@@ -2,7 +2,6 @@ package com.comparacarro.ui.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.theme.Theme
 import com.theme.TokenIconSize
-import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.PrimaryButton
 
@@ -55,7 +52,7 @@ import com.ui.PrimaryButton
 fun SignupScreen(
     onSubmit: (name: String, email: String, password: String) -> Unit = { _, _, _ -> },
     onGoogleSignup: () -> Unit = {},
-    onLoginInstead: () -> Unit = {}
+    onLoginInstead: () -> Unit = {},
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -73,7 +70,7 @@ fun SignupScreen(
                 .imePadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Section),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         SignupHero()
 
@@ -84,7 +81,7 @@ fun SignupScreen(
             onValueChange = { name = it },
             label = "Nome Completo",
             placeholder = "Seu nome",
-            icon = Icons.Filled.Person
+            icon = Icons.Filled.Person,
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -95,7 +92,7 @@ fun SignupScreen(
             label = "E-mail",
             placeholder = "voce@email.com",
             icon = Icons.Filled.MailOutline,
-            keyboardType = KeyboardType.Email
+            keyboardType = KeyboardType.Email,
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -107,7 +104,7 @@ fun SignupScreen(
             placeholder = "Mínimo 8 caracteres",
             icon = Icons.Filled.Lock,
             keyboardType = KeyboardType.Password,
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -119,14 +116,14 @@ fun SignupScreen(
             placeholder = "Repita a senha",
             icon = Icons.Filled.Shield,
             keyboardType = KeyboardType.Password,
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
 
         TermsRow(
             checked = acceptTerms,
-            onCheckedChange = { acceptTerms = it }
+            onCheckedChange = { acceptTerms = it },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
@@ -134,7 +131,7 @@ fun SignupScreen(
         PrimaryButton(
             text = "CRIAR CONTA",
             enabled = acceptTerms,
-            onClick = { onSubmit(name, email, password) }
+            onClick = { onSubmit(name, email, password) },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -146,7 +143,7 @@ fun SignupScreen(
         SwitchAuthLink(
             prompt = "Já possui uma conta?",
             action = "Entrar",
-            onClick = onLoginInstead
+            onClick = onLoginInstead,
         )
     }
 }
@@ -157,14 +154,14 @@ private fun SignupHero() {
         Text(
             text = "ComparaCarros",
             style = Theme.typography.headlineLarge,
-            color = Theme.colors.accentPrimary
+            color = Theme.colors.accentPrimary,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Text(
             text = "Junte-se à elite automotiva brasileira",
             style = Theme.typography.bodyMedium,
             color = Theme.colors.textSecondary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -172,11 +169,11 @@ private fun SignupHero() {
 @Composable
 private fun TermsRow(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(checked = checked, onCheckedChange = onCheckedChange)
         Spacer(modifier = Modifier.size(TokenSpacing.Item))
@@ -190,7 +187,7 @@ private fun TermsRow(
                         append("Termos de Uso & Privacidade")
                     }
                 },
-            style = Theme.typography.bodyMedium
+            style = Theme.typography.bodyMedium,
         )
     }
 }
@@ -204,17 +201,17 @@ private fun Checkbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
                 .clip(RoundedCornerShape(4.dp))
                 .background(
                     color = if (checked) Theme.colors.accentPrimary else Theme.colors.surfaceRaised,
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(4.dp),
                 )
                 .clickable { onCheckedChange(!checked) },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         if (checked) {
             Icon(
                 imageVector = Icons.Filled.Check,
                 contentDescription = "Aceito",
                 tint = Theme.colors.textInteractive,
-                modifier = Modifier.size(TokenIconSize.Small)
+                modifier = Modifier.size(TokenIconSize.Small),
             )
         }
     }
