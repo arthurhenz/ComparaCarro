@@ -2,6 +2,7 @@ package com.favorites
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.navigation.EntryProvider
@@ -9,21 +10,20 @@ import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.HomeScreenRoute
 import com.navigation.routes.ProfileRoute
 import com.navigation.routes.SelectComparisonRoute
-import com.navigation.routes.navigateToDetail
 import com.ui.BottomNavTab
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 fun EntryProviderScope<NavKey>.favoriteScreenRoute() {
     entry<FavoritesRoute> {
-        val navigator = koinInject<Navigator>()
+        val viewModel: FavoriteViewModel = koinViewModel()
+        val favorites = viewModel.favorites.collectAsLazyPagingItems()
+
         FavoriteScreen(
-            onCardClick = { id ->
-                navigator.navigateToDetail(id)
-            },
-            onCompareClick = {
-                navigator.navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
-            },
-            onNavigate = { tab -> navigator.navigateToBottomTab(tab) },
+            favorites = favorites,
+            onRemove = { id -> viewModel.onEvent(FavoriteScreenEvent.RemoveFavorite(id)) },
+            onCardClick = viewModel::openDetail,
+            onCompareClick = viewModel::navigateToCompare,
+            onNavigate = viewModel::navigateToTab,
         )
     }
 }

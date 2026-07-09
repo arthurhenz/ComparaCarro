@@ -22,6 +22,7 @@ fun HomeScreen(
     searchQuery: String,
     isSearchFocused: Boolean,
     sortType: SortType,
+    favoriteIds: Set<String> = emptySet(),
     onCardClick: (String) -> Unit = {},
     onCompareFromHome: () -> Unit = {},
     onFavoritesClick: () -> Unit = {},
@@ -30,6 +31,7 @@ fun HomeScreen(
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onSortTypeChange: (SortType) -> Unit = {},
     onRefreshRecentlyViewed: () -> Unit = {},
+    onToggleFavorite: (SmallCardData) -> Unit = {},
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -84,6 +86,8 @@ fun HomeScreen(
                 onCompareClick = onCompareFromHome,
                 onFavoritesClick = onFavoritesClick,
                 onProfileClick = onProfileClick,
+                favoriteIds = favoriteIds,
+                onToggleFavorite = onToggleFavorite,
             )
         }
     }

@@ -85,6 +85,8 @@ fun HomeScreenContent(
     onCompareClick: () -> Unit = {},
     onFavoritesClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
+    favoriteIds: Set<String> = emptySet(),
+    onToggleFavorite: (SmallCardData) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -241,6 +243,8 @@ fun HomeScreenContent(
                                     model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                                     fipe = cardData.fipe,
                                     onClick = { onCardClick(cardData.id) },
+                                    favorited = cardData.id in favoriteIds,
+                                    onFavoriteToggle = { onToggleFavorite(cardData) },
                                 )
                             }
                         }

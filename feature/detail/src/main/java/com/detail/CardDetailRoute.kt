@@ -1,7 +1,7 @@
 package com.detail
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.navigation.EntryProvider
@@ -13,12 +13,13 @@ fun EntryProviderScope<NavKey>.cardDetailRoute() {
     entry<CardDetailRoute> { key ->
         val viewModel: DetailViewModel = koinViewModel { parametersOf(key.modelSlug, key.fuelAcronym, key.year) }
 
-        val state by viewModel.state.collectAsState()
+        val state by viewModel.state.collectAsStateWithLifecycle()
 
         DetailScreen(
             state = state,
             onBackClick = viewModel::goBack,
             onCompareClick = viewModel::navigateToCompare,
+            onToggleFavorite = { viewModel.onEvent(DetailScreenEvent.ToggleFavorite) },
         )
     }
 }

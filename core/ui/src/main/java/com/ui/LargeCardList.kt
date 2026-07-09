@@ -52,8 +52,13 @@ fun LargeCardList(
     fuel: String = "Híbrido / Flex",
     transmission: String = "CVT 10-Marchas",
     onDetailsClick: (() -> Unit)? = null,
+    favorited: Boolean = false,
+    onFavoriteToggle: ((Boolean) -> Unit)? = null,
 ) {
-    var favorited by remember { mutableStateOf(false) }
+    // Controlled when a callback is supplied; otherwise falls back to local-only state
+    // so previews and other callers keep working without wiring.
+    var localFavorited by remember { mutableStateOf(false) }
+    val isFavorited = if (onFavoriteToggle != null) favorited else localFavorited
 
     Row(
         modifier =
@@ -100,8 +105,10 @@ fun LargeCardList(
                     )
                 }
                 FavoriteButton(
-                    selected = favorited,
-                    onToggle = { favorited = it },
+                    selected = isFavorited,
+                    onToggle = { toggled ->
+                        if (onFavoriteToggle != null) onFavoriteToggle(toggled) else localFavorited = toggled
+                    },
                 )
             }
 
