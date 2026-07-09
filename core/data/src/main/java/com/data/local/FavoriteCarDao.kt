@@ -25,6 +25,14 @@ interface FavoriteCarDao {
     @Query("SELECT id FROM favorite_cars")
     fun observeIds(): Flow<List<String>>
 
+    /**
+     * The full favorites set as a live list (newest first). Used to compute the Favorites filter
+     * facets (brand/price/year), where each chip's options depend on the other active filters, so a
+     * paged source won't do — the whole set must be enumerable. Safe because it's a personal list.
+     */
+    @Query("SELECT * FROM favorite_cars ORDER BY addedAt DESC")
+    fun observeAll(): Flow<List<FavoriteCarEntity>>
+
     /** One-shot membership check used by `toggle` to decide between add and remove. */
     @Query("SELECT EXISTS(SELECT 1 FROM favorite_cars WHERE id = :id)")
     suspend fun exists(id: String): Boolean
