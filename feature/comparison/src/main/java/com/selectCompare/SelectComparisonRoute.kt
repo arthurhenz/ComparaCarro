@@ -1,7 +1,7 @@
 package com.selectCompare
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.common.navigation.NavOptions
@@ -18,7 +18,7 @@ fun EntryProviderScope<NavKey>.selectComparisonRoute() {
     entry<SelectComparisonRoute> { key ->
         val viewModel: SelectComparisonViewModel = koinViewModel { parametersOf(key.firstId ?: "") }
 
-        val state by viewModel.state.collectAsState()
+        val state by viewModel.state.collectAsStateWithLifecycle()
 
         SelectComparisonScreen(
             state = state,
