@@ -43,7 +43,7 @@ em vez de passar carro para uma tela, pode ter carArgs, que faz map pro novo obj
 Semana que vem:
 
 ✅ Filtro no Favoritos
-- Lista mockada dos mais vendidos na pagina inicial utilizando IA para extrair os carros mais 
+✅ Lista mockada dos mais vendidos na pagina inicial utilizando IA para extrair os carros mais 
 vendidos Fenabrave enviados anterioprmente
 - Adicionar access token refresh token ARGON 2015 e implementar tela de login (Argon2 ou bcrypt 
 kotlin da vida)
