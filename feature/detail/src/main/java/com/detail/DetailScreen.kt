@@ -17,7 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,7 +48,9 @@ fun DetailScreen(
     state: DetailScreenState,
     onBackClick: () -> Unit = {},
     onCompareClick: (String) -> Unit = {},
+    onToggleFavorite: () -> Unit = {},
 ) {
+    val isFavorite = (state as? DetailScreenState.Success)?.isFavorite == true
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,6 +64,13 @@ fun DetailScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onToggleFavorite) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remover dos favoritos" else "Adicionar aos favoritos",
+                            tint = if (isFavorite) Theme.colors.accentPrimary else Theme.colors.textPrimary,
+                        )
+                    }
                     IconButton(onClick = { /* No function */ }) {
                         Icon(
                             imageVector = Icons.Filled.Share,

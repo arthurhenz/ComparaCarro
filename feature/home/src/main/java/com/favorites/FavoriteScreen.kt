@@ -19,8 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Favorite
@@ -32,7 +31,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,13 +40,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.data.R
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenIconSize
@@ -58,6 +59,8 @@ import com.ui.BottomNavBar
 import com.ui.BottomNavTab
 import com.ui.Header
 import com.ui.PrimaryButton
+import com.ui.rememberCarImagePainter
+import kotlinx.coroutines.flow.flowOf
 
 data class FavoriteCarItem(
     val id: String,
@@ -66,7 +69,7 @@ data class FavoriteCarItem(
     val price: String,
     val powertrain: String,
     val range: String,
-    val backgroundRes: Int = R.drawable.ic_launcher_background,
+    val imageUrl: String? = null,
 )
 
 private data class SuggestionCategory(
@@ -84,14 +87,18 @@ private val suggestionCategories =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    initialFavorites: List<FavoriteCarItem> = sampleFavorites(),
+    favorites: LazyPagingItems<FavoriteCarItem>,
+    onRemove: (String) -> Unit = {},
     onCardClick: (String) -> Unit = {},
     onCompareClick: () -> Unit = {},
     onNavigate: (BottomNavTab) -> Unit = {},
 ) {
-    val favorites = remember { mutableStateListOf<FavoriteCarItem>().apply { addAll(initialFavorites) } }
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var isSearchFocused by rememberSaveable { mutableStateOf(false) }
+
+    // "Empty" only once the initial page has finished loading with no rows — otherwise the empty
+    // state would flash during the first Room load.
+    val isEmpty = favorites.itemCount == 0 && favorites.loadState.refresh !is LoadState.Loading
 
     Scaffold(
         containerColor = Theme.colors.background,
@@ -112,48 +119,51 @@ fun FavoriteScreen(
             )
         },
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = TokenSpacing.Section),
+            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section),
         ) {
-            FavoritesTitleSection(modifier = Modifier.padding(top = TokenSpacing.Section))
+            item {
+                FavoritesTitleSection(modifier = Modifier.padding(top = TokenSpacing.Section))
+            }
 
-            if (favorites.isEmpty()) {
-                EmptyFavoritesState(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = TokenSpacing.Section * 2),
-                )
+            if (isEmpty) {
+                item {
+                    EmptyFavoritesState(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = TokenSpacing.Section * 2),
+                    )
+                }
             } else {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = TokenSpacing.Section),
-                    verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section),
-                ) {
-                    favorites.forEach { car ->
+                items(
+                    count = favorites.itemCount,
+                    key = favorites.itemKey { it.id },
+                ) { index ->
+                    favorites[index]?.let { car ->
                         FavoriteCard(
                             car = car,
                             onClick = { onCardClick(car.id) },
-                            onRemove = { favorites.remove(car) },
+                            onRemove = { onRemove(car.id) },
                             onCompare = onCompareClick,
                         )
                     }
                 }
 
-                SuggestionsSection(
-                    categories = suggestionCategories,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = TokenSpacing.Section * 2, bottom = TokenSpacing.Section),
-                )
+                item {
+                    SuggestionsSection(
+                        categories = suggestionCategories,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = TokenSpacing.Section, bottom = TokenSpacing.Section),
+                    )
+                }
             }
         }
     }
@@ -204,7 +214,7 @@ private fun FavoriteCard(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(id = car.backgroundRes),
+            painter = rememberCarImagePainter(car.imageUrl),
             contentDescription = car.title,
             contentScale = ContentScale.Crop,
             modifier =
@@ -250,13 +260,20 @@ private fun FavoriteCard(
                             ) { onRemove() },
                 )
             }
-            Spacer(modifier = Modifier.height(TokenSpacing.Item))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                SpecInline(icon = Icons.Filled.Speed, label = car.range)
-                SpecInline(icon = powertrainIcon(car.powertrain), label = car.powertrain)
+            val hasSpecs = car.range.isNotBlank() || car.powertrain.isNotBlank()
+            if (hasSpecs) {
+                Spacer(modifier = Modifier.height(TokenSpacing.Item))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (car.range.isNotBlank()) {
+                        SpecInline(icon = Icons.Filled.Speed, label = car.range)
+                    }
+                    if (car.powertrain.isNotBlank()) {
+                        SpecInline(icon = powertrainIcon(car.powertrain), label = car.powertrain)
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(TokenSpacing.Item))
             Row(
@@ -435,7 +452,8 @@ internal fun sampleFavorites(): List<FavoriteCarItem> =
 @Composable
 fun FavoriteScreenPreview() {
     Theme {
-        FavoriteScreen()
+        val favorites = flowOf(PagingData.from(sampleFavorites())).collectAsLazyPagingItems()
+        FavoriteScreen(favorites = favorites)
     }
 }
 
@@ -443,6 +461,7 @@ fun FavoriteScreenPreview() {
 @Composable
 fun FavoriteScreenEmptyPreview() {
     Theme {
-        FavoriteScreen(initialFavorites = emptyList())
+        val favorites = flowOf(PagingData.from(emptyList<FavoriteCarItem>())).collectAsLazyPagingItems()
+        FavoriteScreen(favorites = favorites)
     }
 }

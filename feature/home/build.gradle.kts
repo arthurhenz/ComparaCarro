@@ -13,4 +13,6 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.common)
     implementation(projects.core.navigation)
+
+    implementation(libs.androidx.paging.compose)
 }

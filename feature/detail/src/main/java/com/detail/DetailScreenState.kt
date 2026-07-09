@@ -7,5 +7,6 @@ sealed class DetailScreenState {
     data class Error(val error: String?) : DetailScreenState()
     data class Success(
         val car: CarDetailData,
+        val isFavorite: Boolean = false,
     ) : DetailScreenState()
 }

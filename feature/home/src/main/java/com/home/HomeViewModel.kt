@@ -5,11 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
+import com.common.utils.stateInWhileSubscribed
+import com.data.model.FavoriteCar
 import com.data.model.SmallCardData
 import com.data.usecase.GetRecentlyViewedCarsUseCase
 import com.data.usecase.GetSmallCardsPageUseCase
 import com.data.usecase.GetSmallCardsUseCase
+import com.data.usecase.ObserveFavoriteIdsUseCase
 import com.data.usecase.SaveRecentlyViewedCarUseCase
+import com.data.usecase.ToggleFavoriteUseCase
 import com.navigation.routes.CardDetailRoute
 import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.ProfileRoute
@@ -34,10 +38,17 @@ class HomeViewModel(
     private val getSmallCardsPageUseCase: GetSmallCardsPageUseCase,
     private val getRecentlyViewedCarsUseCase: GetRecentlyViewedCarsUseCase,
     private val saveRecentlyViewedCarUseCase: SaveRecentlyViewedCarUseCase,
+    observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     navigator: Navigator,
 ) : ViewModel(), Navigator by navigator {
     private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
+
+    // Ids of currently favorited cars, so each card can render the correct heart state.
+    val favoriteIds: StateFlow<Set<String>> =
+        observeFavoriteIdsUseCase()
+            .stateInWhileSubscribed(viewModelScope, emptySet(), STOP_TIMEOUT_MS)
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
@@ -180,6 +191,15 @@ class HomeViewModel(
         navigate(CardDetailRoute(modelSlug, fuelAcronym, year), NavOptions(singleTop = true))
     }
 
+    fun toggleFavorite(card: SmallCardData) =
+        viewModelScope.launch {
+            try {
+                toggleFavoriteUseCase(card.toFavoriteCar())
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Failed to toggle favorite ${card.id}: ${e.message}", e)
+            }
+        }
+
     fun navigateToSelectComparison() {
         navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
     }
@@ -205,5 +225,15 @@ class HomeViewModel(
         const val MIN_SEARCH_LENGTH = 2
         const val SEARCH_DEBOUNCE_MS = 2000L
         const val SEARCH_PAGE_SIZE = 30
+        const val STOP_TIMEOUT_MS = 5000L
     }
 }
+
+private fun SmallCardData.toFavoriteCar(): FavoriteCar =
+    FavoriteCar(
+        id = id,
+        brand = title.substringBefore(" "),
+        title = title,
+        price = fipe,
+        imageUrl = imageUrl,
+    )
