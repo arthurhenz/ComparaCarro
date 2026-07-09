@@ -1,5 +1,6 @@
 package com.auth
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
@@ -12,34 +13,42 @@ import com.navigation.routes.SignupRoute
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
-fun EntryProviderScope<NavKey>.loginScreenRoute() {
-    entry<LoginRoute> {
-        val viewModel: LoginViewModel = koinViewModel()
-        val state by viewModel.state.collectAsStateWithLifecycle()
-        val context = LocalContext.current
-        val scope = rememberCoroutineScope()
+/**
+ * The login screen wired to its [LoginViewModel] and the Google credential flow. Exposed as a
+ * standalone composable so it can be rendered both as the [LoginRoute] entry and inline wherever a
+ * signed-out user must authenticate (e.g. the Profile tab).
+ */
+@Composable
+fun LoginScreenHost() {
+    val viewModel: LoginViewModel = koinViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-        LoginScreen(
-            isLoading = state.isLoading,
-            errorMessage = state.errorMessage,
-            onSubmit = viewModel::login,
-            onGoogleLogin = {
-                if (!GoogleSignInHelper.isConfigured) {
-                    viewModel.onGoogleFailed("Login com Google ainda não configurado.")
-                } else {
-                    scope.launch {
-                        viewModel.onGoogleStarted()
-                        try {
-                            viewModel.loginWithGoogle(GoogleSignInHelper.getIdToken(context))
-                        } catch (e: Exception) {
-                            viewModel.onGoogleFailed(e.message ?: "Falha no login com Google.")
-                        }
+    LoginScreen(
+        isLoading = state.isLoading,
+        errorMessage = state.errorMessage,
+        onSubmit = viewModel::login,
+        onGoogleLogin = {
+            if (!GoogleSignInHelper.isConfigured) {
+                viewModel.onGoogleFailed("Login com Google ainda não configurado.")
+            } else {
+                scope.launch {
+                    viewModel.onGoogleStarted()
+                    try {
+                        viewModel.loginWithGoogle(GoogleSignInHelper.getIdToken(context))
+                    } catch (e: Exception) {
+                        viewModel.onGoogleFailed(e.message ?: "Falha no login com Google.")
                     }
                 }
-            },
-            onCreateAccount = viewModel::goToSignup,
-        )
-    }
+            }
+        },
+        onCreateAccount = viewModel::goToSignup,
+    )
+}
+
+fun EntryProviderScope<NavKey>.loginScreenRoute() {
+    entry<LoginRoute> { LoginScreenHost() }
 }
 
 fun EntryProviderScope<NavKey>.signupScreenRoute() {
