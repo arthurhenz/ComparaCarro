@@ -52,7 +52,7 @@ data class ProfileUser(
     val duels: Int,
     val favorites: Int,
     val level: String,
-    val garage: Int
+    val garage: Int,
 )
 
 data class GarageEntry(val id: String, val name: String)
@@ -68,21 +68,21 @@ fun ProfileScreen(
     onSeeAllFavorites: () -> Unit = {},
     onDuelClick: (String) -> Unit = {},
     onLogout: () -> Unit = {},
-    onNavigate: (BottomNavTab) -> Unit = {}
+    onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .background(Theme.colors.background)
-                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.statusBars),
     ) {
         Column(
             modifier =
                 Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block)
+                    .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
         ) {
             ProfileHeader(user = user, onEdit = onEditProfile)
 
@@ -95,7 +95,7 @@ fun ProfileScreen(
             SectionHeader(
                 title = "Meus Carros Favoritos",
                 action = "VER TODOS",
-                onActionClick = onSeeAllFavorites
+                onActionClick = onSeeAllFavorites,
             )
             Spacer(modifier = Modifier.height(TokenSpacing.Block))
             GarageRow(entries = favoriteCars)
@@ -107,7 +107,7 @@ fun ProfileScreen(
             duels.forEach { duel ->
                 DuelEntryRow(
                     duel = duel,
-                    onClick = { onDuelClick(duel.id) }
+                    onClick = { onDuelClick(duel.id) },
                 )
                 Spacer(modifier = Modifier.height(TokenSpacing.Item))
             }
@@ -121,7 +121,7 @@ fun ProfileScreen(
 
         BottomNavBar(
             selected = BottomNavTab.Perfil,
-            onSelect = onNavigate
+            onSelect = onNavigate,
         )
     }
 }
@@ -135,20 +135,20 @@ private fun ProfileHeader(user: ProfileUser, onEdit: () -> Unit) {
                     .size(96.dp)
                     .clip(CircleShape)
                     .background(brush = Theme.colors.interactivePrimary),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Filled.Person,
                 contentDescription = null,
                 tint = Theme.colors.textInteractive,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
             )
         }
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
         Text(
             text = user.name,
             style = Theme.typography.headlineLarge,
-            color = Theme.colors.textPrimary
+            color = Theme.colors.textPrimary,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         ContactRow(icon = Icons.Filled.Email, text = user.email)
@@ -166,13 +166,13 @@ private fun ContactRow(icon: ImageVector, text: String) {
             imageVector = icon,
             contentDescription = null,
             tint = Theme.colors.textSecondary,
-            modifier = Modifier.size(TokenIconSize.Small)
+            modifier = Modifier.size(TokenIconSize.Small),
         )
         Spacer(modifier = Modifier.width(TokenSpacing.Item))
         Text(
             text = text,
             style = Theme.typography.bodyMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
     }
 }
@@ -186,19 +186,19 @@ private fun EditProfileButton(onClick: () -> Unit) {
                 .background(Theme.colors.surfaceRaised, shape = TokenShapes.Button)
                 .clickable(onClick = onClick)
                 .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = Icons.Filled.Edit,
             contentDescription = null,
             tint = Theme.colors.accentPrimary,
-            modifier = Modifier.size(TokenIconSize.Small)
+            modifier = Modifier.size(TokenIconSize.Small),
         )
         Spacer(modifier = Modifier.width(TokenSpacing.Item))
         Text(
             text = "Editar Perfil",
             style = Theme.typography.labelMedium,
-            color = Theme.colors.accentPrimary
+            color = Theme.colors.accentPrimary,
         )
     }
 }
@@ -212,7 +212,7 @@ private fun StatsRow(user: ProfileUser) {
                 .clip(TokenShapes.Card)
                 .background(Theme.colors.surfaceLow, shape = TokenShapes.Card)
                 .padding(vertical = TokenSpacing.Block),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         StatBlock(value = user.duels.toString(), label = "Duelos")
         StatBlock(value = user.favorites.toString(), label = "Favoritos")
@@ -227,12 +227,12 @@ private fun StatBlock(value: String, label: String, accent: Boolean = false) {
         Text(
             text = value,
             style = Theme.typography.headlineLarge,
-            color = if (accent) Theme.colors.accentPrimary else Theme.colors.textPrimary
+            color = if (accent) Theme.colors.accentPrimary else Theme.colors.textPrimary,
         )
         Text(
             text = label,
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
     }
 }
@@ -241,24 +241,24 @@ private fun StatBlock(value: String, label: String, accent: Boolean = false) {
 private fun SectionHeader(
     title: String,
     action: String? = null,
-    onActionClick: () -> Unit = {}
+    onActionClick: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = title,
             style = Theme.typography.titleLarge,
-            color = Theme.colors.textPrimary
+            color = Theme.colors.textPrimary,
         )
         if (action != null) {
             Text(
                 text = action,
                 style = Theme.typography.labelMedium,
                 color = Theme.colors.accentPrimary,
-                modifier = Modifier.clickable(onClick = onActionClick)
+                modifier = Modifier.clickable(onClick = onActionClick),
             )
         }
     }
@@ -267,7 +267,7 @@ private fun SectionHeader(
 @Composable
 private fun GarageRow(entries: List<GarageEntry>) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block)
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
     ) {
         items(entries) { entry ->
             GarageItem(entry)
@@ -279,14 +279,14 @@ private fun GarageRow(entries: List<GarageEntry>) {
 private fun GarageItem(entry: GarageEntry) {
     Column(
         modifier = Modifier.width(120.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier =
                 Modifier
                     .size(width = 120.dp, height = 80.dp)
                     .clip(TokenShapes.Card)
-                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Card)
+                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Card),
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Text(
@@ -294,7 +294,7 @@ private fun GarageItem(entry: GarageEntry) {
             style = Theme.typography.labelMedium,
             color = Theme.colors.textPrimary,
             textAlign = TextAlign.Center,
-            maxLines = 2
+            maxLines = 2,
         )
     }
 }
@@ -309,25 +309,25 @@ private fun DuelEntryRow(duel: DuelHistoryEntry, onClick: () -> Unit) {
                 .background(Theme.colors.surfaceLow, shape = TokenShapes.Card)
                 .clickable(onClick = onClick)
                 .padding(TokenSpacing.Block),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = duel.title,
                 style = Theme.typography.bodyLarge,
-                color = Theme.colors.textPrimary
+                color = Theme.colors.textPrimary,
             )
             Text(
                 text = duel.date,
                 style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary
+                color = Theme.colors.textSecondary,
             )
         }
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
             contentDescription = null,
             tint = Theme.colors.textSecondary,
-            modifier = Modifier.size(TokenIconSize.Small)
+            modifier = Modifier.size(TokenIconSize.Small),
         )
     }
 }
@@ -343,45 +343,48 @@ private fun LogoutButton(onClick: () -> Unit) {
                 .clickable(onClick = onClick)
                 .padding(vertical = TokenSpacing.Block),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.Logout,
             contentDescription = null,
             tint = Theme.colors.error,
-            modifier = Modifier.size(TokenIconSize.Medium)
+            modifier = Modifier.size(TokenIconSize.Medium),
         )
         Spacer(modifier = Modifier.width(TokenSpacing.Item))
         Text(
             text = "Sair da conta",
             style = Theme.typography.bodyLarge,
-            color = Theme.colors.error
+            color = Theme.colors.error,
         )
     }
 }
 
-private fun sampleUser(): ProfileUser = ProfileUser(
-    name = "Carlos Silva",
-    email = "carlos.silva@email.com.br",
-    phone = "+55 11 99876-5432",
-    duels = 142,
-    favorites = 28,
-    level = "PRO",
-    garage = 12
-)
+private fun sampleUser(): ProfileUser =
+    ProfileUser(
+        name = "Carlos Silva",
+        email = "carlos.silva@email.com.br",
+        phone = "+55 11 99876-5432",
+        duels = 142,
+        favorites = 28,
+        level = "PRO",
+        garage = 12,
+    )
 
-private fun sampleGarage(): List<GarageEntry> = listOf(
-    GarageEntry("g1", "Porsche 911 GT3 RS"),
-    GarageEntry("g2", "McLaren 720S Spider"),
-    GarageEntry("g3", "BMW M3 Competition"),
-    GarageEntry("g4", "Ferrari SF90 Stradale")
-)
+private fun sampleGarage(): List<GarageEntry> =
+    listOf(
+        GarageEntry("g1", "Porsche 911 GT3 RS"),
+        GarageEntry("g2", "McLaren 720S Spider"),
+        GarageEntry("g3", "BMW M3 Competition"),
+        GarageEntry("g4", "Ferrari SF90 Stradale"),
+    )
 
-private fun sampleDuels(): List<DuelHistoryEntry> = listOf(
-    DuelHistoryEntry("d1", "Polo GTS vs Pulse Abarth", "Ontem"),
-    DuelHistoryEntry("d2", "Civic Si vs Corolla XEi", "3 de outubro"),
-    DuelHistoryEntry("d3", "M3 vs C63 AMG", "28 de setembro")
-)
+private fun sampleDuels(): List<DuelHistoryEntry> =
+    listOf(
+        DuelHistoryEntry("d1", "Polo GTS vs Pulse Abarth", "Ontem"),
+        DuelHistoryEntry("d2", "Civic Si vs Corolla XEi", "3 de outubro"),
+        DuelHistoryEntry("d3", "M3 vs C63 AMG", "28 de setembro"),
+    )
 
 @Preview(showBackground = true)
 @Composable

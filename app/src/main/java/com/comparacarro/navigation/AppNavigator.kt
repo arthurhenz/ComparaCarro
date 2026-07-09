@@ -16,7 +16,7 @@ class AppNavigator : Navigator {
 
     override fun navigate(
         route: Any,
-        options: NavOptions
+        options: NavOptions,
     ) {
         val navRoute = route as NavKey
 

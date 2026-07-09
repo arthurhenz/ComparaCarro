@@ -2,7 +2,6 @@ package com.comparacarro.ui.account
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.favorites.navigateToBottomTab
 import com.navigation.EntryProvider

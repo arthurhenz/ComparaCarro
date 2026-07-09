@@ -36,7 +36,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -63,7 +62,7 @@ fun LoginScreen(
     onSubmit: (email: String, password: String) -> Unit = { _, _ -> },
     onGoogleLogin: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
-    onCreateAccount: () -> Unit = {}
+    onCreateAccount: () -> Unit = {},
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -79,7 +78,7 @@ fun LoginScreen(
                 .imePadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Section),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BrandHero()
 
@@ -91,7 +90,7 @@ fun LoginScreen(
             label = "E-mail",
             placeholder = "voce@email.com",
             icon = Icons.Filled.MailOutline,
-            keyboardType = KeyboardType.Email
+            keyboardType = KeyboardType.Email,
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -112,23 +111,23 @@ fun LoginScreen(
                             if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
                         contentDescription =
                             if (passwordVisible) "Ocultar senha" else "Mostrar senha",
-                        tint = Theme.colors.textSecondary
+                        tint = Theme.colors.textSecondary,
                     )
                 }
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
         ) {
             Text(
                 text = "Esqueci minha senha",
                 style = Theme.typography.labelMedium,
                 color = Theme.colors.accentPrimary,
-                modifier = Modifier.clickable(onClick = onForgotPassword)
+                modifier = Modifier.clickable(onClick = onForgotPassword),
             )
         }
 
@@ -136,7 +135,7 @@ fun LoginScreen(
 
         PrimaryButton(
             text = "ENTRAR",
-            onClick = { onSubmit(email, password) }
+            onClick = { onSubmit(email, password) },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -148,7 +147,7 @@ fun LoginScreen(
         SwitchAuthLink(
             prompt = "Não tem uma conta?",
             action = "Criar conta",
-            onClick = onCreateAccount
+            onClick = onCreateAccount,
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
@@ -166,26 +165,26 @@ private fun BrandHero() {
                     .size(96.dp)
                     .clip(CircleShape)
                     .background(brush = Theme.colors.interactivePrimary),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Filled.DirectionsCar,
                 contentDescription = null,
                 tint = Theme.colors.textInteractive,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
             )
         }
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
         Text(
             text = "ComparaCarros",
             style = Theme.typography.headlineLarge,
-            color = Theme.colors.accentPrimary
+            color = Theme.colors.accentPrimary,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item / 2))
         Text(
             text = "HIGH PERFORMANCE HUB",
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
     }
 }
@@ -199,7 +198,7 @@ internal fun AccountTextField(
     icon: ImageVector,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    trailingIcon: (@Composable () -> Unit)? = null
+    trailingIcon: (@Composable () -> Unit)? = null,
 ) {
     OutlinedTextField(
         value = value,
@@ -209,14 +208,14 @@ internal fun AccountTextField(
             Text(
                 text = label,
                 style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary
+                color = Theme.colors.textSecondary,
             )
         },
         placeholder = {
             Text(
                 text = placeholder,
                 style = Theme.typography.bodyMedium,
-                color = Theme.colors.textSecondary
+                color = Theme.colors.textSecondary,
             )
         },
         leadingIcon = {
@@ -224,7 +223,7 @@ internal fun AccountTextField(
                 imageVector = icon,
                 contentDescription = null,
                 tint = Theme.colors.textSecondary,
-                modifier = Modifier.size(TokenIconSize.Medium)
+                modifier = Modifier.size(TokenIconSize.Medium),
             )
         },
         trailingIcon = trailingIcon,
@@ -241,8 +240,8 @@ internal fun AccountTextField(
                 focusedTextColor = Theme.colors.textPrimary,
                 unfocusedTextColor = Theme.colors.textPrimary,
                 focusedLabelColor = Theme.colors.accentPrimary,
-                unfocusedLabelColor = Theme.colors.textSecondary
-            )
+                unfocusedLabelColor = Theme.colors.textSecondary,
+            ),
     )
 }
 
@@ -257,7 +256,7 @@ internal fun GoogleLoginButton(onClick: () -> Unit, text: String = "Continuar co
                 .clip(TokenShapes.Button)
                 .background(Theme.colors.surfaceRaised, shape = TokenShapes.Button)
                 .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -266,19 +265,19 @@ internal fun GoogleLoginButton(onClick: () -> Unit, text: String = "Continuar co
                         .size(24.dp)
                         .clip(CircleShape)
                         .background(Theme.colors.textPrimary, shape = CircleShape),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = "G",
                     style = Theme.typography.labelMedium,
-                    color = Theme.colors.accentPrimary
+                    color = Theme.colors.accentPrimary,
                 )
             }
             Spacer(modifier = Modifier.width(TokenSpacing.Block))
             Text(
                 text = text,
                 style = Theme.typography.bodyLarge,
-                color = Theme.colors.textPrimary
+                color = Theme.colors.textPrimary,
             )
         }
     }
@@ -288,21 +287,21 @@ internal fun GoogleLoginButton(onClick: () -> Unit, text: String = "Continuar co
 internal fun SwitchAuthLink(
     prompt: String,
     action: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val annotated: AnnotatedString =
         buildAnnotatedString {
             withStyle(
-                SpanStyle(color = Theme.colors.textSecondary)
+                SpanStyle(color = Theme.colors.textSecondary),
             ) { append("$prompt ") }
             withStyle(
-                SpanStyle(color = Theme.colors.accentPrimary)
+                SpanStyle(color = Theme.colors.accentPrimary),
             ) { append(action) }
         }
     Text(
         text = annotated,
         style = Theme.typography.bodyMedium,
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier.clickable(onClick = onClick),
     )
 }
 
@@ -311,24 +310,24 @@ private fun LoginFooter() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = "Privacidade",
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
         DotSeparator()
         Text(
             text = "Termos",
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
         DotSeparator()
         Text(
             text = "v.2.4.0 ENGINE",
             style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary
+            color = Theme.colors.textSecondary,
         )
     }
 }
@@ -341,7 +340,7 @@ private fun DotSeparator() {
                 .padding(horizontal = TokenSpacing.Item)
                 .size(3.dp)
                 .clip(CircleShape)
-                .background(Theme.colors.outlineGhost, shape = CircleShape)
+                .background(Theme.colors.outlineGhost, shape = CircleShape),
     )
 }
 
