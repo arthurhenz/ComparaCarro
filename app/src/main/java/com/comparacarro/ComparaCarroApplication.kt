@@ -1,6 +1,7 @@
 package com.comparacarro
 
 import android.app.Application
+import com.auth.AuthScreenProvider
 import com.common.navigation.Navigator
 import com.comparacarro.navigation.AppNavigator
 import com.comparacarro.navigation.utils.EntriesProviderAggregator
@@ -41,4 +42,5 @@ private val navigationModule =
         single { SelectComparisonScreenProvider() } bind EntryProvider::class
         single { FavoriteScreenProvider() } bind EntryProvider::class
         single { ProfileScreenProvider() } bind EntryProvider::class
+        single { AuthScreenProvider() } bind EntryProvider::class
     }

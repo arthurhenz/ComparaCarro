@@ -1,4 +1,4 @@
-package com.comparacarro.ui.account
+package com.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,6 +48,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,6 +60,8 @@ import com.ui.PrimaryButton
 
 @Composable
 fun LoginScreen(
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
     onSubmit: (email: String, password: String) -> Unit = { _, _ -> },
     onGoogleLogin: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
@@ -131,10 +134,13 @@ fun LoginScreen(
             )
         }
 
+        AuthErrorText(errorMessage)
+
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
         PrimaryButton(
-            text = "ENTRAR",
+            text = if (isLoading) "ENTRANDO..." else "ENTRAR",
+            enabled = !isLoading,
             onClick = { onSubmit(email, password) },
         )
 
@@ -185,6 +191,21 @@ private fun BrandHero() {
             text = "HIGH PERFORMANCE HUB",
             style = Theme.typography.labelMedium,
             color = Theme.colors.textSecondary,
+        )
+    }
+}
+
+/** Shows the auth error under the form, or a slim progress row while a request is in flight. */
+@Composable
+internal fun AuthErrorText(errorMessage: String?) {
+    if (errorMessage != null) {
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Text(
+            text = errorMessage,
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.error,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

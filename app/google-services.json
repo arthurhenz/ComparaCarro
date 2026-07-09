@@ -1,18 +1,31 @@
 {
   "project_info": {
     "project_number": "413351987684",
-    "project_id": "comparacarro2-e66a7",
-    "storage_bucket": "comparacarro2-e66a7.firebasestorage.app"
+    "project_id": "comparacarro-e66a7",
+    "storage_bucket": "comparacarro-e66a7.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:413351987684:android:ca478b6b4937f9f3a25ff1",
         "android_client_info": {
-          "package_name": "com.comparacarro"
+          "package_name": "com.comparacarro2"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "413351987684-3atoc8kdkbdpi35jbi6mdvvmopuvo91c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.comparacarro2",
+            "certificate_hash": "4f761a0684d8ba88da93c533a6fc8677fb251f75"
+          }
+        },
+        {
+          "client_id": "413351987684-gabbannl3h6kek0093olvpda9r29kcf3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDMPn_lgAl7j6U0b0LqFQBRhrdv9Z1oq8s"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413351987684-gabbannl3h6kek0093olvpda9r29kcf3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
