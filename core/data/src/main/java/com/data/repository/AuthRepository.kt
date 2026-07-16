@@ -2,6 +2,7 @@ package com.data.repository
 
 import com.data.model.AuthResult
 import com.data.model.AuthUser
+import com.data.model.PasswordResetResult
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -22,6 +23,15 @@ interface AuthRepository {
 
     /** Signs in with a Google ID token obtained from Credential Manager on the UI layer. */
     suspend fun signInWithGoogle(idToken: String): AuthResult
+
+    /**
+     * Sends the Firebase password-reset e-mail. Returns [PasswordResetResult.GoogleOnly] when the
+     * account has no password provider (Google-only), so the UI can point the user at Google
+     * sign-in instead. With e-mail enumeration protection enabled, Firebase hides both the
+     * provider list and whether the address exists, so [PasswordResetResult.Sent] only means
+     * "request accepted".
+     */
+    suspend fun sendPasswordReset(email: String): PasswordResetResult
 
     /**
      * The Firebase ID token for the current user, refreshed if [forceRefresh] is true or the cached

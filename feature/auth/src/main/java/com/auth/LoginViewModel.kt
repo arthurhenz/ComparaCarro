@@ -6,6 +6,7 @@ import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.data.model.AuthResult
 import com.data.repository.AuthRepository
+import com.navigation.routes.ForgotPasswordRoute
 import com.navigation.routes.ProfileRoute
 import com.navigation.routes.SignupRoute
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,8 @@ class LoginViewModel(
     }
 
     fun goToSignup() = navigate(SignupRoute, NavOptions(singleTop = true))
+
+    fun goToForgotPassword() = navigate(ForgotPasswordRoute, NavOptions(singleTop = true))
 
     private fun submit(request: suspend () -> AuthResult) {
         _state.value = _state.value.copy(isLoading = true, errorMessage = null)
