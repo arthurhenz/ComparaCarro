@@ -30,7 +30,7 @@ class CardRepositoryImpl(
     override suspend fun getLargeCards(): List<LargeCardData> {
         return when (val result = searchCars(query = null, page = 1, limit = 15)) {
             is NetworkResult.Success -> {
-                val items = result.data.data.take(2)
+                val items = result.data.data.filter { it.fuelAcronym.isNotBlank() }.take(2)
                 val imageUrls = resolveImages(items, LIST_IMAGE_WIDTH)
                 items.mapIndexed { index, item ->
                     LargeCardData(
@@ -121,7 +121,8 @@ class CardRepositoryImpl(
      */
     private suspend fun topMatch(name: String): SearchItem? =
         when (val result = searchCars(query = name, page = 1, limit = MAX_PAGE_SIZE)) {
-            is NetworkResult.Success -> result.data.data.firstOrNull { it.modelYear == CURRENT_YEAR }
+            is NetworkResult.Success ->
+                result.data.data.firstOrNull { it.modelYear == CURRENT_YEAR && it.fuelAcronym.isNotBlank() }
             is NetworkResult.Error -> {
                 logError("getSmallCards[$name]", result)
                 null
@@ -142,7 +143,11 @@ class CardRepositoryImpl(
                 val totalPages = if (total <= 0) page else (total + limit - 1) / limit
                 val imageUrls = resolveImages(response.data, LIST_IMAGE_WIDTH)
                 PaginationResult(
-                    data = response.data.mapIndexed { index, item -> item.toSmallCard(imageUrls.getOrNull(index)) },
+                    data =
+                        response.data
+                            .mapIndexedNotNull { index, item ->
+                                item.takeIf { it.fuelAcronym.isNotBlank() }?.toSmallCard(imageUrls.getOrNull(index))
+                            },
                     page = page,
                     pageSize = limit,
                     totalItems = total,

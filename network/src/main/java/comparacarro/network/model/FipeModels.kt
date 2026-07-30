@@ -45,13 +45,15 @@ data class SearchItem(
     @SerialName("make_slug") val makeSlug: String = "",
     @SerialName("fuel_id") val fuelId: String = "",
     @SerialName("fuel_name") val fuelName: String = "",
-    // The search endpoint misspells this field as "fuel_acroym" (compare/expanded use "acronym").
-    @SerialName("fuel_acroym") val fuelAcronym: String = "",
+    // The search endpoint pads this value with trailing spaces (e.g. "g   "); trim before use.
+    @SerialName("fuel_acronym") private val fuelAcronymRaw: String = "",
     @SerialName("model_year") val modelYear: Int = 0,
     @SerialName("latest_market_price_cents") val latestMarketPriceCents: Long = 0,
     @SerialName("type_id") val typeId: String = "",
     @SerialName("type_name") val typeName: String = "",
-)
+) {
+    val fuelAcronym: String get() = fuelAcronymRaw.trim()
+}
 
 // ---- Expanded price (/v1/prices/expanded) ----
 
