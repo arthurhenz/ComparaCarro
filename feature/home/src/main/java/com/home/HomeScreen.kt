@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -96,15 +95,10 @@ fun HomeScreen(
     ) { paddingValues ->
         when (state) {
             is HomeScreenState.Loading -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(color = Theme.colors.accentTertiary)
-                }
+                HomeLoadingSkeleton(
+                    modifier = Modifier.padding(paddingValues),
+                    sortType = sortType,
+                )
             }
 
             is HomeScreenState.Error -> {

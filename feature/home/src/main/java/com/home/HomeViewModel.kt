@@ -145,7 +145,6 @@ class HomeViewModel(
     private fun loadCards() =
         viewModelScope.launch {
             try {
-                android.util.Log.d("HomeViewModel", "Loading cards...")
                 val smallCards = getSmallCardsUseCase()
                 val recentlyViewedCards = getRecentlyViewedCarsUseCase()
                 android.util.Log.d(

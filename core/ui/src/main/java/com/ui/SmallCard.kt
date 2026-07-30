@@ -23,13 +23,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.common.utils.shimmerEffect
 import com.theme.Theme
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
@@ -74,7 +77,8 @@ fun SmallCard(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .height(IMAGE_HEIGHT.dp),
+                            .height(IMAGE_HEIGHT.dp)
+                            .shimmerWhileLoading(image),
                     painter = image,
                     contentDescription = model,
                     contentScale = ContentScale.Crop,
@@ -132,7 +136,8 @@ fun SmallCard(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .height(IMAGE_HEIGHT.dp),
+                            .height(IMAGE_HEIGHT.dp)
+                            .shimmerWhileLoading(image),
                     painter = image,
                     contentDescription = model,
                     contentScale = ContentScale.Crop,
@@ -150,6 +155,78 @@ fun SmallCard(
             SmallCardContent(brand = brand, model = model, fipe = fipe)
         }
     }
+}
+
+/**
+ * Loading skeleton with the exact footprint of [SmallCard]: shimmering bones stand in for the
+ * image, the four text lines and the action button while the real data is on its way.
+ */
+@Composable
+fun SmallCardSkeleton(modifier: Modifier = Modifier) {
+    Card(
+        modifier =
+            modifier
+                .height(CARD_HEIGHT.dp)
+                .width(CARD_WIDTH.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Theme.colors.surface,
+            ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 0.dp,
+            ),
+        shape = TokenShapes.StraightEdge,
+    ) {
+        Column(modifier = Modifier.fillMaxHeight()) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(IMAGE_HEIGHT.dp)
+                        .shimmerEffect(),
+            )
+
+            Column(
+                Modifier.padding(horizontal = TokenSpacing.Item, vertical = TokenSpacing.Block),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                SkeletonBone(widthFraction = 0.4f, height = 12.dp)
+                SkeletonBone(widthFraction = 1f, height = 18.dp)
+                SkeletonBone(widthFraction = 0.7f, height = 18.dp)
+                SkeletonBone(widthFraction = 0.5f, height = 12.dp)
+                SkeletonBone(widthFraction = 0.6f, height = 20.dp)
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Box(
+                modifier =
+                    Modifier
+                        .padding(horizontal = TokenSpacing.Item)
+                        .padding(bottom = TokenSpacing.Inline)
+                        .fillMaxWidth()
+                        .height(32.dp)
+                        .clip(TokenShapes.Button)
+                        .shimmerEffect(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SkeletonBone(
+    widthFraction: Float,
+    height: Dp,
+) {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth(widthFraction)
+                .height(height)
+                .clip(TokenShapes.Sm)
+                .shimmerEffect(),
+    )
 }
 
 @Composable
@@ -189,6 +266,18 @@ private fun SmallCardContent(
             style = Theme.typography.priceMedium,
             maxLines = 1,
         )
+    }
+}
+
+@Preview
+@Composable
+fun SmallCardSkeletonPreview() {
+    Theme {
+        Row {
+            SmallCardSkeleton()
+            Spacer(modifier = Modifier.width(TokenSpacing.Item))
+            SmallCardSkeleton()
+        }
     }
 }
 

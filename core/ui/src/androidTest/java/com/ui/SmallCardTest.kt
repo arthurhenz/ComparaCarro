@@ -13,7 +13,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class SmallCardTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -26,7 +25,7 @@ class SmallCardTest {
                     onClick = {},
                     brand = "Honda",
                     model = "Civic 2020",
-                    fipe = "R$120.000,00"
+                    fipe = "R$120.000,00",
                 )
             }
         }
@@ -44,7 +43,7 @@ class SmallCardTest {
                     onClick = {},
                     brand = "Honda",
                     model = "Civic 2020",
-                    fipe = "R$120.000,00"
+                    fipe = "R$120.000,00",
                 )
             }
         }
@@ -63,7 +62,7 @@ class SmallCardTest {
                     contentDescription = "card-civic",
                     brand = "Honda",
                     model = "Civic 2020",
-                    fipe = "R$120.000,00"
+                    fipe = "R$120.000,00",
                 )
             }
         }
@@ -83,7 +82,7 @@ class SmallCardTest {
                     onClick = {},
                     brand = "Volkswagen",
                     model = "Saveiro 2021",
-                    fipe = "R$30.000,00"
+                    fipe = "R$30.000,00",
                 )
             }
         }
@@ -106,7 +105,7 @@ class SmallCardTest {
                     contentDescription = "card-saveiro",
                     brand = "Volkswagen",
                     model = "Saveiro 2021",
-                    fipe = "R$30.000,00"
+                    fipe = "R$30.000,00",
                 )
             }
         }
@@ -127,7 +126,7 @@ class SmallCardTest {
                     onClick = {},
                     brand = "Volkswagen",
                     model = "Saveiro 2021",
-                    fipe = "R$30.000,00"
+                    fipe = "R$30.000,00",
                 )
             }
         }
@@ -147,7 +146,7 @@ class SmallCardTest {
                     onClick = {},
                     brand = "Volkswagen",
                     model = "Saveiro 2021",
-                    fipe = "R$30.000,00"
+                    fipe = "R$30.000,00",
                 )
             }
         }

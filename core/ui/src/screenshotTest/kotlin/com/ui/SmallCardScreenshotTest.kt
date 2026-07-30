@@ -23,7 +23,7 @@ fun SmallCardSelectedScreenshot() {
             onClick = {},
             brand = "Volkswagen",
             model = "Saveiro 2021",
-            fipe = "R$30.000,00"
+            fipe = "R$30.000,00",
         )
     }
 }
@@ -40,7 +40,7 @@ fun SmallCardUnselectedScreenshot() {
             onClick = {},
             brand = "Audi",
             model = "A4 Sedan 2019",
-            fipe = "R$150.000,00"
+            fipe = "R$150.000,00",
         )
     }
 }
@@ -55,7 +55,7 @@ fun SmallCardSimpleScreenshot() {
             onClick = {},
             brand = "Honda",
             model = "Civic 2020",
-            fipe = "R$120.000,00"
+            fipe = "R$120.000,00",
         )
     }
 }
@@ -72,7 +72,7 @@ fun SmallCardLongTextScreenshot() {
             onClick = {},
             brand = "Volkswagen",
             model = "Saveiro Pega no Breu Audi A4 Sedan 2019",
-            fipe = "R$30.000,00 - Valor médio da tabela FIPE para este modelo"
+            fipe = "R$30.000,00 - Valor médio da tabela FIPE para este modelo",
         )
     }
 }
@@ -90,7 +90,7 @@ fun SmallCardRowScreenshot() {
                 onClick = {},
                 brand = "Volkswagen",
                 model = "Saveiro 2021",
-                fipe = "R$30.000,00"
+                fipe = "R$30.000,00",
             )
             Spacer(modifier = Modifier.width(8.dp))
             SmallCard(
@@ -100,7 +100,7 @@ fun SmallCardRowScreenshot() {
                 onClick = {},
                 brand = "Honda",
                 model = "Civic 2020",
-                fipe = "R$120.000,00"
+                fipe = "R$120.000,00",
             )
         }
     }
