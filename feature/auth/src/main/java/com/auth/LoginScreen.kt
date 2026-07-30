@@ -332,28 +332,38 @@ internal fun SwitchAuthLink(
 
 @Composable
 private fun LoginFooter() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = "Privacidade",
-            style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary,
-        )
-        DotSeparator()
-        Text(
-            text = "Termos",
-            style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary,
-        )
-        DotSeparator()
-        Text(
-            text = "v.2.4.0 ENGINE",
-            style = Theme.typography.labelMedium,
-            color = Theme.colors.textSecondary,
-        )
+    var showTermsDialog by rememberSaveable { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Privacidade",
+                style = Theme.typography.labelMedium,
+                color = Theme.colors.textSecondary,
+                modifier = Modifier.clickable { showTermsDialog = true },
+            )
+            DotSeparator()
+            Text(
+                text = "Termos",
+                style = Theme.typography.labelMedium,
+                color = Theme.colors.textSecondary,
+                modifier = Modifier.clickable { showTermsDialog = true },
+            )
+            DotSeparator()
+            Text(
+                text = "v.2.4.0 ENGINE",
+                style = Theme.typography.labelMedium,
+                color = Theme.colors.textSecondary,
+            )
+        }
+    }
+
+    if (showTermsDialog) {
+        TermsOfUseDialog(onDismiss = { showTermsDialog = false })
     }
 }
 
