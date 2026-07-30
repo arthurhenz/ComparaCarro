@@ -35,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -454,7 +455,7 @@ private fun FavoriteCard(
             Spacer(modifier = Modifier.height(TokenSpacing.Item))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Bottom,
             ) {
                 Text(
                     text = car.price,
@@ -464,10 +465,11 @@ private fun FavoriteCard(
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(TokenSpacing.Item))
-                PrimaryButton(
-                    text = "Ver Detalhes",
-                    onClick = onCompare,
-                    expanded = false,
+                Text(
+                    text = "Ver Detalhes".uppercase(),
+                    style = Theme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Theme.colors.accentPrimary,
                 )
             }
         }
