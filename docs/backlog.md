@@ -58,6 +58,7 @@ Proxima semana:
 ✅ shimmerEffect funcionando corretamente
 ✅ Adicionar termos de uso no campo de cadastro
 ✅ Pegar foto de perfil do Google, se nao tiver, colocar 2 iniciais do nome primeira e ultima
+✅ Chevron e verde e vermelho na comparação
 - Como armazenar tokens de forma segura no Android em 2026
 
 Melhorias: 

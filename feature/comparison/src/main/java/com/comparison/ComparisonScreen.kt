@@ -22,6 +22,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -180,10 +182,9 @@ private fun AlignedComparisonContent(
             firstValue = formatPct(firstCar.analytics?.changeFromPreviousMonthPct),
             secondValue = formatPct(secondCar.analytics?.changeFromPreviousMonthPct),
         )
-        SpecGroup(
-            label = "Variação desde o lançamento",
-            firstValue = formatPct(firstCar.analytics?.changeFromLaunchPct),
-            secondValue = formatPct(secondCar.analytics?.changeFromLaunchPct),
+        LaunchVariationSpecGroup(
+            firstPct = firstCar.analytics?.changeFromLaunchPct,
+            secondPct = secondCar.analytics?.changeFromLaunchPct,
         )
         SpecGroup(
             label = "Volatilidade",
@@ -351,6 +352,90 @@ private fun SpecGroup(
             )
         }
     }
+}
+
+/**
+ * Same layout as [SpecGroup], but for "Variação desde o lançamento" the car with the smaller
+ * variation is highlighted green with an upward chevron on its outer edge, and the car with the
+ * larger variation is highlighted red with a downward chevron on its opposite outer edge.
+ */
+@Composable
+private fun LaunchVariationSpecGroup(firstPct: Double?, secondPct: Double?) {
+    val firstIsLower = firstPct != null && secondPct != null && firstPct < secondPct
+    val firstIsHigher = firstPct != null && secondPct != null && firstPct > secondPct
+
+    val firstColor =
+        when {
+            firstIsLower -> TokenColors.Success
+            firstIsHigher -> Theme.colors.error
+            else -> Theme.colors.textPrimary
+        }
+    val secondColor =
+        when {
+            firstIsLower -> Theme.colors.error
+            firstIsHigher -> TokenColors.Success
+            else -> Theme.colors.textPrimary
+        }
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = TokenSpacing.Inline),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "Variação desde o lançamento",
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (firstIsLower) {
+                VariationChevron(up = true, color = TokenColors.Success)
+            } else if (firstIsHigher) {
+                VariationChevron(up = false, color = Theme.colors.error)
+            }
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+            ) {
+                Text(
+                    text = formatPct(firstPct),
+                    style = Theme.typography.priceMedium,
+                    color = firstColor,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = formatPct(secondPct),
+                    style = Theme.typography.priceMedium,
+                    color = secondColor,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                )
+            }
+            if (firstIsLower) {
+                VariationChevron(up = false, color = Theme.colors.error)
+            } else if (firstIsHigher) {
+                VariationChevron(up = true, color = TokenColors.Success)
+            }
+        }
+    }
+}
+
+@Composable
+private fun VariationChevron(up: Boolean, color: androidx.compose.ui.graphics.Color) {
+    Icon(
+        imageVector = if (up) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+        contentDescription = null,
+        tint = color,
+        modifier = Modifier.size(TokenIconSize.Medium),
+    )
 }
 
 private fun fuelLabel(car: CarDetailData): String {
