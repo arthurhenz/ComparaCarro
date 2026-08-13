@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -62,6 +64,23 @@ fun ProfileScreen(
                     .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
         ) {
             ProfileHeader(name = name, email = email, photoUrl = photoUrl)
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+            SectionTitle("Conta")
+            SettingsCard {
+                DisclosureRow("Notificações de preço")
+                DisclosureRow("Unidades e moeda")
+                DisclosureRow("Privacidade")
+            }
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+            SectionTitle("Sobre")
+            SettingsCard {
+                InfoRow(label = "Fonte de dados", value = "Tabela FIPE")
+                InfoRow(label = "Versão", value = "2.4.0")
+            }
 
             Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
@@ -124,6 +143,76 @@ private fun ProfileHeader(name: String, email: String, photoUrl: String?) {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text.uppercase(),
+        style = Theme.typography.labelMedium,
+        color = Theme.colors.accentPrimary,
+        modifier = Modifier.padding(bottom = TokenSpacing.Item),
+    )
+}
+
+@Composable
+private fun SettingsCard(content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(TokenShapes.Card)
+                .background(Theme.colors.surfaceLow, shape = TokenShapes.Card),
+        content = content,
+    )
+}
+
+@Composable
+private fun DisclosureRow(label: String) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = {})
+                .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.textPrimary,
+        )
+        Icon(
+            imageVector = Icons.Filled.ChevronRight,
+            contentDescription = null,
+            tint = Theme.colors.textSecondary,
+            modifier = Modifier.size(TokenIconSize.Medium),
+        )
+    }
+}
+
+@Composable
+private fun InfoRow(label: String, value: String) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.textPrimary,
+        )
+        Text(
+            text = value,
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.textSecondary,
+        )
     }
 }
 
