@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -262,11 +263,19 @@ internal fun AccountTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: (@Composable () -> Unit)? = null,
     errorText: String? = null,
+    onFocusLost: (() -> Unit)? = null,
 ) {
+    var wasFocused by rememberSaveable { mutableStateOf(false) }
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    if (wasFocused && !focusState.isFocused) onFocusLost?.invoke()
+                    wasFocused = focusState.isFocused
+                },
         label = {
             Text(
                 text = label,
