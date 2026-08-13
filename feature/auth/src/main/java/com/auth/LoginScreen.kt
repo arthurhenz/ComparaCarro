@@ -233,6 +233,7 @@ internal fun AccountTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: (@Composable () -> Unit)? = null,
+    errorText: String? = null,
 ) {
     OutlinedTextField(
         value = value,
@@ -264,6 +265,17 @@ internal fun AccountTextField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
         singleLine = true,
+        isError = errorText != null,
+        supportingText =
+            errorText?.let {
+                {
+                    Text(
+                        text = it,
+                        style = Theme.typography.bodyMedium,
+                        color = Theme.colors.error,
+                    )
+                }
+            },
         shape = TokenShapes.Sm,
         colors =
             TextFieldDefaults.colors(
@@ -275,6 +287,7 @@ internal fun AccountTextField(
                 unfocusedTextColor = Theme.colors.textPrimary,
                 focusedLabelColor = Theme.colors.accentPrimary,
                 unfocusedLabelColor = Theme.colors.textSecondary,
+                errorContainerColor = Theme.colors.surfaceInput,
             ),
     )
 }
