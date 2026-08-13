@@ -37,6 +37,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,6 +69,7 @@ import com.ui.BottomNavTab
 import com.ui.Header
 import com.ui.PrimaryButton
 import com.ui.rememberCarImagePainter
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 
 data class FavoriteCarItem(
@@ -110,9 +112,21 @@ fun FavoriteScreen(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var isSearchFocused by rememberSaveable { mutableStateOf(false) }
 
+    // Removing a favorite hides it immediately but only commits the real removal after the undo
+    // window closes, so an accidental tap can be reverted from the toast.
+    var pendingRemoval by remember { mutableStateOf<FavoriteCarItem?>(null) }
+    LaunchedEffect(pendingRemoval) {
+        val car = pendingRemoval ?: return@LaunchedEffect
+        delay(3200)
+        onRemove(car.id)
+        pendingRemoval = null
+    }
+
     // "Empty" only once the initial page has finished loading with no rows — otherwise the empty
     // state would flash during the first Room load.
-    val isEmpty = favorites.itemCount == 0 && favorites.loadState.refresh !is LoadState.Loading
+    val isEmpty =
+        favorites.itemCount - (if (pendingRemoval != null) 1 else 0) <= 0 &&
+            favorites.loadState.refresh !is LoadState.Loading
 
     // Chips only make sense once there is something to filter (or a filter is already active).
     val showFilters =
@@ -137,74 +151,115 @@ fun FavoriteScreen(
             )
         },
     ) { paddingValues ->
-        LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = TokenSpacing.Section),
-            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section),
-        ) {
-            item {
-                FavoritesTitleSection(modifier = Modifier.padding(top = TokenSpacing.Section))
-            }
-
-            if (showFilters) {
+        Box(modifier = Modifier.padding(paddingValues)) {
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = TokenSpacing.Section),
+                verticalArrangement = Arrangement.spacedBy(TokenSpacing.Section),
+            ) {
                 item {
-                    FilterChipsRow(
-                        filter = filter,
-                        options = filterOptions,
-                        onBrandSelected = onBrandSelected,
-                        onPriceRangeSelected = onPriceRangeSelected,
-                        onYearSelected = onYearSelected,
-                    )
+                    FavoritesTitleSection(modifier = Modifier.padding(top = TokenSpacing.Section))
                 }
-            }
 
-            if (isEmpty) {
-                item {
-                    if (filter.isActive) {
-                        NoResultsState(
-                            onClear = onClearFilters,
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = TokenSpacing.Section * 2),
-                        )
-                    } else {
-                        EmptyFavoritesState(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = TokenSpacing.Section * 2),
-                        )
-                    }
-                }
-            } else {
-                items(
-                    count = favorites.itemCount,
-                    key = favorites.itemKey { it.id },
-                ) { index ->
-                    favorites[index]?.let { car ->
-                        FavoriteCard(
-                            car = car,
-                            onClick = { onCardClick(car.id) },
-                            onRemove = { onRemove(car.id) },
-                            onCompare = onCompareClick,
+                if (showFilters) {
+                    item {
+                        FilterChipsRow(
+                            filter = filter,
+                            options = filterOptions,
+                            onBrandSelected = onBrandSelected,
+                            onPriceRangeSelected = onPriceRangeSelected,
+                            onYearSelected = onYearSelected,
                         )
                     }
                 }
 
-                item {
-                    SuggestionsSection(
-                        categories = suggestionCategories,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = TokenSpacing.Section, bottom = TokenSpacing.Section),
-                    )
+                if (isEmpty) {
+                    item {
+                        if (filter.isActive) {
+                            NoResultsState(
+                                onClear = onClearFilters,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = TokenSpacing.Section * 2),
+                            )
+                        } else {
+                            EmptyFavoritesState(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = TokenSpacing.Section * 2),
+                            )
+                        }
+                    }
+                } else {
+                    items(
+                        count = favorites.itemCount,
+                        key = favorites.itemKey { it.id },
+                    ) { index ->
+                        favorites[index]?.let { car ->
+                            if (car.id != pendingRemoval?.id) {
+                                FavoriteCard(
+                                    car = car,
+                                    onClick = { onCardClick(car.id) },
+                                    onRemove = { pendingRemoval = car },
+                                    onCompare = onCompareClick,
+                                )
+                            }
+                        }
+                    }
+
+                    item {
+                        SuggestionsSection(
+                            categories = suggestionCategories,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = TokenSpacing.Section, bottom = TokenSpacing.Section),
+                        )
+                    }
                 }
             }
+
+            pendingRemoval?.let { car ->
+                UndoRemovedToast(
+                    onUndo = { pendingRemoval = null },
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(TokenSpacing.Section),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UndoRemovedToast(onUndo: () -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(TokenShapes.Sm)
+                .background(Theme.colors.surfaceRaised, shape = TokenShapes.Sm)
+                .padding(horizontal = TokenSpacing.Block, vertical = TokenSpacing.Item),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "Removido de favoritos",
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.textPrimary,
+        )
+        TextButton(onClick = onUndo) {
+            Text(
+                text = "Desfazer".uppercase(),
+                style = Theme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = Theme.colors.accentPrimary,
+            )
         }
     }
 }
