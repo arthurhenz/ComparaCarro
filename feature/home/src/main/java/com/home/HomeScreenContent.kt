@@ -171,7 +171,10 @@ fun HomeScreenContent(
     ) {
         if (searchQuery.isEmpty()) {
             item(key = "hero", span = { GridItemSpan(maxLineSpan) }, contentType = "hero") {
-                HeroTitle(modifier = Modifier.padding(start = TokenSpacing.Item, top = 24.dp))
+                HeroTitle(
+                    modelCount = smallCards.size,
+                    modifier = Modifier.padding(start = TokenSpacing.Item, top = 24.dp),
+                )
             }
 
             item(key = "categories", span = { GridItemSpan(maxLineSpan) }, contentType = "categories") {
@@ -205,6 +208,8 @@ fun HomeScreenContent(
                         model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                         fipe = cardData.fipe,
                         onClick = { onCardClick(cardData.id) },
+                        favorited = cardData.id in favoriteIds,
+                        onFavoriteToggle = { onToggleFavorite(cardData) },
                     )
                 }
             }
@@ -232,7 +237,10 @@ fun HomeScreenContent(
 }
 
 @Composable
-private fun HeroTitle(modifier: Modifier = Modifier) {
+private fun HeroTitle(
+    modifier: Modifier = Modifier,
+    modelCount: Int? = null,
+) {
     Column(modifier = modifier) {
         Text(
             text = "Frota Disponível".uppercase(),
@@ -246,13 +254,24 @@ private fun HeroTitle(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(bottom = 4.dp),
         )
 
-        Text(
-            text = "Máquinas".uppercase(),
-            style = Theme.typography.headlineLarge,
-            fontStyle = FontStyle.Italic,
-            fontSize = 56.sp,
-            color = Theme.colors.textPrimary,
-        )
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(
+                text = "Máquinas".uppercase(),
+                style = Theme.typography.headlineLarge,
+                fontStyle = FontStyle.Italic,
+                fontSize = 56.sp,
+                color = Theme.colors.textPrimary,
+            )
+
+            if (modelCount != null) {
+                Text(
+                    text = "$modelCount modelos",
+                    style = Theme.typography.labelMedium,
+                    color = Theme.colors.textSecondary,
+                    modifier = Modifier.padding(start = TokenSpacing.Inline, bottom = 10.dp),
+                )
+            }
+        }
 
         Spacer(Modifier.height(4.dp).width(156.dp).background(color = TokenColors.PrimaryAccent))
     }
