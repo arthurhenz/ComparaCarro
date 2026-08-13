@@ -131,16 +131,16 @@ private fun CardDetailContent(
     car: CarDetailData,
     onCompareClick: (String) -> Unit,
 ) {
-    Box(
+    Column(
         modifier = modifier.fillMaxSize(),
     ) {
         Column(
             modifier =
                 Modifier
-                    .fillMaxSize()
+                    .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = TokenSpacing.Section)
-                    .padding(bottom = 96.dp),
+                    .padding(bottom = TokenSpacing.Section),
         ) {
             Image(
                 modifier =
@@ -249,13 +249,26 @@ private fun CardDetailContent(
             }
         }
 
+        DockedCompareBar(onCompareClick = { onCompareClick(car.id) })
+    }
+}
+
+/**
+ * Sits below the scrollable content (not on top of it), so the "Comparar" CTA never covers
+ * specs while scrolling — the content area stops right above it instead of behind it.
+ */
+@Composable
+private fun DockedCompareBar(onCompareClick: () -> Unit) {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(Theme.colors.background)
+                .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
+    ) {
         PrimaryButton(
             text = "Comparar",
-            onClick = { onCompareClick(car.id) },
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = TokenSpacing.Section),
+            onClick = onCompareClick,
         )
     }
 }
