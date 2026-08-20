@@ -1,12 +1,18 @@
 package com.theme
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 object Theme {
     val colors: ComparaCarroColors
@@ -23,12 +29,24 @@ object Theme {
 @Composable
 fun Theme(
     darkTheme: Boolean = true,
+    // To follow the system theme instead: darkTheme: Boolean = isSystemInDarkTheme()
+    // (re-add the androidx.compose.foundation.isSystemInDarkTheme import).
     content: @Composable () -> Unit,
 ) {
     val colors = remember(darkTheme) { if (darkTheme) darkColors() else lightColors() }
     val typography = remember { defaultTypography() }
 
     val baseColorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            view.context.findActivity()?.window?.let { window ->
+                // Dark theme → dark status bar with light (white) icons; light theme → dark icons.
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            }
+        }
+    }
 
     CompositionLocalProvider(
         LocalComparaCarroColors provides colors,
@@ -51,3 +69,10 @@ fun Theme(
         )
     }
 }
+
+private tailrec fun Context.findActivity(): Activity? =
+    when (this) {
+        is Activity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> null
+    }
