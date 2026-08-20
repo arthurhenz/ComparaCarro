@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -64,6 +63,8 @@ import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
+import com.ui.BottomNavBar
+import com.ui.BottomNavTab
 import com.ui.PrimaryButton
 
 @Composable
@@ -75,6 +76,7 @@ fun LoginScreen(
     onForgotPassword: () -> Unit = {},
     onCreateAccount: () -> Unit = {},
     onContinueWithoutLogin: () -> Unit = {},
+    onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -85,122 +87,132 @@ fun LoginScreen(
             Modifier
                 .fillMaxSize()
                 .background(Theme.colors.background)
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .imePadding()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Section),
-        horizontalAlignment = Alignment.CenterHorizontally,
+                .windowInsetsPadding(WindowInsets.statusBars),
     ) {
-        BrandHero()
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Section))
-
-        AccountTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = "E-mail",
-            placeholder = "voce@email.com",
-            icon = Icons.Filled.MailOutline,
-            keyboardType = KeyboardType.Email,
-        )
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Block))
-
-        AccountTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = "Senha",
-            placeholder = "Sua senha",
-            icon = Icons.Filled.Lock,
-            keyboardType = KeyboardType.Password,
-            visualTransformation =
-                if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector =
-                            if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                        contentDescription =
-                            if (passwordVisible) "Ocultar senha" else "Mostrar senha",
-                        tint = Theme.colors.textSecondary,
-                    )
-                }
-            },
-        )
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Item))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-        ) {
-            Text(
-                text = "Esqueci minha senha",
-                style = Theme.typography.labelMedium,
-                color = Theme.colors.accentPrimary,
-                modifier = Modifier.clickable(onClick = onForgotPassword),
-            )
-        }
-
-        AuthErrorText(errorMessage)
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Section))
-
-        PrimaryButton(
-            text = if (isLoading) "ENTRANDO..." else "ENTRAR",
-            enabled = !isLoading,
-            onClick = { onSubmit(email, password) },
-        )
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Block))
-
-        GoogleLoginButton(onClick = onGoogleLogin)
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Section))
-
-        SwitchAuthLink(
-            prompt = "Não tem uma conta?",
-            action = "Criar conta",
-            onClick = onCreateAccount,
-        )
-
-        val outlineGhost = Theme.colors.outlineGhost
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+        Column(
             modifier =
                 Modifier
-                    .clickable(onClick = onContinueWithoutLogin)
-                    .padding(vertical = TokenSpacing.Item)
-                    .drawBehind {
-                        val y = size.height - 1.dp.toPx()
-                        drawLine(
-                            color = outlineGhost,
-                            start = Offset(0f, y),
-                            end = Offset(size.width, y),
-                            strokeWidth = 1.dp.toPx(),
-                        )
-                    },
+                    .weight(1f)
+                    .imePadding()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Section),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = "Continuar sem login",
-                style = Theme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = Theme.colors.textPrimary,
+            BrandHero()
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+            AccountTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = "E-mail",
+                placeholder = "voce@email.com",
+                icon = Icons.Filled.MailOutline,
+                keyboardType = KeyboardType.Email,
             )
-            Spacer(modifier = Modifier.width(TokenSpacing.Item))
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = null,
-                tint = Theme.colors.textPrimary,
-                modifier = Modifier.size(TokenIconSize.Medium),
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Block))
+
+            AccountTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Senha",
+                placeholder = "Sua senha",
+                icon = Icons.Filled.Lock,
+                keyboardType = KeyboardType.Password,
+                visualTransformation =
+                    if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector =
+                                if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                            contentDescription =
+                                if (passwordVisible) "Ocultar senha" else "Mostrar senha",
+                            tint = Theme.colors.textSecondary,
+                        )
+                    }
+                },
             )
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Item))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                Text(
+                    text = "Esqueci minha senha",
+                    style = Theme.typography.labelMedium,
+                    color = Theme.colors.accentPrimary,
+                    modifier = Modifier.clickable(onClick = onForgotPassword),
+                )
+            }
+
+            AuthErrorText(errorMessage)
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+            PrimaryButton(
+                text = if (isLoading) "ENTRANDO..." else "ENTRAR",
+                enabled = !isLoading,
+                onClick = { onSubmit(email, password) },
+            )
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Block))
+
+            GoogleLoginButton(onClick = onGoogleLogin)
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+            SwitchAuthLink(
+                prompt = "Não tem uma conta?",
+                action = "Criar conta",
+                onClick = onCreateAccount,
+            )
+
+            val outlineGhost = Theme.colors.outlineGhost
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier =
+                    Modifier
+                        .clickable(onClick = onContinueWithoutLogin)
+                        .padding(vertical = TokenSpacing.Item)
+                        .drawBehind {
+                            val y = size.height - 1.dp.toPx()
+                            drawLine(
+                                color = outlineGhost,
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = 1.dp.toPx(),
+                            )
+                        },
+            ) {
+                Text(
+                    text = "Continuar sem login",
+                    style = Theme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Theme.colors.textPrimary,
+                )
+                Spacer(modifier = Modifier.width(TokenSpacing.Item))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = Theme.colors.textPrimary,
+                    modifier = Modifier.size(TokenIconSize.Medium),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+            LoginFooter()
         }
 
-        Spacer(modifier = Modifier.height(TokenSpacing.Section))
-
-        LoginFooter()
+        BottomNavBar(
+            selected = BottomNavTab.Perfil,
+            onSelect = onNavigate,
+        )
     }
 }
 
