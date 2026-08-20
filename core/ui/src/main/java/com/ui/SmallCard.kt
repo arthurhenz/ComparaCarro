@@ -29,15 +29,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.common.utils.shimmerEffect
 import com.theme.Theme
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
 
-private const val CARD_HEIGHT = 390
+private const val CARD_HEIGHT = 380
 private const val CARD_WIDTH = 175
 private const val IMAGE_HEIGHT = 140
 
@@ -100,7 +100,7 @@ fun SmallCard(
 
             SmallCardContent(brand = brand, model = model, fipe = fipe)
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(TokenSpacing.Inline))
 
             PrimaryButton(
                 "ver detalhes",
@@ -264,6 +264,8 @@ private fun SmallCardContent(
             color = Theme.colors.textPrimary,
             style = Theme.typography.titleLarge,
             modifier = Modifier.fillMaxWidth(),
+            maxLines = 4,
+            overflow = TextOverflow.Ellipsis,
         )
 
         Text(
