@@ -21,11 +21,13 @@ fun EntryProviderScope<NavKey>.favoriteScreenRoute() {
         val favorites = viewModel.favorites.collectAsLazyPagingItems()
         val filter by viewModel.filter.collectAsStateWithLifecycle()
         val filterOptions by viewModel.filterOptions.collectAsStateWithLifecycle()
+        val favoritesCount by viewModel.favoritesCount.collectAsStateWithLifecycle()
 
         FavoriteScreen(
             favorites = favorites,
             filter = filter,
             filterOptions = filterOptions,
+            skeletonCount = favoritesCount,
             onBrandSelected = viewModel::onBrandSelected,
             onPriceRangeSelected = viewModel::onPriceRangeSelected,
             onYearSelected = viewModel::onYearSelected,
