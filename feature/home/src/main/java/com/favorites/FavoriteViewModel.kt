@@ -50,6 +50,11 @@ class FavoriteViewModel(
     private val facetCars: Flow<List<FacetCar>> =
         observeAllFavoritesUseCase().map { list -> list.map(FavoriteCar::toFacet) }
 
+    // Total favorites count, known from Room even before the paged list finishes its first load —
+    // lets the loading skeleton show as many bones as there are real cards instead of a fixed number.
+    val favoritesCount: StateFlow<Int> =
+        facetCars.map { it.size }.stateInWhileSubscribed(viewModelScope, 0)
+
     // Faceted chip options: each list reacts to the filter, holding only values available given the
     // *other* active facets. Selecting a brand narrows the year/price chips, and vice versa.
     val filterOptions: StateFlow<FavoriteFilterOptions> =

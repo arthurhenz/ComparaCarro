@@ -105,6 +105,7 @@ fun FavoriteScreen(
     favorites: LazyPagingItems<FavoriteCarItem>,
     filter: FavoriteFilter = FavoriteFilter(),
     filterOptions: FavoriteFilterOptions = FavoriteFilterOptions(),
+    skeletonCount: Int = SKELETON_CARD_COUNT,
     onBrandSelected: (String?) -> Unit = {},
     onPriceRangeSelected: (PriceRange?) -> Unit = {},
     onYearSelected: (String?) -> Unit = {},
@@ -186,7 +187,7 @@ fun FavoriteScreen(
                 }
 
                 if (isInitialLoading) {
-                    items(SKELETON_CARD_COUNT) {
+                    items(if (skeletonCount > 0) skeletonCount else SKELETON_CARD_COUNT) {
                         FavoriteCardSkeleton()
                     }
                 } else if (isEmpty) {
