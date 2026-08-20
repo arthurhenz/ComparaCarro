@@ -47,6 +47,7 @@ fun LoginScreenHost() {
         onForgotPassword = viewModel::goToForgotPassword,
         onCreateAccount = viewModel::goToSignup,
         onContinueWithoutLogin = viewModel::continueWithoutLogin,
+        onNavigate = viewModel::navigateToBottomTab,
     )
 }
 
