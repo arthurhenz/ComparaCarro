@@ -16,14 +16,12 @@ fun EntryProviderScope<NavKey>.homeScreenRoute() {
         val state by viewModel.state.collectAsStateWithLifecycle()
         val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
         val isSearchFocused by viewModel.isSearchFocused.collectAsStateWithLifecycle()
-        val sortType by viewModel.sortType.collectAsStateWithLifecycle()
         val favoriteIds by viewModel.favoriteIds.collectAsStateWithLifecycle()
 
         HomeScreen(
             state = state,
             searchQuery = searchQuery,
             isSearchFocused = isSearchFocused,
-            sortType = sortType,
             favoriteIds = favoriteIds,
             onCardClick = viewModel::navigateToDetail,
             onCompareFromHome = viewModel::navigateToSelectComparison,
@@ -31,7 +29,6 @@ fun EntryProviderScope<NavKey>.homeScreenRoute() {
             onProfileClick = viewModel::navigateToProfile,
             onSearchQueryChange = viewModel::updateSearchQuery,
             onSearchFocusChanged = viewModel::updateSearchFocus,
-            onSortTypeChange = viewModel::updateSortType,
             onRefreshRecentlyViewed = viewModel::refreshRecentlyViewed,
             onToggleFavorite = viewModel::toggleFavorite,
         )
