@@ -101,7 +101,7 @@ class CardRepositoryImpl(
      * Home's initial list is the best-selling models (descending by sales), not a raw FIPE page.
      * Each entry in [BEST_SELLERS] is looked up by name via the FIPE search ("keyname"); the top
      * hit becomes the card. Lookups run concurrently but the returned list preserves the sales
-     * ranking order so `SortType.MOST_POPULAR` renders them exactly as ranked.
+     * ranking order so Home renders them by popularity, exactly as ranked.
      */
     override suspend fun getSmallCards(): List<SmallCardData> =
         coroutineScope {
