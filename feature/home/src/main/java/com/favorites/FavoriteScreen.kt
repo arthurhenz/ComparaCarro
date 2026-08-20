@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -69,6 +70,8 @@ import com.ui.BottomNavTab
 import com.ui.Header
 import com.ui.PrimaryButton
 import com.ui.rememberCarImagePainter
+import com.ui.shimmerEffect
+import com.ui.shimmerWhileLoading
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 
@@ -87,6 +90,8 @@ private data class SuggestionCategory(
     val description: String,
     val highlighted: Boolean,
 )
+
+private const val SKELETON_CARD_COUNT = 3
 
 private val suggestionCategories =
     listOf(
@@ -121,6 +126,11 @@ fun FavoriteScreen(
         onRemove(car.id)
         pendingRemoval = null
     }
+
+    // Only the very first Room load shows skeletons — once any row has landed, further refreshes
+    // (filter changes, undo) just update the existing list instead of flashing bones again.
+    val isInitialLoading =
+        favorites.loadState.refresh is LoadState.Loading && favorites.itemCount == 0
 
     // "Empty" only once the initial page has finished loading with no rows — otherwise the empty
     // state would flash during the first Room load.
@@ -175,7 +185,11 @@ fun FavoriteScreen(
                     }
                 }
 
-                if (isEmpty) {
+                if (isInitialLoading) {
+                    items(SKELETON_CARD_COUNT) {
+                        FavoriteCardSkeleton()
+                    }
+                } else if (isEmpty) {
                     item {
                         if (filter.isActive) {
                             NoResultsState(
@@ -445,8 +459,9 @@ private fun FavoriteCard(
                 .padding(TokenSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val imagePainter = rememberCarImagePainter(car.imageUrl)
         Image(
-            painter = rememberCarImagePainter(car.imageUrl),
+            painter = imagePainter,
             contentDescription = car.title,
             contentScale = ContentScale.Crop,
             modifier =
@@ -454,7 +469,8 @@ private fun FavoriteCard(
                     .fillMaxWidth(0.33f)
                     .aspectRatio(16f / 9f)
                     .clip(TokenShapes.Sm)
-                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Sm),
+                    .background(Theme.colors.surfaceRaised, shape = TokenShapes.Sm)
+                    .shimmerWhileLoading(imagePainter),
         )
         Spacer(modifier = Modifier.width(TokenSpacing.Block))
         Column(modifier = Modifier.weight(1f)) {
@@ -508,18 +524,18 @@ private fun FavoriteCard(
                 }
             }
             Spacer(modifier = Modifier.height(TokenSpacing.Item))
+            Text(
+                text = car.price,
+                style = Theme.typography.priceMedium,
+                fontWeight = FontWeight.Bold,
+                color = Theme.colors.textPrimary,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(TokenSpacing.Item))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.End,
             ) {
-                Text(
-                    text = car.price,
-                    style = Theme.typography.priceMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Theme.colors.textPrimary,
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(modifier = Modifier.width(TokenSpacing.Item))
                 Text(
                     text = "Ver Detalhes".uppercase(),
                     style = Theme.typography.labelMedium,
@@ -529,6 +545,54 @@ private fun FavoriteCard(
             }
         }
     }
+}
+
+/**
+ * Loading skeleton with the exact footprint of [FavoriteCard]: shimmering bones stand in for the
+ * image and the text lines while the real favorite row is on its way.
+ */
+@Composable
+private fun FavoriteCardSkeleton() {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(TokenShapes.Sm)
+                .background(Theme.colors.surfaceLow, shape = TokenShapes.Sm)
+                .padding(TokenSpacing.Item),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.33f)
+                    .aspectRatio(16f / 9f)
+                    .clip(TokenShapes.Sm)
+                    .shimmerEffect(),
+        )
+        Spacer(modifier = Modifier.width(TokenSpacing.Block))
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
+        ) {
+            SkeletonBone(widthFraction = 0.35f, height = 12.dp)
+            SkeletonBone(widthFraction = 0.8f, height = 18.dp)
+            SkeletonBone(widthFraction = 0.5f, height = 12.dp)
+            SkeletonBone(widthFraction = 0.4f, height = 20.dp)
+        }
+    }
+}
+
+@Composable
+private fun SkeletonBone(widthFraction: Float, height: Dp) {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth(widthFraction)
+                .height(height)
+                .clip(TokenShapes.Sm)
+                .shimmerEffect(),
+    )
 }
 
 private fun powertrainIcon(label: String): ImageVector {
