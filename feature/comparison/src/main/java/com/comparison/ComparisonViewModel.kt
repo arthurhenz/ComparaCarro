@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import org.koin.android.annotation.KoinViewModel
 
 data class ComparisonParams(val firstSpec: String, val secondSpec: String)
@@ -42,14 +43,18 @@ class ComparisonViewModel(
                 val (firstSlug, firstFuel, firstYear) = parseVehicleSpec(params.firstSpec)
                 val (secondSlug, secondFuel, secondYear) = parseVehicleSpec(params.secondSpec)
 
-                val firstDeferred = async { getCarUseCase(firstSlug, firstFuel, firstYear) }
-                val secondDeferred = async { getCarUseCase(secondSlug, secondFuel, secondYear) }
+                // supervisorScope so a failing lookup surfaces at await() instead of immediately
+                // cancelling its sibling and crashing past this try/catch.
+                supervisorScope {
+                    val firstDeferred = async { getCarUseCase(firstSlug, firstFuel, firstYear) }
+                    val secondDeferred = async { getCarUseCase(secondSlug, secondFuel, secondYear) }
 
-                _state.value =
-                    ComparisonScreenState.Success(
-                        firstCar = firstDeferred.await(),
-                        secondCar = secondDeferred.await(),
-                    )
+                    _state.value =
+                        ComparisonScreenState.Success(
+                            firstCar = firstDeferred.await(),
+                            secondCar = secondDeferred.await(),
+                        )
+                }
             } catch (e: Exception) {
                 Log.e("ComparisonViewModel", "Error loading cars", e)
                 _state.value = ComparisonScreenState.Error(e.message ?: "Failed to load car comparisons")
