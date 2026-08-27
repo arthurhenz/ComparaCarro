@@ -5,6 +5,7 @@ import com.data.R
 data class LargeCardData(
     val id: String,
     val title: String,
+    val fuelName: String = "",
     val backgroundRes: Int = R.drawable.ic_launcher_background,
     val imageUrl: String? = null,
 )

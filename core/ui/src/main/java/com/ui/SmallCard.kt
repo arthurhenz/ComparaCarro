@@ -50,6 +50,7 @@ fun SmallCard(
     brand: String,
     model: String,
     fipe: String,
+    fuel: String = "",
     favorited: Boolean = false,
     onFavoriteToggle: (() -> Unit)? = null,
 ) {
@@ -98,7 +99,7 @@ fun SmallCard(
                 }
             }
 
-            SmallCardContent(brand = brand, model = model, fipe = fipe)
+            SmallCardContent(brand = brand, model = model, fipe = fipe, fuel = fuel)
 
             Spacer(modifier = Modifier.height(TokenSpacing.Inline))
 
@@ -247,6 +248,7 @@ private fun SmallCardContent(
     brand: String,
     model: String,
     fipe: String,
+    fuel: String = "",
 ) {
     Column(
         Modifier.padding(horizontal = TokenSpacing.Item),
@@ -281,6 +283,16 @@ private fun SmallCardContent(
             style = Theme.typography.priceMedium,
             maxLines = 1,
         )
+
+        if (fuel.isNotBlank()) {
+            Text(
+                text = fuel,
+                color = Theme.colors.textSecondary,
+                style = Theme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 
