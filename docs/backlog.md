@@ -63,18 +63,28 @@ Esta semana:
 
 ✅ Remover Cadastrar com Google do Cadastro
 ✅ Jogar no Claude Design e pedir pra dar uma melhorada
-✅ Melhorar validacao de cadastro com regex
+Melhorar validacao de cadastro com regex
 
 Proxima semana:
 
-- Novo design utilizando Claude Design, com todos os pontos corrigidos
-- Abandonar Graphite
-- Ajustar tint do shimmer pra ser do theme do projeto
+✅ Desativar o Test Drive
+✅ Colocar quantidade de modelos na Search nao na tela inicial
+✅ Trazer de volta a barra de navegacao pra tela de perfil
+✅ Tirar botao de Compartilhar
+✅ Definir 3 linhas no maximo com ellipsis
+✅ Abandonar Graphite
+✅ Ajustar tint do shimmer pra ser do theme do projeto
+✅ Coloque Back Button em cima na esquerda na tela de Login (popup) e usar a mesma lambda do clickable "Ja possui conta? Entrar", ambos devendo ser popup
+✅ Consertar StatusBar
+✅ Ajustar DarkTheme e LightTheme
+✅ Tirar verde vermelho colocar vantagem em laranja no Compare
+✅ Consertar botao Ver Detalhes quando o content é muito height
+✅ Colocar imagem nos Favoritos dos carros e colocar placeholder sem ser o cinza
+
 
 (Telus)
 - Connectar Jira e Github MCP
 - Slack com Claude
-
 
 - Como armazenar tokens de forma segura no Android em 2026
 - Revisar FavoriteScreen com textbutton em baixo na direita
