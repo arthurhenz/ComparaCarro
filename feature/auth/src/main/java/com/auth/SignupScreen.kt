@@ -60,7 +60,6 @@ fun SignupScreen(
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onSubmit: (name: String, email: String, password: String) -> Unit = { _, _, _ -> },
-    onGoogleSignup: () -> Unit = {},
     onLoginInstead: () -> Unit = {},
 ) {
     var name by rememberSaveable { mutableStateOf("") }
@@ -174,10 +173,6 @@ fun SignupScreen(
             enabled = canSubmit,
             onClick = { onSubmit(name, email, password) },
         )
-
-        Spacer(modifier = Modifier.height(TokenSpacing.Block))
-
-        GoogleLoginButton(onClick = onGoogleSignup, text = "Cadastrar com Google")
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 

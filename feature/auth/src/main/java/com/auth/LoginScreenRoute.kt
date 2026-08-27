@@ -58,27 +58,11 @@ fun EntryProviderScope<NavKey>.signupScreenRoute() {
     entry<SignupRoute> {
         val viewModel: SignupViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val context = LocalContext.current
-        val scope = rememberCoroutineScope()
 
         SignupScreen(
             isLoading = state.isLoading,
             errorMessage = state.errorMessage,
             onSubmit = viewModel::signup,
-            onGoogleSignup = {
-                if (!GoogleSignInHelper.isConfigured) {
-                    viewModel.onGoogleFailed("Cadastro com Google ainda não configurado.")
-                } else {
-                    scope.launch {
-                        viewModel.onGoogleStarted()
-                        try {
-                            viewModel.signupWithGoogle(GoogleSignInHelper.getIdToken(context))
-                        } catch (e: Exception) {
-                            viewModel.onGoogleFailed(e.message ?: "Falha no cadastro com Google.")
-                        }
-                    }
-                }
-            },
             onLoginInstead = viewModel::goToLogin,
         )
     }
