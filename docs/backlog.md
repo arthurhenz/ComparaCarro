@@ -51,7 +51,7 @@ vendidos Fenabrave enviados anterioprmente
 ✅ Shimmer effect as backbone
 
 
-Proxima semana:
+Esta semana:
 
 ✅ Mudar icone da tela de login para a oficial Webp do Google
 ✅ Favoritos botao mudar botar text button ver mais em baixo pro preco aparecer cheio
@@ -59,10 +59,35 @@ Proxima semana:
 ✅ Adicionar termos de uso no campo de cadastro
 ✅ Pegar foto de perfil do Google, se nao tiver, colocar 2 iniciais do nome primeira e ultima
 ✅ Chevron e verde e vermelho na comparação
+
+
+✅ Remover Cadastrar com Google do Cadastro
+✅ Jogar no Claude Design e pedir pra dar uma melhorada
+✅ Melhorar validacao de cadastro com regex
+
+Proxima semana:
+
+- Novo design utilizando Claude Design, com todos os pontos corrigidos
+- Abandonar Graphite
+- Ajustar tint do shimmer pra ser do theme do projeto
+
+(Telus)
+- Connectar Jira e Github MCP
+- Slack com Claude
+
+
 - Como armazenar tokens de forma segura no Android em 2026
+- Revisar FavoriteScreen com textbutton em baixo na direita
+- Pegar os dados que realmente importam na comparacao
+- Fazer traducao do Ciclo de vida da comparacao
+- Dar uma olhada em lancar app na loja (india)
+- Obfuscação de codigo https://developer.android.com/topic/performance/app-optimization/enable-app-optimization
 
-Melhorias: 
+- Adaptive layout
 
+- Descartar Graphite  usar Github Stack
+
+Melhorias:
 
 Validacao de campo a campo no Cadastro, nao um state unico em baixo
 
@@ -76,4 +101,3 @@ Crawler para pegar imagens dessa API para todos os carros (https://api.auto-data
 OTP-like pra validar email com built-in Firebase para cadastro
 
 Crawler Fenabrave
-
