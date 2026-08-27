@@ -36,6 +36,7 @@ class CardRepositoryImpl(
                     LargeCardData(
                         id = item.toSpec(),
                         title = item.toTitle(),
+                        fuelName = item.fuelName,
                         imageUrl = imageUrls.getOrNull(index),
                     )
                 }
@@ -214,6 +215,7 @@ class CardRepositoryImpl(
             id = toSpec(),
             title = toTitle(),
             fipe = formatCents(latestMarketPriceCents),
+            fuelName = fuelName,
             selected = false,
             imageUrl = imageUrl,
         )
