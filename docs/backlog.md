@@ -71,7 +71,7 @@ Proxima semana:
 ✅ Colocar quantidade de modelos na Search nao na tela inicial
 ✅ Trazer de volta a barra de navegacao pra tela de perfil
 ✅ Tirar botao de Compartilhar
-✅ Definir 3 linhas no maximo com ellipsis
+✅ Definir 4 linhas no maximo com ellipsis
 ✅ Abandonar Graphite
 ✅ Ajustar tint do shimmer pra ser do theme do projeto
 ✅ Coloque Back Button em cima na esquerda na tela de Login (popup) e usar a mesma lambda do clickable "Ja possui conta? Entrar", ambos devendo ser popup
@@ -81,11 +81,19 @@ Proxima semana:
 ✅ Consertar botao Ver Detalhes quando o content é muito height
 ✅ Colocar imagem nos Favoritos dos carros e colocar placeholder sem ser o cinza
 
+Proxima Semana:
+- Collapsed Toolbar TopAppBar Scroll Behavior Material3
+
+- BottomNavBar 1 só. Organizar um scaffold que vai hostear a NavBar como base com o NavHost dentro (NavDisplay) (Toplevelroutes assure que é Navigation3)
+- Remover todas BottomNav nas outras telas e deixar só o Scaffold
+- Curadoria dos dados que sao mais relevantes para cada comparação
+- Deixar botao Ver Detalhes fixo pra baixo
+- Esconder parte de baixo dos favoritos
 
 (Telus)
+
 - Connectar Jira e Github MCP
 - Slack com Claude
-
 - Como armazenar tokens de forma segura no Android em 2026
 - Revisar FavoriteScreen com textbutton em baixo na direita
 - Pegar os dados que realmente importam na comparacao
@@ -96,6 +104,7 @@ Proxima semana:
 - Adaptive layout
 
 - Descartar Graphite  usar Github Stack
+- Colocar botao de compartilhamento na tela de Detalhes
 
 Melhorias:
 
