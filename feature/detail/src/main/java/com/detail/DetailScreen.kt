@@ -1,6 +1,7 @@
 package com.detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.data.model.CarAnalytics
 import com.data.model.CarDetailData
 import com.theme.Theme
+import com.theme.TokenColors
 import com.theme.TokenSpacing
 import com.ui.PrimaryButton
 import com.ui.rememberCarImagePainter
@@ -149,13 +152,23 @@ private fun CardDetailContent(
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
             )
-            // The fipeX API does not provide vehicle images.
-            Text(
-                text = "Imagem ilustrativa — não fornecida pela API",
-                style = Theme.typography.labelMedium,
-                color = Theme.colors.error,
-                modifier = Modifier.padding(top = 4.dp),
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.padding(top = 6.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Info,
+                    contentDescription = null,
+                    tint = Theme.colors.textSecondary,
+                    modifier = Modifier.heightIn(max = 14.dp),
+                )
+                Text(
+                    text = "Imagem meramente ilustrativa.",
+                    style = Theme.typography.labelMedium,
+                    color = Theme.colors.textSecondary,
+                )
+            }
 
             Text(
                 text = car.title,
@@ -171,19 +184,44 @@ private fun CardDetailContent(
                     modifier = Modifier.padding(top = 2.dp),
                 )
             }
-            Text(
-                text = car.price,
-                style = Theme.typography.priceLarge,
-                color = Theme.colors.accentPrimary,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
                 modifier = Modifier.padding(top = TokenSpacing.Item),
-            )
+            ) {
+                Text(
+                    text = car.price,
+                    style = Theme.typography.priceLarge,
+                    color = Theme.colors.accentPrimary,
+                )
+                val monthlyChange = car.analytics?.changeFromPreviousMonthPct
+                if (monthlyChange != null) {
+                    val rising = monthlyChange > 0
+                    Text(
+                        text = "${formatPct(monthlyChange)} no mês",
+                        style = Theme.typography.labelMedium,
+                        color = if (rising) Theme.colors.accentPrimary else TokenColors.Success,
+                        modifier =
+                            Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(
+                                    if (rising) {
+                                        Theme.colors.accentPrimary.copy(alpha = 0.14f)
+                                    } else {
+                                        TokenColors.Success.copy(alpha = 0.14f)
+                                    },
+                                )
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                    )
+                }
+            }
 
             SectionTitle("Ficha técnica")
             DataRow("Marca", car.makeName)
             DataRow("Modelo", car.modelName)
-            DataRow("Ano modelo", car.year.takeIf { it > 0 }?.toString() ?: "—")
-            DataRow("Combustível", fuelLabel(car))
-            DataRow("Período de referência", orDash(car.referenceLabel))
+            if (car.year > 0) DataRow("Ano modelo", car.year.toString())
+            if (fuelLabel(car) != "—") DataRow("Combustível", fuelLabel(car))
+            if (car.referenceLabel.isNotBlank()) DataRow("Período de referência", car.referenceLabel)
             if (car.availableYears.isNotEmpty()) {
                 DataRow("Anos disponíveis", car.availableYears.joinToString(", "))
             }
