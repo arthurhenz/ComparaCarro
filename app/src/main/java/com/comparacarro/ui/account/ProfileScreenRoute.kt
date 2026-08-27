@@ -23,6 +23,7 @@ fun EntryProviderScope<NavKey>.profileScreenRoute() {
             ProfileScreen(
                 name = currentUser.name?.takeIf { it.isNotBlank() } ?: "Usuário",
                 email = currentUser.email.orEmpty(),
+                photoUrl = currentUser.photoUrl,
                 onLogout = viewModel::logout,
                 onNavigate = { tab -> viewModel.navigateToBottomTab(tab) },
             )

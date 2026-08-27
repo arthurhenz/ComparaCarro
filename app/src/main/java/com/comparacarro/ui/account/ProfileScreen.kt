@@ -22,15 +22,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
@@ -42,6 +43,7 @@ import com.ui.BottomNavTab
 fun ProfileScreen(
     name: String,
     email: String,
+    photoUrl: String? = null,
     onLogout: () -> Unit = {},
     onNavigate: (BottomNavTab) -> Unit = {},
 ) {
@@ -59,7 +61,7 @@ fun ProfileScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
         ) {
-            ProfileHeader(name = name, email = email)
+            ProfileHeader(name = name, email = email, photoUrl = photoUrl)
 
             Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
@@ -74,7 +76,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileHeader(name: String, email: String) {
+private fun ProfileHeader(name: String, email: String, photoUrl: String?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier =
@@ -84,12 +86,20 @@ private fun ProfileHeader(name: String, email: String) {
                     .background(brush = Theme.colors.interactivePrimary),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                imageVector = Icons.Filled.Person,
-                contentDescription = null,
-                tint = Theme.colors.textInteractive,
-                modifier = Modifier.size(48.dp),
-            )
+            if (photoUrl != null) {
+                AsyncImage(
+                    model = photoUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(96.dp).clip(CircleShape),
+                )
+            } else {
+                Text(
+                    text = name.toInitials(),
+                    style = Theme.typography.headlineLarge,
+                    color = Theme.colors.textInteractive,
+                )
+            }
         }
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
         Text(
@@ -143,6 +153,13 @@ private fun LogoutButton(onClick: () -> Unit) {
             color = Theme.colors.error,
         )
     }
+}
+
+private fun String.toInitials(): String {
+    val parts = trim().split(Regex("\\s+")).filter { it.isNotBlank() }
+    val first = parts.firstOrNull()?.firstOrNull()
+    val last = parts.lastOrNull()?.takeIf { parts.size > 1 }?.firstOrNull()
+    return listOfNotNull(first, last).joinToString("").uppercase()
 }
 
 @Preview(showBackground = true)
