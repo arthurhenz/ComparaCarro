@@ -1,5 +1,6 @@
 package com.auth
 
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,7 +26,10 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +43,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +52,8 @@ import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenSpacing
 import com.ui.PrimaryButton
+
+private const val MIN_PASSWORD_LENGTH = 8
 
 @Composable
 fun SignupScreen(
@@ -61,12 +68,19 @@ fun SignupScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var confirm by rememberSaveable { mutableStateOf("") }
     var acceptTerms by rememberSaveable { mutableStateOf(false) }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var confirmVisible by rememberSaveable { mutableStateOf(false) }
 
+    val emailValid = Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
+    val passwordLongEnough = password.length >= MIN_PASSWORD_LENGTH
     val passwordsMatch = password == confirm
-    val canSubmit = acceptTerms && passwordsMatch && !isLoading
+    val canSubmit = acceptTerms && emailValid && passwordLongEnough && passwordsMatch && !isLoading
     val localError =
         when {
             errorMessage != null -> errorMessage
+            email.isNotEmpty() && !emailValid -> "Informe um e-mail válido."
+            password.isNotEmpty() && !passwordLongEnough ->
+                "A senha deve ter ao menos $MIN_PASSWORD_LENGTH caracteres."
             confirm.isNotEmpty() && !passwordsMatch -> "As senhas não coincidem."
             else -> null
         }
@@ -112,10 +126,17 @@ fun SignupScreen(
             value = password,
             onValueChange = { password = it },
             label = "Senha",
-            placeholder = "Mínimo 8 caracteres",
+            placeholder = "Mínimo $MIN_PASSWORD_LENGTH caracteres",
             icon = Icons.Filled.Lock,
             keyboardType = KeyboardType.Password,
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation =
+                if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                PasswordVisibilityToggle(
+                    visible = passwordVisible,
+                    onToggle = { passwordVisible = !passwordVisible },
+                )
+            },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -127,7 +148,14 @@ fun SignupScreen(
             placeholder = "Repita a senha",
             icon = Icons.Filled.Shield,
             keyboardType = KeyboardType.Password,
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation =
+                if (confirmVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                PasswordVisibilityToggle(
+                    visible = confirmVisible,
+                    onToggle = { confirmVisible = !confirmVisible },
+                )
+            },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -175,6 +203,20 @@ private fun SignupHero() {
             style = Theme.typography.bodyMedium,
             color = Theme.colors.textSecondary,
             textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun PasswordVisibilityToggle(
+    visible: Boolean,
+    onToggle: () -> Unit,
+) {
+    IconButton(onClick = onToggle) {
+        Icon(
+            imageVector = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+            contentDescription = if (visible) "Ocultar senha" else "Mostrar senha",
+            tint = Theme.colors.textSecondary,
         )
     }
 }

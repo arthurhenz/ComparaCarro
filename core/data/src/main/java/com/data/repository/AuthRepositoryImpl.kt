@@ -2,7 +2,9 @@ package com.data.repository
 
 import com.data.model.AuthResult
 import com.data.model.AuthUser
+import com.data.model.PasswordResetResult
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -58,6 +60,24 @@ class AuthRepositoryImpl(
             val result = auth.signInWithCredential(credential).await()
             AuthResult.Success(result.requireUser().toAuthUser())
         }.getOrElse { AuthResult.Error(it.toAuthMessage()) }
+
+    // fetchSignInMethodsForEmail is deprecated because e-mail enumeration protection makes it
+    // return an empty list; when the project has protection enabled this check simply falls
+    // through to sending the e-mail, which is the correct (privacy-preserving) behavior anyway.
+    @Suppress("DEPRECATION")
+    override suspend fun sendPasswordReset(email: String): PasswordResetResult =
+        runCatching {
+            val methods =
+                auth.fetchSignInMethodsForEmail(email.trim()).await().signInMethods.orEmpty()
+            val hasPassword = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD in methods
+            val hasGoogle = GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD in methods
+            if (hasGoogle && !hasPassword) {
+                PasswordResetResult.GoogleOnly
+            } else {
+                auth.sendPasswordResetEmail(email.trim()).await()
+                PasswordResetResult.Sent
+            }
+        }.getOrElse { PasswordResetResult.Error(it.toAuthMessage()) }
 
     override suspend fun getIdToken(forceRefresh: Boolean): String? =
         auth.currentUser?.getIdToken(forceRefresh)?.await()?.token

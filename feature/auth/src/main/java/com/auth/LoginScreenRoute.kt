@@ -8,6 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.navigation.EntryProvider
+import com.navigation.routes.ForgotPasswordRoute
 import com.navigation.routes.LoginRoute
 import com.navigation.routes.SignupRoute
 import kotlinx.coroutines.launch
@@ -43,6 +44,7 @@ fun LoginScreenHost() {
                 }
             }
         },
+        onForgotPassword = viewModel::goToForgotPassword,
         onCreateAccount = viewModel::goToSignup,
     )
 }
@@ -81,9 +83,26 @@ fun EntryProviderScope<NavKey>.signupScreenRoute() {
     }
 }
 
+fun EntryProviderScope<NavKey>.forgotPasswordScreenRoute() {
+    entry<ForgotPasswordRoute> {
+        val viewModel: ForgotPasswordViewModel = koinViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        ForgotPasswordScreen(
+            isLoading = state.isLoading,
+            errorMessage = state.errorMessage,
+            emailSent = state.emailSent,
+            googleOnlyAccount = state.googleOnlyAccount,
+            onSubmit = viewModel::sendResetLink,
+            onBackToLogin = viewModel::backToLogin,
+        )
+    }
+}
+
 class AuthScreenProvider : EntryProvider {
     override fun entryProvider(): EntryProviderScope<NavKey>.() -> Unit = {
         loginScreenRoute()
         signupScreenRoute()
+        forgotPasswordScreenRoute()
     }
 }
