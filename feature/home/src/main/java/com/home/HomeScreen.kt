@@ -1,19 +1,15 @@
 package com.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
@@ -23,6 +19,7 @@ import com.data.model.SmallCardData
 import com.theme.Theme
 import com.ui.BottomNavBar
 import com.ui.BottomNavTab
+import com.ui.FullScreenError
 import com.ui.Header
 
 @Composable
@@ -30,7 +27,6 @@ fun HomeScreen(
     state: HomeScreenState,
     searchQuery: String,
     isSearchFocused: Boolean,
-    sortType: SortType,
     favoriteIds: Set<String> = emptySet(),
     onCardClick: (String) -> Unit = {},
     onCompareFromHome: () -> Unit = {},
@@ -38,7 +34,6 @@ fun HomeScreen(
     onProfileClick: () -> Unit = {},
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
-    onSortTypeChange: (SortType) -> Unit = {},
     onRefreshRecentlyViewed: () -> Unit = {},
     onToggleFavorite: (SmallCardData) -> Unit = {},
 ) {
@@ -97,24 +92,14 @@ fun HomeScreen(
             is HomeScreenState.Loading -> {
                 HomeLoadingSkeleton(
                     modifier = Modifier.padding(paddingValues),
-                    sortType = sortType,
                 )
             }
 
             is HomeScreenState.Error -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = state.error ?: "Unknown error",
-                        style = Theme.typography.bodyLarge,
-                        color = Theme.colors.error,
-                    )
-                }
+                FullScreenError(
+                    message = state.error,
+                    modifier = Modifier.padding(paddingValues),
+                )
             }
 
             is HomeScreenState.Success -> {
@@ -123,9 +108,8 @@ fun HomeScreen(
                     smallCards = state.smallCards,
                     searchQuery = searchQuery,
                     listResetToken = state.listResetToken,
+                    hasSearchResults = state.hasSearchResults,
                     isSearchFocused = isSearchFocused,
-                    sortType = sortType,
-                    onSortTypeChange = onSortTypeChange,
                     onCardClick = onCardClick,
                     favoriteIds = favoriteIds,
                     onToggleFavorite = onToggleFavorite,
@@ -170,7 +154,6 @@ fun HomeScreenPreview() {
             state = HomeScreenState.Success(smallCards = cards, allSmallCards = cards),
             searchQuery = "",
             isSearchFocused = false,
-            sortType = SortType.MOST_POPULAR,
         )
     }
 }
