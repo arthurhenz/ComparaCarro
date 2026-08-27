@@ -69,7 +69,9 @@ class CardRepositoryImpl(
                     ).firstOrNull()
                 CarDetailData(
                     id = spec(price.model?.slug ?: modelSlug, price.fuel?.acronym ?: fuelAcronym, price.modelYear),
-                    title = listOfNotNull(price.make?.name, price.model?.name).joinToString(" ").trim(),
+                    title =
+                        listOfNotNull(price.make?.name, price.model?.name?.stripLeadingDash())
+                            .joinToString(" ").trim(),
                     price = price.formattedPrice,
                     category = price.make?.name.orEmpty(),
                     views = 0,
@@ -78,7 +80,7 @@ class CardRepositoryImpl(
                     fipeCode = "",
                     imageUrl = imageUrl,
                     makeName = price.make?.name.orEmpty(),
-                    modelName = price.model?.name.orEmpty(),
+                    modelName = price.model?.name.orEmpty().stripLeadingDash(),
                     fuelName = price.fuel?.name.orEmpty(),
                     fuelAcronym = price.fuel?.acronym.orEmpty(),
                     vehicleType = price.type?.name.orEmpty(),
@@ -218,7 +220,11 @@ class CardRepositoryImpl(
 
     private fun SearchItem.toSpec() = spec(modelSlug, fuelAcronym, modelYear)
 
-    private fun SearchItem.toTitle() = listOf(makeName, modelName, modelYear.toString()).joinToString(" ").trim()
+    /** FIPE model names sometimes come prefixed with a stray "- " (e.g. "- NIVUS 1.0..."). */
+    private fun String.stripLeadingDash() = removePrefix("-").trim()
+
+    private fun SearchItem.toTitle() =
+        listOf(makeName, modelName.stripLeadingDash(), modelYear.toString()).joinToString(" ").trim()
 
     private fun PriceAnalytics.toDomain() =
         CarAnalytics(
