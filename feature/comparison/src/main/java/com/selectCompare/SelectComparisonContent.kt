@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
@@ -40,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.data.model.SmallCardData
-import com.theme.SpaceGroteskFamily
 import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenIconSize
@@ -140,18 +138,23 @@ fun SelectComparisonContent(
             }
         }
 
-        CompareNowButton(
-            enabled = isCompareEnabled,
-            onClick = {
-                if (isCompareEnabled) {
-                    onCompareClick(Pair(selectedIds[0], selectedIds[1]))
-                }
-            },
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
-        )
+        AnimatedVisibility(
+            visible = selectedIds.isNotEmpty(),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        ) {
+            CompareNowButton(
+                enabled = isCompareEnabled,
+                label = if (isCompareEnabled) "Comparar agora" else "Selecione mais 1 modelo",
+                onClick = {
+                    if (isCompareEnabled) {
+                        onCompareClick(Pair(selectedIds[0], selectedIds[1]))
+                    }
+                },
+                modifier =
+                    Modifier
+                        .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
+            )
+        }
     }
 }
 
@@ -176,8 +179,6 @@ private fun SelectionHeader() {
 
 @Composable
 private fun SelectionCounter(selectedCount: Int) {
-    val statusColor =
-        if (selectedCount == 2) Theme.colors.accentPrimary else TokenColors.Outline
     Row(
         modifier =
             Modifier
@@ -188,27 +189,27 @@ private fun SelectionCounter(selectedCount: Int) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "$selectedCount/2",
-                style = Theme.typography.titleLarge,
-                fontFamily = SpaceGroteskFamily,
-                fontWeight = FontWeight.Bold,
-                color = Theme.colors.accentPrimary,
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                repeat(2) { slot ->
+                    Box(
+                        modifier =
+                            Modifier
+                                .width(26.dp)
+                                .height(5.dp)
+                                .clip(TokenShapes.Sm)
+                                .background(
+                                    if (slot < selectedCount) Theme.colors.accentPrimary else TokenColors.Outline,
+                                ),
+                    )
+                }
+            }
             Spacer(modifier = Modifier.width(TokenSpacing.Item))
             Text(
-                text = "Selecionados".uppercase(),
+                text = "$selectedCount/2 selecionados".uppercase(),
                 style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary,
+                color = if (selectedCount == 2) Theme.colors.accentPrimary else Theme.colors.textSecondary,
             )
         }
-        Box(
-            modifier =
-                Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(statusColor),
-        )
     }
 }
 
@@ -307,6 +308,7 @@ private fun SelectionCheckbox(selected: Boolean, onClick: () -> Unit) {
 @Composable
 private fun CompareNowButton(
     enabled: Boolean,
+    label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -325,7 +327,7 @@ private fun CompareNowButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "Comparar agora".uppercase(),
+            text = label.uppercase(),
             style = Theme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             color = textColor,

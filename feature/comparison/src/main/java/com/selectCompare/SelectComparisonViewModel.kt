@@ -161,12 +161,17 @@ class SelectComparisonViewModel(
             if (alreadySelected) {
                 current.selectedCards.filterNot { it.id == cardId }
             } else {
-                if (current.selectedCards.size >= 2) return
                 val card =
                     current.smallCards.firstOrNull { it.id == cardId }
                         ?: current.browseCards.firstOrNull { it.id == cardId }
                         ?: return
-                current.selectedCards + card.copy(selected = true)
+                val remaining =
+                    if (current.selectedCards.size >= 2) {
+                        current.selectedCards.drop(1)
+                    } else {
+                        current.selectedCards
+                    }
+                remaining + card.copy(selected = true)
             }
 
         val selectedIds = newSelected.map { it.id }.toSet()
