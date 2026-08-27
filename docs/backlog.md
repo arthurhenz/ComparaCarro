@@ -45,40 +45,34 @@ Semana que vem:
 ✅ Filtro no Favoritos
 ✅ Lista mockada dos mais vendidos na pagina inicial utilizando IA para extrair os carros mais 
 vendidos Fenabrave enviados anterioprmente
-- Adicionar access token refresh token ARGON 2015 e implementar tela de login (Argon2 ou bcrypt 
-kotlin da vida)
-- Login com email e senha, google, e recuperar a senha. Tudo isso com firebase
+✅ Login com email e senha, google, e recuperar a senha. Tudo isso com firebase
 ✅ Flow e Pagination no Room
+✅ Esqueci minha senha, cadastro.
+✅ Shimmer effect as backbone
 
+
+Proxima semana:
+
+✅ Mudar icone da tela de login para a oficial Webp do Google
+✅ Favoritos botao mudar botar text button ver mais em baixo pro preco aparecer cheio
+✅ shimmerEffect funcionando corretamente
+✅ Adicionar termos de uso no campo de cadastro
+✅ Pegar foto de perfil do Google, se nao tiver, colocar 2 iniciais do nome primeira e ultima
+- Como armazenar tokens de forma segura no Android em 2026
 
 Melhorias: 
+
+
+Validacao de campo a campo no Cadastro, nao um state unico em baixo
 
 Chamada de API para Repository se faltar dados (ver o uso de camada de dados (data sources) local e 
 remote no Android)
 
 Adicionar persistencia com o Backend e cache
 
-Remover espaco extra dos Cards e deixar o espaco mais eficiente
+Crawler para pegar imagens dessa API para todos os carros (https://api.auto-data.net/documentation)
 
-Pesquisar nomes alternativos pro titulo
+OTP-like pra validar email com built-in Firebase para cadastro
 
-Colocar Carousel de patrocinadores abaixo de algum conteudo principal mockado
-
-Colocar Dropdowwn tela inicial com orderBy da API
-
-SelectCard mudar a fonte do branco pro cinza e mudar a cor do Checkbox
-
-Indepotencia
-
-Tentar achar mais populares na API de FIPE
-
-Pra semana que vem, tentar extrair a lista mais populares/mais vendidos e por ano. 
-
-Na initial screen, mostrar Mais Vendidos. Eliminar dropdown posteriormente
-
-Crawler Fenbabrave
-
-Shimmer effect as backbone
-
-Sortby nos favoritos (ano preco ordem alfabetca)
+Crawler Fenabrave
 
