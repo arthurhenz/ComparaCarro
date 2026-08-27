@@ -147,7 +147,7 @@ class HomeViewModel(
             try {
                 val smallCards = getSmallCardsUseCase()
                 val recentlyViewedCards = getRecentlyViewedCarsUseCase()
-                android.util.Log.d(
+                Log.d(
                     "HomeViewModel",
                     "Loaded small=" + smallCards.size + " recent=" + recentlyViewedCards.size,
                 )
