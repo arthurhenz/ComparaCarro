@@ -19,6 +19,9 @@ interface FavoriteRepository {
     /** The ids of every favorite, for aggregate membership checks (e.g. the home grid hearts). */
     fun observeFavoriteIds(): Flow<Set<String>>
 
+    /** The full favorites set as a live list, for computing the Favorites filter facets. */
+    fun observeAll(): Flow<List<FavoriteCar>>
+
     /** Reactive membership check for a single car id. */
     fun observeIsFavorite(id: String): Flow<Boolean>
 

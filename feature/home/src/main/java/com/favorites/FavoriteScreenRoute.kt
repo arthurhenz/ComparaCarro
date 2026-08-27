@@ -1,5 +1,7 @@
 package com.favorites
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -17,9 +19,17 @@ fun EntryProviderScope<NavKey>.favoriteScreenRoute() {
     entry<FavoritesRoute> {
         val viewModel: FavoriteViewModel = koinViewModel()
         val favorites = viewModel.favorites.collectAsLazyPagingItems()
+        val filter by viewModel.filter.collectAsStateWithLifecycle()
+        val filterOptions by viewModel.filterOptions.collectAsStateWithLifecycle()
 
         FavoriteScreen(
             favorites = favorites,
+            filter = filter,
+            filterOptions = filterOptions,
+            onBrandSelected = viewModel::onBrandSelected,
+            onPriceRangeSelected = viewModel::onPriceRangeSelected,
+            onYearSelected = viewModel::onYearSelected,
+            onClearFilters = viewModel::clearFilters,
             onRemove = { id -> viewModel.onEvent(FavoriteScreenEvent.RemoveFavorite(id)) },
             onCardClick = viewModel::openDetail,
             onCompareClick = viewModel::navigateToCompare,

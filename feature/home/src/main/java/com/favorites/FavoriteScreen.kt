@@ -3,6 +3,7 @@ package com.favorites
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,11 +21,16 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FilterAltOff
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocalGasStation
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -38,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
@@ -88,6 +95,12 @@ private val suggestionCategories =
 @Composable
 fun FavoriteScreen(
     favorites: LazyPagingItems<FavoriteCarItem>,
+    filter: FavoriteFilter = FavoriteFilter(),
+    filterOptions: FavoriteFilterOptions = FavoriteFilterOptions(),
+    onBrandSelected: (String?) -> Unit = {},
+    onPriceRangeSelected: (PriceRange?) -> Unit = {},
+    onYearSelected: (String?) -> Unit = {},
+    onClearFilters: () -> Unit = {},
     onRemove: (String) -> Unit = {},
     onCardClick: (String) -> Unit = {},
     onCompareClick: () -> Unit = {},
@@ -99,6 +112,10 @@ fun FavoriteScreen(
     // "Empty" only once the initial page has finished loading with no rows — otherwise the empty
     // state would flash during the first Room load.
     val isEmpty = favorites.itemCount == 0 && favorites.loadState.refresh !is LoadState.Loading
+
+    // Chips only make sense once there is something to filter (or a filter is already active).
+    val showFilters =
+        filter.isActive || filterOptions.brands.isNotEmpty() || filterOptions.years.isNotEmpty()
 
     Scaffold(
         containerColor = Theme.colors.background,
@@ -131,14 +148,36 @@ fun FavoriteScreen(
                 FavoritesTitleSection(modifier = Modifier.padding(top = TokenSpacing.Section))
             }
 
+            if (showFilters) {
+                item {
+                    FilterChipsRow(
+                        filter = filter,
+                        options = filterOptions,
+                        onBrandSelected = onBrandSelected,
+                        onPriceRangeSelected = onPriceRangeSelected,
+                        onYearSelected = onYearSelected,
+                    )
+                }
+            }
+
             if (isEmpty) {
                 item {
-                    EmptyFavoritesState(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = TokenSpacing.Section * 2),
-                    )
+                    if (filter.isActive) {
+                        NoResultsState(
+                            onClear = onClearFilters,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = TokenSpacing.Section * 2),
+                        )
+                    } else {
+                        EmptyFavoritesState(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = TokenSpacing.Section * 2),
+                        )
+                    }
                 }
             } else {
                 items(
@@ -192,6 +231,143 @@ private fun FavoritesTitleSection(modifier: Modifier = Modifier) {
             style = Theme.typography.labelMedium,
             color = Theme.colors.textSecondary,
             modifier = Modifier.padding(top = TokenSpacing.Block),
+        )
+    }
+}
+
+@Composable
+private fun FilterChipsRow(
+    filter: FavoriteFilter,
+    options: FavoriteFilterOptions,
+    onBrandSelected: (String?) -> Unit,
+    onPriceRangeSelected: (PriceRange?) -> Unit,
+    onYearSelected: (String?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
+    ) {
+        FilterChip(
+            defaultLabel = "Marca",
+            selectedLabel = filter.brand,
+            options =
+                buildList {
+                    add("Todas" to null)
+                    options.brands.forEach { add(it to it) }
+                },
+            onSelect = onBrandSelected,
+        )
+        FilterChip(
+            defaultLabel = "Preço",
+            selectedLabel = filter.priceRange?.label,
+            options =
+                buildList {
+                    add("Todas" to null)
+                    options.priceRanges.forEach { add(it.label to it) }
+                },
+            onSelect = onPriceRangeSelected,
+        )
+        FilterChip(
+            defaultLabel = "Ano",
+            selectedLabel = filter.year,
+            options =
+                buildList {
+                    add("Todos" to null)
+                    options.years.forEach { add(it to it) }
+                },
+            onSelect = onYearSelected,
+        )
+    }
+}
+
+@Composable
+private fun <T> FilterChip(
+    defaultLabel: String,
+    selectedLabel: String?,
+    options: List<Pair<String, T?>>,
+    onSelect: (T?) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val active = selectedLabel != null
+    val contentColor = if (active) Theme.colors.textInteractive else Theme.colors.textSecondary
+    val containerColor = if (active) Theme.colors.accentPrimary else Theme.colors.surfaceRaised
+
+    Box {
+        Row(
+            modifier =
+                Modifier
+                    .clip(TokenShapes.Pill)
+                    .background(containerColor, shape = TokenShapes.Pill)
+                    .clickable { expanded = true }
+                    .padding(horizontal = TokenSpacing.Block)
+                    .height(TokenSpacing.Section),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = (selectedLabel ?: defaultLabel).uppercase(),
+                style = Theme.typography.labelMedium,
+                color = contentColor,
+                maxLines = 1,
+            )
+            Icon(
+                imageVector = Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = contentColor,
+                modifier =
+                    Modifier
+                        .size(TokenIconSize.Small)
+                        .rotate(if (expanded) 180f else 0f),
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            options.forEach { (label, value) ->
+                DropdownMenuItem(
+                    text = { Text(label) },
+                    onClick = {
+                        onSelect(value)
+                        expanded = false
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NoResultsState(onClear: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.FilterAltOff,
+            contentDescription = null,
+            tint = Theme.colors.textSecondary,
+            modifier = Modifier.size(TokenIconSize.ExtraLarge),
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Block))
+        Text(
+            text = "Nenhum favorito com esses filtros",
+            style = Theme.typography.titleLarge,
+            color = Theme.colors.textPrimary,
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Text(
+            text = "Ajuste ou limpe os filtros para ver seus carros.",
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.textSecondary,
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Block))
+        PrimaryButton(
+            text = "Limpar filtros",
+            onClick = onClear,
+            expanded = false,
         )
     }
 }
@@ -453,7 +629,15 @@ internal fun sampleFavorites(): List<FavoriteCarItem> =
 fun FavoriteScreenPreview() {
     Theme {
         val favorites = flowOf(PagingData.from(sampleFavorites())).collectAsLazyPagingItems()
-        FavoriteScreen(favorites = favorites)
+        FavoriteScreen(
+            favorites = favorites,
+            filterOptions =
+                FavoriteFilterOptions(
+                    brands = listOf("Toyota", "Fiat", "Porsche"),
+                    years = listOf("2024", "2023", "2022"),
+                    priceRanges = PriceRange.entries,
+                ),
+        )
     }
 }
 

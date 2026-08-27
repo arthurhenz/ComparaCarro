@@ -36,6 +36,11 @@ class FavoriteRepositoryImpl(
             .map { it.toSet() }
             .distinctUntilChanged()
 
+    override fun observeAll(): Flow<List<FavoriteCar>> =
+        favoriteCarDao.observeAll()
+            .map { list -> list.map { it.toDomain() } }
+            .distinctUntilChanged()
+
     override fun observeIsFavorite(id: String): Flow<Boolean> =
         observeFavoriteIds()
             .map { id in it }
