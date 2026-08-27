@@ -14,6 +14,9 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.network)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.room.runtime)

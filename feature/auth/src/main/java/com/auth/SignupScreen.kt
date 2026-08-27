@@ -1,4 +1,4 @@
-package com.comparacarro.ui.account
+package com.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,6 +50,8 @@ import com.ui.PrimaryButton
 
 @Composable
 fun SignupScreen(
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
     onSubmit: (name: String, email: String, password: String) -> Unit = { _, _, _ -> },
     onGoogleSignup: () -> Unit = {},
     onLoginInstead: () -> Unit = {},
@@ -59,6 +61,15 @@ fun SignupScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var confirm by rememberSaveable { mutableStateOf("") }
     var acceptTerms by rememberSaveable { mutableStateOf(false) }
+
+    val passwordsMatch = password == confirm
+    val canSubmit = acceptTerms && passwordsMatch && !isLoading
+    val localError =
+        when {
+            errorMessage != null -> errorMessage
+            confirm.isNotEmpty() && !passwordsMatch -> "As senhas não coincidem."
+            else -> null
+        }
 
     Column(
         modifier =
@@ -126,11 +137,13 @@ fun SignupScreen(
             onCheckedChange = { acceptTerms = it },
         )
 
+        AuthErrorText(localError)
+
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
         PrimaryButton(
-            text = "CRIAR CONTA",
-            enabled = acceptTerms,
+            text = if (isLoading) "CRIANDO..." else "CRIAR CONTA",
+            enabled = canSubmit,
             onClick = { onSubmit(name, email, password) },
         )
 

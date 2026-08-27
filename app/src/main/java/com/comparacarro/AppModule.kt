@@ -1,5 +1,6 @@
 package com.comparacarro
 
+import com.auth.AuthModule
 import com.comparison.ComparisonModule
 import com.data.di.DataModule
 import com.detail.DetailModule
@@ -20,6 +21,7 @@ import org.koin.core.annotation.Module
         DetailModule::class,
         ComparisonModule::class,
         SelectComparisonModule::class,
+        AuthModule::class,
     ],
 )
 @ComponentScan

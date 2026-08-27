@@ -10,7 +10,7 @@ android {
     namespace = "com.comparacarro"
 
     defaultConfig {
-        applicationId = "com.comparacarro"
+        applicationId = "com.comparacarro2"
         versionCode = 1
         versionName = "1.0"
 
@@ -32,6 +32,7 @@ dependencies {
     implementation(projects.feature.home)
     implementation(projects.feature.detail)
     implementation(projects.feature.comparison)
+    implementation(projects.feature.auth)
     implementation(projects.core.ui)
     implementation(projects.core.data)
     implementation(projects.core.common)

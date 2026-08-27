@@ -44,6 +44,7 @@ import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.BottomNavBar
 import com.ui.BottomNavTab
+import com.ui.PrimaryButton
 
 data class ProfileUser(
     val name: String,
@@ -62,12 +63,16 @@ data class DuelHistoryEntry(val id: String, val title: String, val date: String)
 @Composable
 fun ProfileScreen(
     user: ProfileUser = sampleUser(),
+    isLoggedIn: Boolean = true,
+    accountName: String = user.name,
+    accountEmail: String = user.email,
     favoriteCars: List<GarageEntry> = sampleGarage(),
     duels: List<DuelHistoryEntry> = sampleDuels(),
     onEditProfile: () -> Unit = {},
     onSeeAllFavorites: () -> Unit = {},
     onDuelClick: (String) -> Unit = {},
     onLogout: () -> Unit = {},
+    onSignIn: () -> Unit = {},
     onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     Column(
@@ -84,7 +89,12 @@ fun ProfileScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = TokenSpacing.Section, vertical = TokenSpacing.Block),
         ) {
-            ProfileHeader(user = user, onEdit = onEditProfile)
+            ProfileHeader(
+                name = accountName,
+                email = accountEmail,
+                phone = user.phone,
+                onEdit = onEditProfile,
+            )
 
             Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
@@ -114,7 +124,11 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
-            LogoutButton(onClick = onLogout)
+            if (isLoggedIn) {
+                LogoutButton(onClick = onLogout)
+            } else {
+                PrimaryButton(text = "ENTRAR", onClick = onSignIn)
+            }
 
             Spacer(modifier = Modifier.height(TokenSpacing.Section))
         }
@@ -127,7 +141,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileHeader(user: ProfileUser, onEdit: () -> Unit) {
+private fun ProfileHeader(name: String, email: String, phone: String, onEdit: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier =
@@ -146,14 +160,14 @@ private fun ProfileHeader(user: ProfileUser, onEdit: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
         Text(
-            text = user.name,
+            text = name,
             style = Theme.typography.headlineLarge,
             color = Theme.colors.textPrimary,
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
-        ContactRow(icon = Icons.Filled.Email, text = user.email)
+        ContactRow(icon = Icons.Filled.Email, text = email)
         Spacer(modifier = Modifier.height(TokenSpacing.Item / 2))
-        ContactRow(icon = Icons.Filled.Phone, text = user.phone)
+        ContactRow(icon = Icons.Filled.Phone, text = phone)
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
         EditProfileButton(onClick = onEdit)
     }
