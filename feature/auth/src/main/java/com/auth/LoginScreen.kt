@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
@@ -33,7 +34,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,11 +43,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -161,11 +164,36 @@ fun LoginScreen(
             onClick = onCreateAccount,
         )
 
-        TextButton(onClick = onContinueWithoutLogin) {
+        val outlineGhost = Theme.colors.outlineGhost
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier =
+                Modifier
+                    .clickable(onClick = onContinueWithoutLogin)
+                    .padding(vertical = TokenSpacing.Item)
+                    .drawBehind {
+                        val y = size.height - 1.dp.toPx()
+                        drawLine(
+                            color = outlineGhost,
+                            start = Offset(0f, y),
+                            end = Offset(size.width, y),
+                            strokeWidth = 1.dp.toPx(),
+                        )
+                    },
+        ) {
             Text(
-                text = "ou continue sem login",
+                text = "Continuar sem login",
                 style = Theme.typography.bodyMedium,
-                color = Theme.colors.textSecondary,
+                fontWeight = FontWeight.Bold,
+                color = Theme.colors.textPrimary,
+            )
+            Spacer(modifier = Modifier.width(TokenSpacing.Item))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = Theme.colors.textPrimary,
+                modifier = Modifier.size(TokenIconSize.Medium),
             )
         }
 
@@ -201,7 +229,7 @@ private fun BrandHero() {
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item / 2))
         Text(
-            text = "HIGH PERFORMANCE HUB",
+            text = "TABELA FIPE EM TEMPO REAL",
             style = Theme.typography.labelMedium,
             color = Theme.colors.textSecondary,
         )
@@ -365,12 +393,6 @@ private fun LoginFooter() {
                 style = Theme.typography.labelMedium,
                 color = Theme.colors.textSecondary,
                 modifier = Modifier.clickable { showTermsDialog = true },
-            )
-            DotSeparator()
-            Text(
-                text = "v.2.4.0 ENGINE",
-                style = Theme.typography.labelMedium,
-                color = Theme.colors.textSecondary,
             )
         }
     }
