@@ -78,7 +78,8 @@ fun LargeCardList(
                 Modifier
                     .width(IMAGE_WIDTH.dp)
                     .fillMaxHeight()
-                    .clip(TokenShapes.StraightEdge),
+                    .clip(TokenShapes.StraightEdge)
+                    .shimmerWhileLoading(image),
         )
 
         Spacer(modifier = Modifier.width(TokenSpacing.Inline))

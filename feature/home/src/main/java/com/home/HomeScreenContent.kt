@@ -57,11 +57,65 @@ import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.LargeCardList
 import com.ui.SmallCard
+import com.ui.SmallCardSkeleton
 import com.ui.rememberCarImagePainter
 
 private enum class HomeViewMode { Grid, List }
 
 private val homeCategories = listOf("Todos os Modelos", "SUV", "Sedan", "Hatchback")
+
+private const val SKELETON_CARD_COUNT = 6
+
+/**
+ * Loading-state body of the Home screen. The static chrome (hero title, category chips, sort row)
+ * renders exactly as in the success grid; only the card slots show shimmering [SmallCardSkeleton]s.
+ */
+@Composable
+fun HomeLoadingSkeleton(
+    modifier: Modifier = Modifier,
+    sortType: SortType = SortType.MOST_POPULAR,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.fillMaxSize(),
+        userScrollEnabled = false,
+        contentPadding =
+            PaddingValues(
+                start = TokenSpacing.Item,
+                end = TokenSpacing.Item,
+                bottom = TokenSpacing.Section,
+            ),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
+    ) {
+        item(key = "hero", span = { GridItemSpan(maxLineSpan) }, contentType = "hero") {
+            HeroTitle(modifier = Modifier.padding(start = TokenSpacing.Item, top = 24.dp))
+        }
+
+        item(key = "categories", span = { GridItemSpan(maxLineSpan) }, contentType = "categories") {
+//            CategoryChipRow(
+//                categories = homeCategories,
+//                selected = homeCategories.first(),
+//                onSelect = {},
+//                modifier = Modifier.padding(top = 28.dp),
+//            )
+        }
+
+        item(key = "sort", span = { GridItemSpan(maxLineSpan) }, contentType = "sort") {
+            SortAndViewToggleRow(
+                sortType = sortType,
+                onSortTypeChange = {},
+                viewMode = HomeViewMode.Grid,
+                onViewModeChange = {},
+                modifier = Modifier.padding(horizontal = TokenSpacing.Block),
+            )
+        }
+
+        items(SKELETON_CARD_COUNT) {
+            SmallCardSkeleton()
+        }
+    }
+}
 
 /**
  * Success-state body of the Home screen: a single [LazyVerticalGrid] that owns the scrolling.
@@ -117,18 +171,18 @@ fun HomeScreenContent(
     ) {
         if (searchQuery.isEmpty()) {
             item(key = "hero", span = { GridItemSpan(maxLineSpan) }, contentType = "hero") {
-                HeroTitle(modifier = Modifier.padding(start = TokenSpacing.Item, top = 48.dp))
+                HeroTitle(modifier = Modifier.padding(start = TokenSpacing.Item, top = 24.dp))
             }
 
             item(key = "categories", span = { GridItemSpan(maxLineSpan) }, contentType = "categories") {
                 // The grid's verticalArrangement already adds Inline (12dp) between lines;
                 // this only tops it up to the original 40dp gap below the hero title.
-                CategoryChipRow(
-                    categories = homeCategories,
-                    selected = selectedCategory,
-                    onSelect = { selectedCategory = it },
-                    modifier = Modifier.padding(top = 28.dp),
-                )
+//                CategoryChipRow(
+//                    categories = homeCategories,
+//                    selected = selectedCategory,
+//                    onSelect = { selectedCategory = it },
+//                    modifier = Modifier.padding(top = 28.dp),
+//                )
             }
 
             item(key = "sort", span = { GridItemSpan(maxLineSpan) }, contentType = "sort") {
