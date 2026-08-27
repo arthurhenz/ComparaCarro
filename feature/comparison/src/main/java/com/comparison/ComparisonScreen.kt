@@ -24,7 +24,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -70,26 +69,24 @@ fun ComparisonScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "VELOCIDADE",
-                        style = Theme.typography.titleLarge,
-                        color = Theme.colors.accentPrimary,
-                    )
+                    Column {
+                        Text(
+                            text = "Duelo",
+                            style = Theme.typography.titleLarge,
+                            color = Theme.colors.textPrimary,
+                        )
+                        Text(
+                            text = "Comparação Técnica".uppercase(),
+                            style = Theme.typography.labelMedium,
+                            color = Theme.colors.textSecondary,
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar",
-                            tint = Theme.colors.textPrimary,
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "Buscar",
                             tint = Theme.colors.textPrimary,
                         )
                     }
@@ -206,6 +203,10 @@ private fun AlignedComparisonContent(
             firstValue = orDash(firstCar.analytics?.lifecycleStatus),
             secondValue = orDash(secondCar.analytics?.lifecycleStatus),
         )
+
+        Spacer(modifier = Modifier.height(TokenSpacing.Section))
+
+        VerdictCard(firstCar = firstCar, secondCar = secondCar)
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
@@ -459,6 +460,78 @@ private fun priceRankLabel(analytics: CarAnalytics?): String {
 private fun formatPct(value: Double?): String = value?.let { "%+.2f%%".format(it * 100) } ?: "—"
 
 private fun orDash(value: String?): String = if (value.isNullOrBlank()) "—" else value
+
+private fun parseBrl(price: String): Double? =
+    price.replace(Regex("[^0-9,]"), "").replace(",", ".").toDoubleOrNull()
+
+/**
+ * Counts, among the numeric criteria shown on this screen, how many favor each car — lower price,
+ * lower volatility and lower annual depreciation are the "wins" (higher launch/monthly variation is
+ * a loss, since it means the price has risen more).
+ */
+private fun countWins(firstCar: CarDetailData, secondCar: CarDetailData): Pair<Int, Int> {
+    val comparisons =
+        listOf(
+            parseBrl(firstCar.price) to parseBrl(secondCar.price),
+            firstCar.analytics?.changeFromPreviousMonthPct to secondCar.analytics?.changeFromPreviousMonthPct,
+            firstCar.analytics?.changeFromLaunchPct to secondCar.analytics?.changeFromLaunchPct,
+            firstCar.analytics?.priceVolatility to secondCar.analytics?.priceVolatility,
+            firstCar.analytics?.annualDepreciationRate to secondCar.analytics?.annualDepreciationRate,
+        )
+    var firstWins = 0
+    var secondWins = 0
+    comparisons.forEach { (first, second) ->
+        if (first != null && second != null && first != second) {
+            if (first < second) firstWins++ else secondWins++
+        }
+    }
+    return firstWins to secondWins
+}
+
+@Composable
+private fun VerdictCard(firstCar: CarDetailData, secondCar: CarDetailData) {
+    val (firstWins, secondWins) = countWins(firstCar, secondCar)
+    val total = firstWins + secondWins
+    val winner =
+        when {
+            firstWins > secondWins -> firstCar
+            secondWins > firstWins -> secondCar
+            else -> null
+        }
+    val wins = maxOf(firstWins, secondWins)
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(TokenShapes.Card)
+                .background(Theme.colors.surfaceLow, shape = TokenShapes.Card)
+                .padding(TokenSpacing.Block),
+    ) {
+        Text(
+            text = "Veredito".uppercase(),
+            style = Theme.typography.labelMedium,
+            color = Theme.colors.accentPrimary,
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Text(
+            text =
+                if (winner != null) {
+                    "${winner.title} vence em $wins de $total critérios."
+                } else {
+                    "Empate técnico entre os dois modelos."
+                },
+            style = Theme.typography.titleLarge,
+            color = Theme.colors.textPrimary,
+        )
+        Spacer(modifier = Modifier.height(TokenSpacing.Item))
+        Text(
+            text = "Critérios considerados: preço, variação no mês, desde o lançamento, volatilidade e depreciação anual.",
+            style = Theme.typography.bodyMedium,
+            color = Theme.colors.textSecondary,
+        )
+    }
+}
 
 @Composable
 private fun TestDriveCta(onReserve: () -> Unit) {
