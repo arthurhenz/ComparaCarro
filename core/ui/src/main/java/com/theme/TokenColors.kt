@@ -37,6 +37,9 @@ object TokenColors {
     val Error = Color(0xFFFF716C)
     val ErrorContainer = Color(0xFF9F0519)
 
+    // Success
+    val Success = Color(0xFF4CD964)
+
     // --- Legacy tokens still referenced by com.ui.* composables ---
     val TapeBackground = Color(0xFF7B330A)
 }
