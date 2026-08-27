@@ -1,5 +1,6 @@
 package com.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -52,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.comparacarro.R
 import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
@@ -66,6 +70,7 @@ fun LoginScreen(
     onGoogleLogin: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
     onCreateAccount: () -> Unit = {},
+    onContinueWithoutLogin: () -> Unit = {},
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -155,6 +160,14 @@ fun LoginScreen(
             action = "Criar conta",
             onClick = onCreateAccount,
         )
+
+        TextButton(onClick = onContinueWithoutLogin) {
+            Text(
+                text = "ou continue sem login",
+                style = Theme.typography.bodyMedium,
+                color = Theme.colors.textSecondary,
+            )
+        }
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
@@ -280,20 +293,11 @@ internal fun GoogleLoginButton(onClick: () -> Unit, text: String = "Continuar co
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier =
-                    Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(Theme.colors.textPrimary, shape = CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "G",
-                    style = Theme.typography.labelMedium,
-                    color = Theme.colors.accentPrimary,
-                )
-            }
+            Image(
+                painter = painterResource(R.drawable.google_logo),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+            )
             Spacer(modifier = Modifier.width(TokenSpacing.Block))
             Text(
                 text = text,
