@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -71,6 +72,11 @@ fun SignupScreen(
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var confirmVisible by rememberSaveable { mutableStateOf(false) }
 
+    var nameTouched by rememberSaveable { mutableStateOf(false) }
+    var emailTouched by rememberSaveable { mutableStateOf(false) }
+    var passwordTouched by rememberSaveable { mutableStateOf(false) }
+    var confirmTouched by rememberSaveable { mutableStateOf(false) }
+
     val nameValid = NAME_REGEX.matches(name.trim())
     val emailValid = EMAIL_REGEX.matches(email.trim())
     val passwordLongEnough = password.length >= MIN_PASSWORD_LENGTH
@@ -78,15 +84,15 @@ fun SignupScreen(
     val canSubmit =
         acceptTerms && nameValid && emailValid && passwordLongEnough && passwordsMatch && !isLoading
 
-    val nameError = if (name.isNotEmpty() && !nameValid) "Informe nome e sobrenome." else null
-    val emailError = if (email.isNotEmpty() && !emailValid) "Informe um e-mail válido." else null
+    val nameError = if (nameTouched && !nameValid) "Informe nome e sobrenome." else null
+    val emailError = if (emailTouched && !emailValid) "Informe um e-mail válido." else null
     val passwordError =
-        if (password.isNotEmpty() && !passwordLongEnough) {
+        if (passwordTouched && !passwordLongEnough) {
             "A senha deve ter ao menos $MIN_PASSWORD_LENGTH caracteres."
         } else {
             null
         }
-    val confirmError = if (confirm.isNotEmpty() && !passwordsMatch) "As senhas não coincidem." else null
+    val confirmError = if (confirmTouched && !passwordsMatch) "As senhas não coincidem." else null
 
     Column(
         modifier =
@@ -111,6 +117,7 @@ fun SignupScreen(
             placeholder = "Seu nome",
             icon = Icons.Filled.Person,
             errorText = nameError,
+            onFocusLost = { nameTouched = true },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -123,6 +130,7 @@ fun SignupScreen(
             icon = Icons.Filled.MailOutline,
             keyboardType = KeyboardType.Email,
             errorText = emailError,
+            onFocusLost = { emailTouched = true },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -143,6 +151,7 @@ fun SignupScreen(
                 )
             },
             errorText = passwordError,
+            onFocusLost = { passwordTouched = true },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -163,6 +172,7 @@ fun SignupScreen(
                 )
             },
             errorText = confirmError,
+            onFocusLost = { confirmTouched = true },
         )
 
         Spacer(modifier = Modifier.height(TokenSpacing.Block))
@@ -181,6 +191,16 @@ fun SignupScreen(
             enabled = canSubmit,
             onClick = { onSubmit(name, email, password) },
         )
+
+        if (!acceptTerms) {
+            Spacer(modifier = Modifier.height(TokenSpacing.Item))
+            Text(
+                text = "Aceite os termos para continuar.",
+                style = Theme.typography.labelMedium,
+                color = Theme.colors.textSecondary,
+                textAlign = TextAlign.Center,
+            )
+        }
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
@@ -202,7 +222,7 @@ private fun SignupHero() {
         )
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Text(
-            text = "Junte-se à elite automotiva brasileira",
+            text = "Salve favoritos e acompanhe preços da FIPE.",
             style = Theme.typography.bodyMedium,
             color = Theme.colors.textSecondary,
             textAlign = TextAlign.Center,
@@ -232,10 +252,14 @@ private fun TermsRow(
     var showTermsDialog by rememberSaveable { mutableStateOf(false) }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 46.dp)
+                .clickable { onCheckedChange(!checked) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+        Checkbox(checked = checked)
         Spacer(modifier = Modifier.size(TokenSpacing.Item))
         Text(
             text =
@@ -258,7 +282,7 @@ private fun TermsRow(
 }
 
 @Composable
-private fun Checkbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+private fun Checkbox(checked: Boolean) {
     Box(
         modifier =
             Modifier
@@ -267,8 +291,7 @@ private fun Checkbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
                 .background(
                     color = if (checked) Theme.colors.accentPrimary else Theme.colors.surfaceRaised,
                     shape = RoundedCornerShape(4.dp),
-                )
-                .clickable { onCheckedChange(!checked) },
+                ),
         contentAlignment = Alignment.Center,
     ) {
         if (checked) {
