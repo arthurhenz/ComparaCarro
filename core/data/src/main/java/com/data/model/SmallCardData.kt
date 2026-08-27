@@ -6,6 +6,7 @@ data class SmallCardData(
     val id: String,
     val title: String,
     val fipe: String,
+    val fuelName: String = "",
     val selected: Boolean = false,
     val backgroundRes: Int = R.drawable.ic_launcher_background,
     val imageUrl: String? = null,

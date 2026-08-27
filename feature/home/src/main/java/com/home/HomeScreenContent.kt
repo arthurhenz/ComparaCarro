@@ -24,10 +24,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.ViewAgenda
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -73,7 +69,6 @@ private const val SKELETON_CARD_COUNT = 6
 @Composable
 fun HomeLoadingSkeleton(
     modifier: Modifier = Modifier,
-    sortType: SortType = SortType.MOST_POPULAR,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -103,8 +98,6 @@ fun HomeLoadingSkeleton(
 
         item(key = "sort", span = { GridItemSpan(maxLineSpan) }, contentType = "sort") {
             SortAndViewToggleRow(
-                sortType = sortType,
-                onSortTypeChange = {},
                 viewMode = HomeViewMode.Grid,
                 onViewModeChange = {},
                 modifier = Modifier.padding(horizontal = TokenSpacing.Block),
@@ -129,9 +122,8 @@ fun HomeScreenContent(
     modifier: Modifier = Modifier,
     searchQuery: String = "",
     listResetToken: Int = 0,
+    hasSearchResults: Boolean = false,
     isSearchFocused: Boolean = false,
-    sortType: SortType = SortType.MOST_POPULAR,
-    onSortTypeChange: (SortType) -> Unit = {},
     favoriteIds: Set<String> = emptySet(),
     onToggleFavorite: (SmallCardData) -> Unit = {},
 ) {
@@ -172,7 +164,6 @@ fun HomeScreenContent(
         if (searchQuery.isEmpty()) {
             item(key = "hero", span = { GridItemSpan(maxLineSpan) }, contentType = "hero") {
                 HeroTitle(
-                    modelCount = smallCards.size,
                     modifier = Modifier.padding(start = TokenSpacing.Item, top = 24.dp),
                 )
             }
@@ -190,11 +181,21 @@ fun HomeScreenContent(
 
             item(key = "sort", span = { GridItemSpan(maxLineSpan) }, contentType = "sort") {
                 SortAndViewToggleRow(
-                    sortType = sortType,
-                    onSortTypeChange = onSortTypeChange,
                     viewMode = viewMode,
                     onViewModeChange = { viewMode = it },
                     modifier = Modifier.padding(horizontal = TokenSpacing.Block),
+                )
+            }
+        } else if (hasSearchResults) {
+            item(key = "resultCount", span = { GridItemSpan(maxLineSpan) }, contentType = "resultCount") {
+                Text(
+                    text = "${smallCards.size} carros encontrados",
+                    style = Theme.typography.labelMedium,
+                    color = Theme.colors.textSecondary,
+                    modifier =
+                        Modifier
+                            .padding(horizontal = TokenSpacing.Item)
+                            .padding(top = TokenSpacing.Item),
                 )
             }
         }
@@ -207,6 +208,7 @@ fun HomeScreenContent(
                         brand = cardData.title.substringBefore(" "),
                         model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                         fipe = cardData.fipe,
+                        fuel = cardData.fuelName,
                         onClick = { onCardClick(cardData.id) },
                         favorited = cardData.id in favoriteIds,
                         onFavoriteToggle = { onToggleFavorite(cardData) },
@@ -226,6 +228,7 @@ fun HomeScreenContent(
                         brand = cardData.title.substringBefore(" "),
                         model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
                         fipe = cardData.fipe,
+                        fuel = cardData.fuelName.ifBlank { "Híbrido / Flex" },
                         onClick = { onCardClick(cardData.id) },
                         favorited = cardData.id in favoriteIds,
                         onFavoriteToggle = { onToggleFavorite(cardData) },
@@ -239,7 +242,6 @@ fun HomeScreenContent(
 @Composable
 private fun HeroTitle(
     modifier: Modifier = Modifier,
-    modelCount: Int? = null,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -262,15 +264,6 @@ private fun HeroTitle(
                 fontSize = 56.sp,
                 color = Theme.colors.textPrimary,
             )
-
-            if (modelCount != null) {
-                Text(
-                    text = "$modelCount modelos",
-                    style = Theme.typography.labelMedium,
-                    color = Theme.colors.textSecondary,
-                    modifier = Modifier.padding(start = TokenSpacing.Inline, bottom = 10.dp),
-                )
-            }
         }
 
         Spacer(Modifier.height(4.dp).width(156.dp).background(color = TokenColors.PrimaryAccent))
@@ -333,68 +326,20 @@ private fun CategoryChip(
 
 @Composable
 private fun SortAndViewToggleRow(
-    sortType: SortType,
-    onSortTypeChange: (SortType) -> Unit,
     viewMode: HomeViewMode,
     onViewModeChange: (HomeViewMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var dropdownExpanded by remember { mutableStateOf(false) }
-
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
-                modifier =
-                    Modifier.clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                    ) { dropdownExpanded = true },
-            ) {
-                Text(
-                    text =
-                        when (sortType) {
-                            SortType.MOST_POPULAR -> "Mais populares"
-                            SortType.ALPHABETIC -> "Alfabética"
-                        },
-                    style = Theme.typography.titleLarge,
-                    color = Theme.colors.textPrimary,
-                )
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "Ordenar",
-                    tint = Theme.colors.textPrimary,
-                    modifier =
-                        Modifier
-                            .size(TokenIconSize.Medium)
-                            .rotate(if (dropdownExpanded) 180f else 0f),
-                )
-            }
-            DropdownMenu(
-                expanded = dropdownExpanded,
-                onDismissRequest = { dropdownExpanded = false },
-            ) {
-                DropdownMenuItem(
-                    text = { Text("Mais populares") },
-                    onClick = {
-                        onSortTypeChange(SortType.MOST_POPULAR)
-                        dropdownExpanded = false
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text("Alfabética") },
-                    onClick = {
-                        onSortTypeChange(SortType.ALPHABETIC)
-                        dropdownExpanded = false
-                    },
-                )
-            }
-        }
+        Text(
+            text = "Mais populares",
+            style = Theme.typography.titleLarge,
+            color = Theme.colors.textPrimary,
+        )
 
         Row(horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item)) {
             ViewToggleButton(

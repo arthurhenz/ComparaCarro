@@ -11,6 +11,9 @@ sealed class HomeScreenState {
         val allSmallCards: List<SmallCardData>,
         val recentlyViewedCards: List<LargeCardData> = emptyList(),
         val isSearching: Boolean = false,
+        // True once a real search request has landed for the current query, as opposed to
+        // still showing the cached browse list while the debounce/request is in flight.
+        val hasSearchResults: Boolean = false,
         // Bumped whenever the displayed list is replaced wholesale (search results / browse restore),
         // so the UI can scroll back to the top. Not bumped on pagination appends.
         val listResetToken: Int = 0,

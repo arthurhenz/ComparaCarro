@@ -27,11 +27,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
-enum class SortType {
-    MOST_POPULAR,
-    ALPHABETIC,
-}
-
 @KoinViewModel
 class HomeViewModel(
     private val getSmallCardsUseCase: GetSmallCardsUseCase,
@@ -55,9 +50,6 @@ class HomeViewModel(
 
     private val _isSearchFocused = MutableStateFlow(false)
     val isSearchFocused: StateFlow<Boolean> = _isSearchFocused.asStateFlow()
-
-    private val _sortType = MutableStateFlow(SortType.MOST_POPULAR)
-    val sortType: StateFlow<SortType> = _sortType.asStateFlow()
 
     // The initial (browse) page cached so we can restore it instantly when the search is cleared.
     private var browseCards: List<SmallCardData> = emptyList()
@@ -89,14 +81,6 @@ class HomeViewModel(
         _isSearchFocused.value = isFocused
     }
 
-    fun updateSortType(sortType: SortType) {
-        _sortType.value = sortType
-        val current = _state.value
-        if (current is HomeScreenState.Success) {
-            _state.value = current.copy(smallCards = applySorting(current.allSmallCards))
-        }
-    }
-
     private suspend fun performSearch(query: String) {
         val current = _state.value
         if (current !is HomeScreenState.Success) return
@@ -107,9 +91,10 @@ class HomeViewModel(
             if (latest is HomeScreenState.Success) {
                 _state.value =
                     latest.copy(
-                        smallCards = applySorting(result.data),
+                        smallCards = result.data,
                         allSmallCards = result.data,
                         isSearching = false,
+                        hasSearchResults = true,
                         listResetToken = latest.listResetToken + 1,
                     )
             }
@@ -127,18 +112,12 @@ class HomeViewModel(
         if (current is HomeScreenState.Success) {
             _state.value =
                 current.copy(
-                    smallCards = applySorting(browseCards),
+                    smallCards = browseCards,
                     allSmallCards = browseCards,
                     isSearching = false,
+                    hasSearchResults = false,
                     listResetToken = current.listResetToken + 1,
                 )
-        }
-    }
-
-    private fun applySorting(cards: List<SmallCardData>): List<SmallCardData> {
-        return when (_sortType.value) {
-            SortType.ALPHABETIC -> cards.sortedBy { it.title }
-            SortType.MOST_POPULAR -> cards // Keep original order (assumed to be by popularity)
         }
     }
 
@@ -154,7 +133,7 @@ class HomeViewModel(
                 browseCards = smallCards
                 _state.value =
                     HomeScreenState.Success(
-                        smallCards = applySorting(smallCards),
+                        smallCards = smallCards,
                         allSmallCards = smallCards,
                         recentlyViewedCards = recentlyViewedCards,
                     )

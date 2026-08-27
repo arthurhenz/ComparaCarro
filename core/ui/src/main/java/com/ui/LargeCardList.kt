@@ -101,7 +101,7 @@ fun LargeCardList(
                         text = model.uppercase(),
                         style = Theme.typography.titleLarge,
                         color = Theme.colors.textPrimary,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }

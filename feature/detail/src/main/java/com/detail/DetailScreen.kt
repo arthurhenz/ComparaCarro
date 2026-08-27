@@ -20,9 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,9 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.data.model.CarAnalytics
 import com.data.model.CarDetailData
+import com.data.model.formatPct
+import com.data.model.fuelLabel
+import com.data.model.orDash
 import com.theme.Theme
 import com.theme.TokenColors
 import com.theme.TokenSpacing
+import com.ui.FullScreenError
+import com.ui.FullScreenLoading
 import com.ui.PrimaryButton
 import com.ui.rememberCarImagePainter
 
@@ -74,12 +77,6 @@ fun DetailScreen(
                             tint = if (isFavorite) Theme.colors.accentPrimary else Theme.colors.textPrimary,
                         )
                     }
-                    IconButton(onClick = { /* No function */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = "Compartilhar",
-                        )
-                    }
                 },
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             )
@@ -87,31 +84,14 @@ fun DetailScreen(
     ) { paddingValues ->
         when (state) {
             is DetailScreenState.Loading -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(color = Theme.colors.accentTertiary)
-                }
+                FullScreenLoading(modifier = Modifier.padding(paddingValues))
             }
 
             is DetailScreenState.Error -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = state.error ?: "Unknown error",
-                        style = Theme.typography.bodyLarge,
-                        color = Theme.colors.error,
-                    )
-                }
+                FullScreenError(
+                    message = state.error,
+                    modifier = Modifier.padding(paddingValues),
+                )
             }
 
             is DetailScreenState.Success -> {
@@ -314,25 +294,11 @@ private fun DataRow(
     }
 }
 
-private fun fuelLabel(car: CarDetailData): String {
-    val name = car.fuelName.ifBlank { "" }
-    val acronym = car.fuelAcronym.ifBlank { "" }
-    return when {
-        name.isNotBlank() && acronym.isNotBlank() -> "$name ($acronym)"
-        name.isNotBlank() -> name
-        else -> "—"
-    }
-}
-
 private fun priceRankLabel(analytics: CarAnalytics): String {
     val rank = analytics.priceRank ?: return "—"
     val total = analytics.priceRankTotalInCategory
     return if (total != null) "$rank de $total" else rank.toString()
 }
-
-private fun formatPct(value: Double?): String = value?.let { "%+.2f%%".format(it * 100) } ?: "—"
-
-private fun orDash(value: String?): String = if (value.isNullOrBlank()) "—" else value
 
 @Preview(showBackground = true)
 @Composable

@@ -22,9 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.data.model.CarAnalytics
 import com.data.model.CarDetailData
+import com.data.model.formatPct
+import com.data.model.fuelLabel
+import com.data.model.orDash
 import com.theme.SpaceGroteskFamily
 import com.theme.Theme
 import com.theme.TokenColors
@@ -55,6 +55,8 @@ import com.theme.TokenShapes
 import com.theme.TokenSpacing
 import com.ui.BottomNavBar
 import com.ui.BottomNavTab
+import com.ui.FullScreenError
+import com.ui.FullScreenLoading
 import com.ui.rememberCarImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,25 +110,14 @@ fun ComparisonScreen(
     ) { paddingValues ->
         when (val currentState = state) {
             is ComparisonScreenState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(color = Theme.colors.accentTertiary)
-                }
+                FullScreenLoading(modifier = Modifier.padding(paddingValues))
             }
 
             is ComparisonScreenState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = currentState.error ?: "Unknown error",
-                        style = Theme.typography.bodyLarge,
-                        color = Theme.colors.error,
-                    )
-                }
+                FullScreenError(
+                    message = currentState.error,
+                    modifier = Modifier.padding(paddingValues),
+                )
             }
 
             is ComparisonScreenState.Success -> {
@@ -210,7 +201,7 @@ private fun AlignedComparisonContent(
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
 
-        TestDriveCta(onReserve = { })
+//        TestDriveCta(onReserve = { })
 
         Spacer(modifier = Modifier.height(TokenSpacing.Section))
     }
@@ -357,26 +348,13 @@ private fun SpecGroup(
 
 /**
  * Same layout as [SpecGroup], but for "Variação desde o lançamento" the car with the smaller
- * variation is highlighted green with an upward chevron on its outer edge, and the car with the
- * larger variation is highlighted red with a downward chevron on its opposite outer edge.
+ * (better) variation gets its value highlighted with an accent-tinted pill, matching the winner
+ * highlight used in the verdict card — no green/red semantics.
  */
 @Composable
 private fun LaunchVariationSpecGroup(firstPct: Double?, secondPct: Double?) {
     val firstIsLower = firstPct != null && secondPct != null && firstPct < secondPct
     val firstIsHigher = firstPct != null && secondPct != null && firstPct > secondPct
-
-    val firstColor =
-        when {
-            firstIsLower -> TokenColors.Success
-            firstIsHigher -> Theme.colors.error
-            else -> Theme.colors.textPrimary
-        }
-    val secondColor =
-        when {
-            firstIsLower -> Theme.colors.error
-            firstIsHigher -> TokenColors.Success
-            else -> Theme.colors.textPrimary
-        }
 
     Column(
         modifier =
@@ -394,58 +372,49 @@ private fun LaunchVariationSpecGroup(firstPct: Double?, secondPct: Double?) {
         Spacer(modifier = Modifier.height(TokenSpacing.Item))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
         ) {
-            if (firstIsLower) {
-                VariationChevron(up = true, color = TokenColors.Success)
-            } else if (firstIsHigher) {
-                VariationChevron(up = false, color = Theme.colors.error)
-            }
-            Row(
+            VariationValue(
+                text = formatPct(firstPct),
+                highlighted = firstIsLower,
                 modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
-            ) {
-                Text(
-                    text = formatPct(firstPct),
-                    style = Theme.typography.priceMedium,
-                    color = firstColor,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = formatPct(secondPct),
-                    style = Theme.typography.priceMedium,
-                    color = secondColor,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                )
-            }
-            if (firstIsLower) {
-                VariationChevron(up = false, color = Theme.colors.error)
-            } else if (firstIsHigher) {
-                VariationChevron(up = true, color = TokenColors.Success)
-            }
+            )
+            VariationValue(
+                text = formatPct(secondPct),
+                highlighted = firstIsHigher,
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }
 
 @Composable
-private fun VariationChevron(up: Boolean, color: androidx.compose.ui.graphics.Color) {
-    Icon(
-        imageVector = if (up) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-        contentDescription = null,
-        tint = color,
-        modifier = Modifier.size(TokenIconSize.Medium),
-    )
-}
-
-private fun fuelLabel(car: CarDetailData): String {
-    val name = car.fuelName
-    val acronym = car.fuelAcronym
-    return when {
-        name.isNotBlank() && acronym.isNotBlank() -> "$name ($acronym)"
-        name.isNotBlank() -> name
-        else -> "—"
+private fun VariationValue(
+    text: String,
+    highlighted: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val highlightColor =
+        if (highlighted) {
+            Theme.colors.accentPrimary.copy(alpha = 0.13f)
+        } else {
+            androidx.compose.ui.graphics.Color.Transparent
+        }
+    Box(
+        modifier =
+            modifier
+                .clip(TokenShapes.Sm)
+                .background(color = highlightColor, shape = TokenShapes.Sm)
+                .padding(vertical = TokenSpacing.Inline),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            style = Theme.typography.priceMedium,
+            fontWeight = if (highlighted) FontWeight.Bold else FontWeight.Normal,
+            color = if (highlighted) Theme.colors.accentPrimary else Theme.colors.textPrimary,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -456,10 +425,6 @@ private fun priceRankLabel(analytics: CarAnalytics?): String {
     val total = analytics.priceRankTotalInCategory
     return if (total != null) "$rank/$total" else rank.toString()
 }
-
-private fun formatPct(value: Double?): String = value?.let { "%+.2f%%".format(it * 100) } ?: "—"
-
-private fun orDash(value: String?): String = if (value.isNullOrBlank()) "—" else value
 
 private fun parseBrl(price: String): Double? =
     price.replace(Regex("[^0-9,]"), "").replace(",", ".").toDoubleOrNull()
