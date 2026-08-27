@@ -2,12 +2,13 @@ package com.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.common.utils.shimmerEffect
+import com.theme.Theme
 
 /**
  * Loads a remote car image [imageUrl] with Coil, falling back to the shared placeholder on
@@ -18,7 +19,7 @@ import com.common.utils.shimmerEffect
  */
 @Composable
 fun rememberCarImagePainter(imageUrl: String?): Painter {
-    val placeholder = painterResource(id = R.drawable.ic_launcher_background)
+    val placeholder = ColorPainter(Theme.colors.surfaceRaised)
     return rememberAsyncImagePainter(
         model = imageUrl,
         error = placeholder,

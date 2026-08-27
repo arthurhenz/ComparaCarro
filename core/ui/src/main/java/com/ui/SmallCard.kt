@@ -50,6 +50,8 @@ fun SmallCard(
     brand: String,
     model: String,
     fipe: String,
+    favorited: Boolean = false,
+    onFavoriteToggle: (() -> Unit)? = null,
 ) {
     Card(
         modifier =
@@ -83,6 +85,17 @@ fun SmallCard(
                     contentDescription = model,
                     contentScale = ContentScale.Crop,
                 )
+
+                if (onFavoriteToggle != null) {
+                    FavoriteButton(
+                        selected = favorited,
+                        onToggle = { onFavoriteToggle() },
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(4.dp),
+                    )
+                }
             }
 
             SmallCardContent(brand = brand, model = model, fipe = fipe)
