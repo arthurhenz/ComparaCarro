@@ -8,20 +8,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,7 +47,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.data.model.LargeCardData
 import com.data.model.SmallCardData
 import com.theme.SpaceGroteskFamily
 import com.theme.Theme
@@ -57,34 +55,29 @@ import com.theme.TokenFontSizes
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
-import com.ui.Header
 import com.ui.LargeCardList
 import com.ui.SmallCard
-import com.ui.SmallCardList
 import com.ui.rememberCarImagePainter
 
 private enum class HomeViewMode { Grid, List }
 
 private val homeCategories = listOf("Todos os Modelos", "SUV", "Sedan", "Hatchback")
 
+/**
+ * Success-state body of the Home screen: a single [LazyVerticalGrid] that owns the scrolling.
+ * The hero title, category chips and sort row are full-span items so everything scrolls
+ * together while cards still lay out (and compose lazily) two per row.
+ */
 @Composable
 fun HomeScreenContent(
     smallCards: List<SmallCardData>,
-    recentlyViewedCards: List<LargeCardData> = emptyList(),
+    onCardClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
     searchQuery: String = "",
-    isSearching: Boolean = false,
     listResetToken: Int = 0,
-    onSearchQueryChange: (String) -> Unit = {},
-    onSearchFocusChanged: (Boolean) -> Unit = {},
     isSearchFocused: Boolean = false,
     sortType: SortType = SortType.MOST_POPULAR,
     onSortTypeChange: (SortType) -> Unit = {},
-    onCardClick: (String) -> Unit,
-    onCompareClick: () -> Unit = {},
-    onFavoritesClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {},
     favoriteIds: Set<String> = emptySet(),
     onToggleFavorite: (SmallCardData) -> Unit = {},
 ) {
@@ -92,182 +85,122 @@ fun HomeScreenContent(
     val interactionSource = remember { MutableInteractionSource() }
     var viewMode by rememberSaveable { mutableStateOf(HomeViewMode.Grid) }
     var selectedCategory by rememberSaveable { mutableStateOf(homeCategories.first()) }
-    val scrollState = rememberScrollState()
+    val gridState = rememberLazyGridState()
 
     // When a new set of results lands (search / browse restore), jump back to the top.
     LaunchedEffect(listResetToken) {
-        scrollState.animateScrollTo(0)
+        gridState.animateScrollToItem(0)
     }
 
-    Column(
+    LazyVerticalGrid(
+        state = gridState,
+        columns = GridCells.Fixed(2),
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
-                .background(Theme.colors.background)
-                .windowInsetsPadding(WindowInsets.statusBars),
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource,
+                ) {
+                    if (isSearchFocused) {
+                        focusManager.clearFocus()
+                    }
+                },
+        contentPadding =
+            PaddingValues(
+                start = TokenSpacing.Item,
+                end = TokenSpacing.Item,
+                bottom = TokenSpacing.Section,
+            ),
+        horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
+        verticalArrangement = Arrangement.spacedBy(TokenSpacing.Inline),
     ) {
-        Header(
-            searchQuery = searchQuery,
-            onSearchQueryChange = onSearchQueryChange,
-            onSearchFocusChanged = onSearchFocusChanged,
-            isSearchFocused = isSearchFocused,
-            title = "Compara Carros",
-        )
+        if (searchQuery.isEmpty()) {
+            item(key = "hero", span = { GridItemSpan(maxLineSpan) }, contentType = "hero") {
+                HeroTitle(modifier = Modifier.padding(start = TokenSpacing.Item, top = 48.dp))
+            }
 
-        if (isSearching) {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                color = Theme.colors.accentPrimary,
-            )
-        }
+            item(key = "categories", span = { GridItemSpan(maxLineSpan) }, contentType = "categories") {
+                // The grid's verticalArrangement already adds Inline (12dp) between lines;
+                // this only tops it up to the original 40dp gap below the hero title.
+                CategoryChipRow(
+                    categories = homeCategories,
+                    selected = selectedCategory,
+                    onSelect = { selectedCategory = it },
+                    modifier = Modifier.padding(top = 28.dp),
+                )
+            }
 
-        Box(modifier = Modifier.weight(1f)) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .clickable(
-                            indication = null,
-                            interactionSource = interactionSource,
-                        ) {
-                            if (isSearchFocused) {
-                                focusManager.clearFocus()
-                            }
-                        },
-            ) {
-//                if (searchQuery.isEmpty() && recentlyViewedCards.isNotEmpty()) {
-//                    LargeCardCarousel(
-//                        modifier =
-//                            Modifier
-//                                .fillMaxWidth()
-//                                .padding(bottom = TokenSpacing.Section),
-//                    ) {
-//                        recentlyViewedCards.forEach { cardData ->
-//                            item {
-//                                LargeCard(
-//                                    modifier = Modifier.clickable { onCardClick(cardData.id) },
-//                                    background = painterResource(id = cardData.backgroundRes),
-//                                    title = cardData.title,
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-
-                if (searchQuery.isEmpty()) {
-                    Column(modifier = Modifier.padding(start = TokenSpacing.Block, top = 48.dp)) {
-                        Text(
-                            text = "Frota Disponível".uppercase(),
-                            style =
-                                TextStyle(
-                                    fontFamily = SpaceGroteskFamily,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = TokenFontSizes.Medium,
-                                ),
-                            color = Theme.colors.accentPrimary,
-                            modifier =
-                                Modifier.padding(bottom = 4.dp),
-                        )
-
-                        Text(
-                            text = "Máquinas".uppercase(),
-                            style = Theme.typography.headlineLarge,
-                            fontStyle = FontStyle.Italic,
-                            fontSize = 56.sp,
-                            color = Theme.colors.textPrimary,
-                        )
-
-                        Spacer(Modifier.height(4.dp).width(156.dp).background(color = TokenColors.PrimaryAccent))
-                    }
-
-                    CategoryChipRow(
-                        categories = homeCategories,
-                        selected = selectedCategory,
-                        onSelect = { selectedCategory = it },
-                        modifier = Modifier.padding(bottom = TokenSpacing.Block).padding(top = 40.dp),
-                    )
-
-                    SortAndViewToggleRow(
-                        sortType = sortType,
-                        onSortTypeChange = onSortTypeChange,
-                        viewMode = viewMode,
-                        onViewModeChange = { viewMode = it },
-                        modifier =
-                            Modifier
-                                .padding(horizontal = TokenSpacing.Section)
-                                .padding(bottom = TokenSpacing.Block),
-                    )
-                }
-
-                when (viewMode) {
-                    HomeViewMode.Grid -> {
-                        val cardHeight = 230.dp
-                        val verticalSpacing = TokenSpacing.Item
-                        val numberOfRows = (smallCards.size + 1) / 2
-                        val totalHeight =
-                            (cardHeight * numberOfRows) +
-                                (verticalSpacing * (numberOfRows - 1).coerceAtLeast(0))
-
-                        SmallCardList(
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = TokenSpacing.Item)
-                                    .height(totalHeight),
-                        ) {
-                            itemsIndexed(smallCards) { _, cardData ->
-                                SmallCard(
-                                    modifier = Modifier.clickable { onCardClick(cardData.id) },
-                                    image = rememberCarImagePainter(cardData.imageUrl),
-                                    brand = cardData.title.substringBefore(" "),
-                                    model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
-                                    fipe = cardData.fipe,
-                                    onClick = { onCardClick(cardData.id) },
-                                )
-                            }
-                        }
-                    }
-
-                    HomeViewMode.List -> {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = TokenSpacing.Item),
-                            verticalArrangement = Arrangement.spacedBy(TokenSpacing.Block),
-                        ) {
-                            smallCards.forEach { cardData ->
-                                LargeCardList(
-                                    image = rememberCarImagePainter(cardData.imageUrl),
-                                    brand = cardData.title.substringBefore(" "),
-                                    model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
-                                    fipe = cardData.fipe,
-                                    onClick = { onCardClick(cardData.id) },
-                                    favorited = cardData.id in favoriteIds,
-                                    onFavoriteToggle = { onToggleFavorite(cardData) },
-                                )
-                            }
-                        }
-                    }
-                }
-
-                if (searchQuery.isEmpty() && recentlyViewedCards.isEmpty()) {
-                    Spacer(modifier = Modifier.height(TokenSpacing.Section))
-                }
+            item(key = "sort", span = { GridItemSpan(maxLineSpan) }, contentType = "sort") {
+                SortAndViewToggleRow(
+                    sortType = sortType,
+                    onSortTypeChange = onSortTypeChange,
+                    viewMode = viewMode,
+                    onViewModeChange = { viewMode = it },
+                    modifier = Modifier.padding(horizontal = TokenSpacing.Block),
+                )
             }
         }
 
-        BottomNavBar(
-            selected = BottomNavTab.Garagem,
-            onSelect = { tab ->
-                when (tab) {
-                    BottomNavTab.Garagem -> Unit
-                    BottomNavTab.Comparar -> onCompareClick()
-                    BottomNavTab.Favoritos -> onFavoritesClick()
-                    BottomNavTab.Perfil -> onProfileClick()
+        when (viewMode) {
+            HomeViewMode.Grid -> {
+                items(smallCards, key = { it.id }, contentType = { "card" }) { cardData ->
+                    SmallCard(
+                        image = rememberCarImagePainter(cardData.imageUrl),
+                        brand = cardData.title.substringBefore(" "),
+                        model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
+                        fipe = cardData.fipe,
+                        onClick = { onCardClick(cardData.id) },
+                    )
                 }
-            },
+            }
+
+            HomeViewMode.List -> {
+                items(
+                    smallCards,
+                    key = { it.id },
+                    span = { GridItemSpan(maxLineSpan) },
+                    contentType = { "row" },
+                ) { cardData ->
+                    LargeCardList(
+                        image = rememberCarImagePainter(cardData.imageUrl),
+                        brand = cardData.title.substringBefore(" "),
+                        model = cardData.title.substringAfter(" ", missingDelimiterValue = ""),
+                        fipe = cardData.fipe,
+                        onClick = { onCardClick(cardData.id) },
+                        favorited = cardData.id in favoriteIds,
+                        onFavoriteToggle = { onToggleFavorite(cardData) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HeroTitle(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Frota Disponível".uppercase(),
+            style =
+                TextStyle(
+                    fontFamily = SpaceGroteskFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = TokenFontSizes.Medium,
+                ),
+            color = Theme.colors.accentPrimary,
+            modifier = Modifier.padding(bottom = 4.dp),
         )
+
+        Text(
+            text = "Máquinas".uppercase(),
+            style = Theme.typography.headlineLarge,
+            fontStyle = FontStyle.Italic,
+            fontSize = 56.sp,
+            color = Theme.colors.textPrimary,
+        )
+
+        Spacer(Modifier.height(4.dp).width(156.dp).background(color = TokenColors.PrimaryAccent))
     }
 }
 
@@ -283,7 +216,7 @@ private fun CategoryChipRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = TokenSpacing.Section),
+                .padding(horizontal = TokenSpacing.Block),
         horizontalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
         verticalArrangement = Arrangement.spacedBy(TokenSpacing.Item),
     ) {
@@ -303,8 +236,6 @@ private fun CategoryChip(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val containerColor =
-        if (selected) Theme.colors.surfaceRaised else Theme.colors.surfaceRaised
     val contentColor =
         if (selected) Theme.colors.textPrimary else Theme.colors.textSecondary
 
@@ -312,9 +243,10 @@ private fun CategoryChip(
         modifier =
             Modifier
                 .clip(TokenShapes.Pill)
-                .background(containerColor, shape = TokenShapes.Pill)
+                .background(Theme.colors.surfaceRaised, shape = TokenShapes.Pill)
                 .clickable(onClick = onClick)
-                .padding(horizontal = TokenSpacing.Block).height(TokenSpacing.Section),
+                .padding(horizontal = TokenSpacing.Block)
+                .height(TokenSpacing.Section),
         contentAlignment = Alignment.Center,
     ) {
         Text(

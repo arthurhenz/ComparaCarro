@@ -21,7 +21,6 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 object GoogleSignInHelper {
     private const val PLACEHOLDER = "TODO_REPLACE_WITH_WEB_CLIENT_ID"
 
-    // TODO: replace with the Web client id from google-services.json (oauth_client, client_type 3).
     const val WEB_CLIENT_ID: String = "413351987684-gabbannl3h6kek0093olvpda9r29kcf3.apps.googleusercontent.com"
 
     val isConfigured: Boolean get() = WEB_CLIENT_ID != PLACEHOLDER

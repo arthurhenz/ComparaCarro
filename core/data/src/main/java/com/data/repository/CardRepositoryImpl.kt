@@ -12,6 +12,9 @@ import comparacarro.network.model.CarImageRequest
 import comparacarro.network.model.PriceAnalytics
 import comparacarro.network.model.SearchItem
 import comparacarro.network.result.NetworkResult
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.koin.core.annotation.Single
 
 @Single
@@ -92,7 +95,38 @@ class CardRepositoryImpl(
         }
     }
 
-    override suspend fun getSmallCards(): List<SmallCardData> = getSmallCardsPage(page = 1, pageSize = 30).data
+    /**
+     * Home's initial list is the best-selling models (descending by sales), not a raw FIPE page.
+     * Each entry in [BEST_SELLERS] is looked up by name via the FIPE search ("keyname"); the top
+     * hit becomes the card. Lookups run concurrently but the returned list preserves the sales
+     * ranking order so `SortType.MOST_POPULAR` renders them exactly as ranked.
+     */
+    override suspend fun getSmallCards(): List<SmallCardData> =
+        coroutineScope {
+            // Warm the "carro" type-id cache once so the fan-out below doesn't hit /vehicle-types N times.
+            carTypeId()
+            val items =
+                BEST_SELLERS
+                    .map { name -> async { topMatch(name) } }
+                    .awaitAll()
+                    .filterNotNull()
+            val imageUrls = resolveImages(items, LIST_IMAGE_WIDTH)
+            items.mapIndexed { index, item -> item.toSmallCard(imageUrls.getOrNull(index)) }
+        }
+
+    /**
+     * Best current-year FIPE hit for a best-seller model name, or null when the model has no
+     * entry for [CURRENT_YEAR]. Pulls a full page so the current-year variant can be found even
+     * when older years rank higher in the search.
+     */
+    private suspend fun topMatch(name: String): SearchItem? =
+        when (val result = searchCars(query = name, page = 1, limit = MAX_PAGE_SIZE)) {
+            is NetworkResult.Success -> result.data.data.firstOrNull { it.modelYear == CURRENT_YEAR }
+            is NetworkResult.Error -> {
+                logError("getSmallCards[$name]", result)
+                null
+            }
+        }
 
     override suspend fun getSmallCardsPage(
         page: Int,
@@ -207,6 +241,36 @@ class CardRepositoryImpl(
         const val MAX_PAGE_SIZE = 50
         const val LIST_IMAGE_WIDTH = 400
         const val DETAIL_IMAGE_WIDTH = 800
+
+        // Home shows only current-model-year cars; resolved from the system clock, not hardcoded.
+        // Calendar (not java.time) to stay safe on minSdk 24 without core-library desugaring.
+        val CURRENT_YEAR = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+
+        // Best-selling models in descending sales order. Each name is searched on FIPE by "keyname"
+        // to build Home's initial list; keep the order — it is the ranking shown to the user.
+        val BEST_SELLERS =
+            listOf(
+                "CRETA",
+                "POLO",
+                "TERA",
+                "T CROSS",
+                "SONG",
+                "DOLPHIN MINI",
+                "I20",
+                "DOLPHIN",
+                "YARIS CROSS",
+                "FASTBACK",
+                "TIGGO 5X",
+                "COROLLA CROSS",
+                "EX2",
+                "TRACKER",
+                "ARGO",
+                "ONIX",
+                "HB20",
+                "PULSE",
+                "HAVAL H6",
+                "KICKS",
+            )
 
         fun spec(modelSlug: String, fuelAcronym: String, year: Int) = "$modelSlug,$fuelAcronym,$year"
 
