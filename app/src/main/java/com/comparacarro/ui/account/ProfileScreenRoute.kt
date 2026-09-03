@@ -5,7 +5,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.auth.LoginScreenHost
-import com.favorites.navigateToBottomTab
 import com.navigation.EntryProvider
 import com.navigation.routes.ProfileRoute
 import org.koin.compose.viewmodel.koinViewModel
@@ -25,7 +24,6 @@ fun EntryProviderScope<NavKey>.profileScreenRoute() {
                 email = currentUser.email.orEmpty(),
                 photoUrl = currentUser.photoUrl,
                 onLogout = viewModel::logout,
-                onNavigate = { tab -> viewModel.navigateToBottomTab(tab) },
             )
         }
     }

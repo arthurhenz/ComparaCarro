@@ -65,8 +65,6 @@ import com.theme.TokenColors
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
 import com.ui.Header
 import com.ui.PrimaryButton
 import com.ui.rememberCarImagePainter
@@ -113,7 +111,6 @@ fun FavoriteScreen(
     onRemove: (String) -> Unit = {},
     onCardClick: (String) -> Unit = {},
     onCompareClick: () -> Unit = {},
-    onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var isSearchFocused by rememberSaveable { mutableStateOf(false) }
@@ -153,12 +150,6 @@ fun FavoriteScreen(
                 onSearchFocusChanged = { isSearchFocused = it },
                 isSearchFocused = isSearchFocused,
                 title = "compara carros",
-            )
-        },
-        bottomBar = {
-            BottomNavBar(
-                selected = BottomNavTab.Favoritos,
-                onSelect = onNavigate,
             )
         },
     ) { paddingValues ->

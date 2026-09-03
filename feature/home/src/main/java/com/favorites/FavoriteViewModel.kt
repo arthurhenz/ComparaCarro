@@ -17,7 +17,6 @@ import com.data.usecase.RemoveFavoriteUseCase
 import com.navigation.routes.SelectComparisonRoute
 import com.navigation.routes.navigateToDetail
 import com.navigation.routes.parseVehicleSpec
-import com.ui.BottomNavTab
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -89,8 +88,6 @@ class FavoriteViewModel(
     fun navigateToCompare() {
         navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
     }
-
-    fun navigateToTab(tab: BottomNavTab) = navigateToBottomTab(tab)
 }
 
 private fun FavoriteFilter.matches(item: FavoriteCarItem): Boolean {

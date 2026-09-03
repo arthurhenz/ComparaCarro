@@ -24,8 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.data.model.SmallCardData
 import com.theme.Theme
 import com.theme.TokenSpacing
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
 import com.ui.FullScreenError
 import com.ui.FullScreenLoading
 
@@ -40,7 +38,6 @@ fun SelectComparisonScreen(
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onToggleSelect: (String) -> Unit = {},
     onLoadMore: (Int) -> Unit = {},
-    onNavigateToTab: (BottomNavTab) -> Unit = {},
 ) {
     Scaffold(
         containerColor = Theme.colors.background,
@@ -97,12 +94,6 @@ fun SelectComparisonScreen(
                         scrolledContainerColor = Theme.colors.surfaceGlass,
                     ),
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
-            )
-        },
-        bottomBar = {
-            BottomNavBar(
-                selected = BottomNavTab.Comparar,
-                onSelect = onNavigateToTab,
             )
         },
     ) { paddingValues ->

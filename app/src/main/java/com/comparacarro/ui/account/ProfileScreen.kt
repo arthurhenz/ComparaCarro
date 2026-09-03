@@ -38,8 +38,6 @@ import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
 
 @Composable
 fun ProfileScreen(
@@ -47,7 +45,6 @@ fun ProfileScreen(
     email: String,
     photoUrl: String? = null,
     onLogout: () -> Unit = {},
-    onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     Column(
         modifier =
@@ -86,11 +83,6 @@ fun ProfileScreen(
 
             LogoutButton(onClick = onLogout)
         }
-
-        BottomNavBar(
-            selected = BottomNavTab.Perfil,
-            onSelect = onNavigate,
-        )
     }
 }
 
