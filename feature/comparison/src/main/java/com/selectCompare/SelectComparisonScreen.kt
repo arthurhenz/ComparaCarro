@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.data.model.SmallCardData
@@ -39,7 +40,10 @@ fun SelectComparisonScreen(
     onToggleSelect: (String) -> Unit = {},
     onLoadMore: (Int) -> Unit = {},
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = Theme.colors.background,
         topBar = {
             TopAppBar(
@@ -93,6 +97,7 @@ fun SelectComparisonScreen(
                         containerColor = Theme.colors.surfaceGlass,
                         scrolledContainerColor = Theme.colors.surfaceGlass,
                     ),
+                scrollBehavior = scrollBehavior,
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             )
         },
