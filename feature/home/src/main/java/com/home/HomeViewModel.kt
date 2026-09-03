@@ -15,9 +15,6 @@ import com.data.usecase.ObserveFavoriteIdsUseCase
 import com.data.usecase.SaveRecentlyViewedCarUseCase
 import com.data.usecase.ToggleFavoriteUseCase
 import com.navigation.routes.CardDetailRoute
-import com.navigation.routes.FavoritesRoute
-import com.navigation.routes.ProfileRoute
-import com.navigation.routes.SelectComparisonRoute
 import com.navigation.routes.parseVehicleSpec
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -177,18 +174,6 @@ class HomeViewModel(
                 Log.e("HomeViewModel", "Failed to toggle favorite ${card.id}: ${e.message}", e)
             }
         }
-
-    fun navigateToSelectComparison() {
-        navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
-    }
-
-    fun navigateToFavorites() {
-        navigate(FavoritesRoute, NavOptions(singleTop = true))
-    }
-
-    fun navigateToProfile() {
-        navigate(ProfileRoute, NavOptions(singleTop = true))
-    }
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {

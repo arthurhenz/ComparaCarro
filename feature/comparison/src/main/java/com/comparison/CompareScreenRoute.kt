@@ -21,7 +21,6 @@ fun EntryProviderScope<NavKey>.compareScreenRoute() {
         ComparisonScreen(
             state = state,
             onBackClick = viewModel::navigateToHome,
-            onNavigateToTab = viewModel::navigateToBottomTab,
         )
     }
 }

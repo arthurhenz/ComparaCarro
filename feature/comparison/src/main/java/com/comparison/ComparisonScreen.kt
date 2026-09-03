@@ -53,8 +53,6 @@ import com.theme.TokenFontSizes
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
 import com.ui.FullScreenError
 import com.ui.FullScreenLoading
 import com.ui.rememberCarImagePainter
@@ -64,7 +62,6 @@ import com.ui.rememberCarImagePainter
 fun ComparisonScreen(
     state: ComparisonScreenState,
     onBackClick: () -> Unit = {},
-    onNavigateToTab: (BottomNavTab) -> Unit = {},
 ) {
     Scaffold(
         containerColor = Theme.colors.background,
@@ -99,12 +96,6 @@ fun ComparisonScreen(
                         scrolledContainerColor = Theme.colors.background,
                     ),
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
-            )
-        },
-        bottomBar = {
-            BottomNavBar(
-                selected = BottomNavTab.Comparar,
-                onSelect = onNavigateToTab,
             )
         },
     ) { paddingValues ->

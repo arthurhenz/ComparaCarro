@@ -17,8 +17,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.data.model.SmallCardData
 import com.theme.Theme
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
 import com.ui.FullScreenError
 import com.ui.Header
 
@@ -29,9 +27,6 @@ fun HomeScreen(
     isSearchFocused: Boolean,
     favoriteIds: Set<String> = emptySet(),
     onCardClick: (String) -> Unit = {},
-    onCompareFromHome: () -> Unit = {},
-    onFavoritesClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {},
     onSearchQueryChange: (String) -> Unit = {},
     onSearchFocusChanged: (Boolean) -> Unit = {},
     onRefreshRecentlyViewed: () -> Unit = {},
@@ -51,8 +46,8 @@ fun HomeScreen(
         }
     }
 
-    // The Scaffold lives above the state switch so header and bottom navigation stay
-    // visible (and inset-aware) across loading, error and success alike.
+    // The Scaffold lives above the state switch so the header stays visible (and
+    // inset-aware) across loading, error and success alike.
     Scaffold(
         containerColor = Theme.colors.background,
         topBar = {
@@ -73,19 +68,6 @@ fun HomeScreen(
                     )
                 }
             }
-        },
-        bottomBar = {
-            BottomNavBar(
-                selected = BottomNavTab.Garagem,
-                onSelect = { tab ->
-                    when (tab) {
-                        BottomNavTab.Garagem -> Unit
-                        BottomNavTab.Comparar -> onCompareFromHome()
-                        BottomNavTab.Favoritos -> onFavoritesClick()
-                        BottomNavTab.Perfil -> onProfileClick()
-                    }
-                },
-            )
         },
     ) { paddingValues ->
         when (state) {

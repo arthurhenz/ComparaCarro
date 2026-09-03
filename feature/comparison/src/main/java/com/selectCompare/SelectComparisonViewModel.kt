@@ -2,15 +2,9 @@ package com.selectCompare
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.data.model.SmallCardData
 import com.data.usecase.GetSmallCardsPageUseCase
-import com.navigation.routes.FavoritesRoute
-import com.navigation.routes.HomeScreenRoute
-import com.navigation.routes.ProfileRoute
-import com.navigation.routes.SelectComparisonRoute
-import com.ui.BottomNavTab
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,15 +59,6 @@ class SelectComparisonViewModel(
                 _state.value = SelectComparisonScreenState.Error(e.message ?: "Failed to load card Comparisons")
             }
         }
-
-    fun navigateToBottomTab(tab: BottomNavTab) {
-        when (tab) {
-            BottomNavTab.Garagem -> navigate(HomeScreenRoute, NavOptions(popUpTo = HomeScreenRoute))
-            BottomNavTab.Comparar -> navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
-            BottomNavTab.Favoritos -> navigate(FavoritesRoute, NavOptions(singleTop = true))
-            BottomNavTab.Perfil -> navigate(ProfileRoute, NavOptions(singleTop = true))
-        }
-    }
 
     fun onEvent(event: SelectComparisonScreenEvent) {
         when (event) {

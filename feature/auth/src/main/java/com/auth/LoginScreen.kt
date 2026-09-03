@@ -63,8 +63,6 @@ import com.theme.Theme
 import com.theme.TokenIconSize
 import com.theme.TokenShapes
 import com.theme.TokenSpacing
-import com.ui.BottomNavBar
-import com.ui.BottomNavTab
 import com.ui.PrimaryButton
 
 @Composable
@@ -76,7 +74,6 @@ fun LoginScreen(
     onForgotPassword: () -> Unit = {},
     onCreateAccount: () -> Unit = {},
     onContinueWithoutLogin: () -> Unit = {},
-    onNavigate: (BottomNavTab) -> Unit = {},
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -208,11 +205,6 @@ fun LoginScreen(
 
             LoginFooter()
         }
-
-        BottomNavBar(
-            selected = BottomNavTab.Perfil,
-            onSelect = onNavigate,
-        )
     }
 }
 

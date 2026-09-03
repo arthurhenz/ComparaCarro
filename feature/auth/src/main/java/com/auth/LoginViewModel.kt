@@ -6,13 +6,10 @@ import com.common.navigation.NavOptions
 import com.common.navigation.Navigator
 import com.data.model.AuthResult
 import com.data.repository.AuthRepository
-import com.navigation.routes.FavoritesRoute
 import com.navigation.routes.ForgotPasswordRoute
 import com.navigation.routes.HomeScreenRoute
 import com.navigation.routes.ProfileRoute
-import com.navigation.routes.SelectComparisonRoute
 import com.navigation.routes.SignupRoute
-import com.ui.BottomNavTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,15 +49,6 @@ class LoginViewModel(
     fun goToForgotPassword() = navigate(ForgotPasswordRoute, NavOptions(singleTop = true))
 
     fun continueWithoutLogin() = navigate(HomeScreenRoute, NavOptions(singleTop = true))
-
-    fun navigateToBottomTab(tab: BottomNavTab) {
-        when (tab) {
-            BottomNavTab.Garagem -> navigate(HomeScreenRoute, NavOptions(popUpTo = HomeScreenRoute))
-            BottomNavTab.Comparar -> navigate(SelectComparisonRoute(null), NavOptions(singleTop = true))
-            BottomNavTab.Favoritos -> navigate(FavoritesRoute, NavOptions(singleTop = true))
-            BottomNavTab.Perfil -> navigate(ProfileRoute, NavOptions(singleTop = true))
-        }
-    }
 
     private fun submit(request: suspend () -> AuthResult) {
         _state.value = _state.value.copy(isLoading = true, errorMessage = null)
