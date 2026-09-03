@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -63,7 +64,10 @@ fun ComparisonScreen(
     state: ComparisonScreenState,
     onBackClick: () -> Unit = {},
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = Theme.colors.background,
         topBar = {
             TopAppBar(
@@ -95,6 +99,7 @@ fun ComparisonScreen(
                         containerColor = Theme.colors.background,
                         scrolledContainerColor = Theme.colors.background,
                     ),
+                scrollBehavior = scrollBehavior,
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             )
         },
